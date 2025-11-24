@@ -1,0 +1,11 @@
+.navbar-nav{
+    text-align: right;
+}
+a{
+		text-decoration: none;
+	}
+  .logo{
+    border-radius: 50%;
+    border: 1px solid black;
+  }
+  
