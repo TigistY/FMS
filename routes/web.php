@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+<<<<<<< HEAD
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\UserController;
@@ -56,4 +57,9 @@ Route::middleware(['auth', 'can:manage-units'])->group(function () {
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::get('/roles-management', [RolesController::class, 'index'])->name('roles.index');
     Route::put('/roles-management', [RolesController::class, 'updatePermissions'])->name('roles.update-permissions');
+=======
+
+Route::get('/', function () {
+    return view('welcome');
+>>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
 });
