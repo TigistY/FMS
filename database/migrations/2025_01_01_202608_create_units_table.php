@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('units', function (Blueprint $table) {
             $table->id();
-            $table->string('name-am')->unique();
-            $table->string('name-en')->unique();
+            $table->string('name_am')->unique();
+            $table->string('name_en')->unique();
             $table->string('code', 10)->unique();
             $table->string('email')->unique();
             $table->timestamps();

@@ -9,7 +9,6 @@ class Complaint extends Model
 {
     use HasFactory;
 
-
     protected $fillable = [
         'user_id',
         'guest_id',
@@ -17,20 +16,19 @@ class Complaint extends Model
         'unit_id',
         'subject',
         'body',
-        'status',
-        'priority',
+        'status',    
+        'priority',  
     ];
+    
+   
 
     
     protected $casts = [
         'is_anonymous' => 'boolean',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
+   
+    //relationship
 
     public function user()
     {
@@ -41,11 +39,15 @@ class Complaint extends Model
     public function guest()
     {
     
-        return $this->belongsTo(GuestEmail::class, 'guest_id');
+        return $this->belongsTo(Guest::class, 'guest_id');
     }
 
     public function unit()
     {
         return $this->belongsTo(Unit::class, 'unit_id');
+    }
+     public function responses()
+    {
+        return $this->morphMany(Response::class, 'respondable');
     }
 }

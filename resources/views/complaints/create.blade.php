@@ -1,18 +1,18 @@
 @extends('layouts.wel')
 
 @section('content')
-    <div class="container py-5">
+   <div class="container py-5">
         <div class="row justify-content-center">
             <div class="col-md-8 col-lg-7">
-                <div class="card p-4 shadow-lg border-0 feedback-theme"> 
+                <div class="card p-4 shadow-lg border-0 complaint-theme"> 
                     
                     <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center border-bottom pb-3" id="main-title">
-                        <i class="fas fa-comment-dots text-primary me-2"></i> Feedback Submission
+                        <i class="fas fa-exclamation-triangle text-danger me-2"></i> Complaint Submission
                     </h1>
-                    <p class="text-muted mb-4 text-center" id="subtitle">Please select the relevant unit and enter the details of your advice, appreciation, or suggestion.</p>
+                    <p class="text-muted mb-4 text-center" id="subtitle">Please select the relevant unit and enter the details of your complaint.</p>
 
                     @if ($errors->any())
-                        <div class="alert alert-danger p-3 mb-4">{{-- Removed bg-red-100/text-red-800 Tailwind classes --}}
+                        <div class="alert alert-danger p-3 mb-4">
                             <ul class="list-unstyled mb-0">
                                 @foreach ($errors->all() as $error)
                                     <li><i class="fas fa-times-circle me-2"></i> {{ $error }}</li>
@@ -24,26 +24,26 @@
                         <div class="alert alert-success text-center mb-4">{{ session('success') }}</div>
                     @endif
 
-                    <form action="{{ route('feedback.submit') }}" method="POST" class="needs-validation" novalidate>
-                        @csrf 
+                    <form action="{{route('complaints.submit')}}" method="POST" class="needs-validation" novalidate>
+                        @csrf
                         
                         <div class="row g-3 mb-4">
                             <div class="col-md-6">
                                 <label for="language_selector" class="form-label" id="label-language">Select Language:</label>
                                 <select id="language_selector" onchange="window.switchLanguage(this.value)"
-                                        class="form-select bg-info-subtle border-primary">
+                                        class="form-select bg-danger-subtle border-danger">
                                     <option value="am">አማርኛ</option>
                                     <option value="en" selected>English</option>
                                 </select>
                             </div>
 
                             <div class="col-md-6">
-                                <label for="unit_id" class="form-label" id="label-unit">Unit/Department Concerned:</label>
+                                <label for="unit_id" class="form-label" id="label-unit">Unit/Department Concerned: <span class="text-danger">*</span></label>
                                 <select id="unit_id" name="unit_id" required class="form-select">
                                     <option value="" id="option-select-unit">Select Unit</option>
                                     @foreach ($units as $unit)
                                         <option value="{{ $unit->id }}"
-                                            data-am="{{ $unit->name_am ?? $unit->id }}" 
+                                            data-am="{{ $unit->name_am ?? $unit->id }}"
                                             data-en="{{ $unit->name_en ?? $unit->id }}">
                                             {{ $unit->name_en ?? $unit->name_am ?? $unit->code ?? $unit->id }}
                                         </option>
@@ -54,25 +54,27 @@
                         </div>
                         
                         <div class="mb-3">
-                            <label for="subject" class="form-label" id="label-subject">Subject:</label>
-                            <input type="text" id="subject" name="subject" required class="form-control"
+                            <label for="subject" class="form-label" id="label-subject">Subject: <span class="text-danger">*</span></label>
+                            <input type="text" id="subject" name="subject" required
+                                class="form-control"
                                 placeholder="Short and clear subject" id="placeholder-subject">
                             <div class="invalid-feedback">Subject is required.</div>
                         </div>
 
                         <div class="mb-4">
-                            <label for="body" class="form-label" id="label-description">Detailed Description:</label>
-                            <textarea id="body" name="body" rows="5" required class="form-control"
-                                placeholder="Describe your feedback in detail..." id="placeholder-description"></textarea>
+                            <label for="body" class="form-label" id="label-description">Detailed Description: <span class="text-danger">*</span></label>
+                            <textarea id="body" name="body" rows="5" required
+                                class="form-control"
+                                placeholder="Describe your complaint in detail..." id="placeholder-description"></textarea>
                             <div class="invalid-feedback">Description is required.</div>
                         </div>
                         
-                        <div class="form-check p-3 bg-info-subtle rounded border border-primary-subtle mb-4">
+                        <div class="form-check p-3 bg-danger-subtle rounded border border-danger-subtle mb-4">
                             <input id="is_anonymous" name="is_anonymous" type="checkbox" onchange="window.toggleGuestFields()"
-                                class="form-check-input text-primary">
-                            <label for="is_anonymous" class="form-check-label text-primary" id="label-anonymous">I wish to remain Anonymous.</label>
+                                class="form-check-input text-danger">
+                            <label for="is_anonymous" class="form-check-label text-danger" id="label-anonymous">I wish to remain Anonymous.</label>
                         </div>
-                        <p class="text-sm text-primary mb-4" id="text-anonymous-warning">If you choose this, your identity will be hidden, but you may not receive a response.</p>
+                        <p class="text-sm text-danger mb-4" id="text-anonymous-warning">If you choose this, your identity will be hidden, but you may not receive a response.</p>
 
                         <div id="guest-fields" class="space-y-4 pt-4 border-top border-gray-200">
                             <h2 class="h5 text-dark border-bottom pb-2" id="title-contact">Contact Information (Required for Response)</h2>
@@ -107,8 +109,8 @@
                         </div>
 
                         <button type="submit" id="button-submit"
-                            class="btn btn-primary w-100 mt-4 py-2 fw-bold feedback-button">
-                            <i class="fas fa-paper-plane me-2"></i> Submit Feedback
+                            class="btn btn-danger w-100 mt-4 py-2 fw-bold complaint-button">
+                            <i class="fas fa-file-signature me-2"></i> Submit Complaint
                         </button>
                     </form>
                 </div>
@@ -116,45 +118,45 @@
         </div>
     </div>
 
-    <script>
+   <script>
     window.translations = {
         'am': {
-            'doc-title-feedback': 'ግብረመልስ ማስገቢያ',
-            'main-title': 'ግብረመልስ ማስገቢያ',
-            'subtitle': 'አስተያየትዎን፣ ምስጋናዎን ወይም ምክርዎን የሚመለከተውን ክፍል በመምረጥ ያስገቡ።',
+            'doc-title-feedback': 'ቅሬታ ማስገቢያ',
+            'main-title': 'ቅሬታ ማስገቢያ',
+            'subtitle': 'ቅሬታዎን የሚመለከተውን ክፍል በመምረጥ ዝርዝር ሁኔታውን ያስገቡ።',
             'label-language': 'ቋንቋ ይምረጡ:',
-            'label-unit': 'ግብረመልሱ የሚመለከተው ክፍል/ዩኒት:',
+            'label-unit': 'ቅሬታው የሚመለከተው ክፍል/ዩኒት:',
             'option-select-unit': 'ክፍል ይምረጡ',
             'label-subject': 'ርዕስ:',
             'placeholder-subject': 'አጭርና ግልጽ ርዕስ',
-            'label-description': 'ዝርዝር መግለጫ:',
-            'placeholder-description': 'አስተያየትዎን በዝርዝር ያስቀምጡ...',
+            'label-description': 'ዝርዝር መግለጫ:', 
+            'placeholder-description': 'ቅሬታዎን በዝርዝር ያስቀምጡ...',
             'label-anonymous': 'ስም-አልባ መሆን እፈልጋለሁ።',
             'text-anonymous-warning': 'ይህን ከመረጡ፣ ማንነትዎ ሙሉ በሙሉ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
-            'title-contact': 'የእውቂያ መረጃ (ለመልስ አስገዳጅ)',
+            'title-contact': 'የእውቂያ መረጃ (ለምላሽ አስፈላጊ)',
             'label-email': 'ኢሜይል (ለአጸፋ መልስ):',
             'placeholder-email': 'ምላሽ የሚደርስበት ኢሜይል',
             'label-name': 'ስም (አማራጭ):',
             'placeholder-name': 'ሙሉ ስም',
-            'label-type': 'የሪፖርተር አይነት:',
+            'label-type': 'ሪፖርተር አይነት:',
             'option-select-type': 'ይመድቡ',
             'option-student': 'ተማሪ',
             'option-teacher': 'መምህር',
             'option-employee': 'ሰራተኛ',
             'option-other': 'ሌላ',
-            'button-submit': 'ግብረመልስ አስገባ',
+            'button-submit': 'ቅሬታ አስገባ',
         },
         'en': {
-            'doc-title-feedback': 'Feedback Submission Form',
-            'main-title': 'Feedback Submission',
-            'subtitle': 'Please select the relevant unit and enter the details of your advice, appreciation, or suggestion.',
+            'doc-title-feedback': 'Complaint Submission Form',
+            'main-title': 'Complaint Submission',
+            'subtitle': 'Please select the relevant unit and enter the details of your complaint.',
             'label-language': 'Select Language:',
             'label-unit': 'Unit/Department Concerned:',
             'option-select-unit': 'Select Unit',
             'label-subject': 'Subject:',
             'placeholder-subject': 'Short and clear subject',
-            'label-description': 'Detailed Description:',
-            'placeholder-description': 'Describe your feedback in detail...',
+            'label-description': 'Detailed Description:', 
+            'placeholder-description': 'Describe your complaint in detail...',
             'label-anonymous': 'I wish to remain Anonymous.',
             'text-anonymous-warning': 'If you choose this, your identity will be hidden, but you may not receive a response.',
             'title-contact': 'Contact Information (Required for Response)',
@@ -168,10 +170,11 @@
             'option-teacher': 'Teacher',
             'option-employee': 'Employee',
             'option-other': 'Other',
-            'button-submit': 'Submit Feedback',
+            'button-submit': 'Submit Complaint',
         }
-    };
+    }
 
+    // እነዚህ ተግባራት (functions) ከላይ ካለው Feedback JS ጋር አንድ አይነት ናቸው።
     window.updateUnitOptions = (lang) => {
         const unitSelect = document.getElementById('unit_id');
         const nameKey = lang === 'am' ? 'am' : 'en';
@@ -218,7 +221,7 @@
 
         if (isAnonymous) {
             // Use Bootstrap utility class for hiding
-            guestFields.classList.add('d-none'); // Hide contact fields
+            guestFields.classList.add('d-none'); 
             
             guestEmail.removeAttribute('required');
             guestType.removeAttribute('required');
@@ -226,16 +229,15 @@
             guestType.value = '';
         } else {
             // Use Bootstrap utility class for showing
-            guestFields.classList.remove('d-none'); // Show contact fields
+            guestFields.classList.remove('d-none'); 
             
             guestEmail.setAttribute('required', 'required');
             guestType.setAttribute('required', 'required');
         }
     };
-    
+
     document.addEventListener('DOMContentLoaded', () => {
         window.switchLanguage('en'); 
-        // Initial check for the anonymous checkbox state and apply display/required logic
         window.toggleGuestFields();
     });
 </script>

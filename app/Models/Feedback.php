@@ -28,13 +28,12 @@ class Feedback extends Model
         'subject',
         'body',
         'is_anonymous',
-        // 'status', // እነዚህን በኋላ ላይ ለመጨመር ይችላሉ
-        // 'response',
+       
     ];
 
     /**
      * The attributes that should be cast to native types.
-     * * is_anonymousን እንደ boolean ለማስኬድ አስፈላጊ ነው።
+     * 
      * @var array
      */
     protected $casts = [
@@ -42,31 +41,19 @@ class Feedback extends Model
     ];
 
 
-    // ሪሌሽንሺፕ (Relationships)
-
-    /**
-     * Get the registered user who submitted the feedback.
-     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Get the unit that the feedback belongs to.
-     */
+    
     public function unit(): BelongsTo
     {
         return $this->belongsTo(Unit::class);
     }
 
-    /**
-     * Get the responses for the feedback.
-     * * አሁን ወደ ትክክለኛው Response ሞዴል ይጠቁማል።
-     */
-    public function responses(): HasMany
+    public function responses()
     {
-        // Response ሞዴል ለሁለቱም ለቅሬታ እና ለግብረመልስ የሚውል ከሆነ
-        return $this->hasMany(Response::class);
+        return $this->morphMany(Response::class, 'respondable');
     }
 }

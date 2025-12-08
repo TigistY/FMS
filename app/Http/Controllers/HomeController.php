@@ -14,6 +14,9 @@ class HomeController extends Controller
 
 } 
     public function homesto(){
-	return view('login.home');
-}       
+	return view('logins.home');
+} 
+ public function help(){
+	return view('logins.helpcenter');
+}             
 }

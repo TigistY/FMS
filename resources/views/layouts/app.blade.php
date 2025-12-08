@@ -92,6 +92,7 @@
         background-color: #6c757d;
         color: white;
     }
+    
     </style>
 </head>
 <body>

@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
 use Illuminate\Database\Seeder;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class RoleSeeder extends Seeder
 {
@@ -12,9 +13,38 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
+        
+        $adminRole = Role::firstOrCreate(['name' => 'System Administrator'], [
+            'name' => 'System Administrator',
+            'guard_name' => 'web'
+        ]);
+        
+        $unitResponderRole = Role::firstOrCreate(['name' => 'Unit Responder'], [
+            'name' => 'Unit Responder',
+            'guard_name' => 'web'
+        ]);
+
+        $userRole = Role::firstOrCreate(['name' => 'General User'], [
+            'name' => 'General User',
+            'guard_name' => 'web'
+        ]);
+
     
-        Role::create(['name' => 'System Administrator', 'description' => 'Full access to the system, including user and unit management.']);
-        Role::create(['name' => 'Feedback Responder', 'description' => 'Responsible for handling and responding to Feedback submissions directed to their unit.']);
-        Role::create(['name' => 'Complaint Receiver', 'description' => 'Responsible for managing and resolving Complaint submissions directed to their unit.']);
+        
+        // to 'System Administrator' assign all permission 
+        $allPermissions = Permission::pluck('name')->toArray();
+        $adminRole->syncPermissions($allPermissions);
+
+        // 'Unit Responder' permissions: view and respond to feedback and complaints
+        $unitResponderPermissions = [
+            'view-feedback', 
+            'respond-feedback', 
+            'view-complaints', 
+            'respond-complaints'
+        ];
+        $unitResponderRole->syncPermissions($unitResponderPermissions);
+
+        // 'Regular User' has no permissions initially
+        $userRole->syncPermissions([]);
     }
 }

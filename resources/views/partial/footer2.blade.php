@@ -1,14 +1,9 @@
-<footer class="footer p-5 text-white-50 bg-dark">
+<footer class="footer  text-white bg-dark">
  	<div class="container">
  		<div class="row">
  			<div class="col-sm-3">
- 				<h5 class="fw-bold">Get started</h5>
-           <ul class="list-unstyled">
-           	<li><a class="text-white offset-1" href="#">Home</a></li>
-           	<li><a class="text-white offset-1"  href="#">sign up</a></li>
-           	<li><a class="text-white offset-1"  href="#">sign in</a></li>
-           </ul>
        </div>
+
           <div class="col-sm-3">
           	<h5 class="fw-bold">About us</h5>
           	<ul class="list-unstyled">
@@ -27,7 +22,8 @@
  		
  		</div>	
  	</div>
- 	   <div class="container footer-copyright mt-3">
- 	   	<p>&copy; 2025 Injibara University. All Rights Reserved.</p>
+ 	   <div class="container footer-copyright mt-5 text-center">
+ 	   	<p>&copy; 2025 Injibara University. All Rights Reserved.</p><br>
+      <p>Developed by: Injibara University 4th Year CS student</p>
  </div>
 </footer>

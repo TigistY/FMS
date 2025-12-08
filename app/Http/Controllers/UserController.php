@@ -17,6 +17,7 @@ public function createaccount(){
     return view('logins.createaccount',compact('units'));
    }
 
+
 public function storeaccount(Request $req)
     {
         $req->validate([
@@ -41,49 +42,23 @@ public function storeaccount(Request $req)
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-    public function createaccount(){
-        $units = Unit::all(); 
-    
-    return view('logins.createaccount',compact('units'));
-   }
-   public function storeaccount(Request $req){
-    $user=User::create([
-        'name'=>$req->Name,
-        'email'=>$req->Email,
-        'password'=>Hash::make($req->Password)
-]);
-    if($user){
-
-     	return view('logins.login',['message' => 'Account created successfully! Please log in']);   
-    
-        //return view('login.login')->with('message', 'Your account has been created successfully!');
-      
-      }
-      else{
-      	return redirect()->back();
-   }
 }
-   */
 
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

@@ -7,11 +7,13 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 class LoginController extends Controller
 {
-/*
-  public function __construct(){
-  $this->middleware('guest')->except('logout');logout yaladerge sew login page edayaye
+public function __construct()
+    {
+        
+        $this->middleware('guest')->except('logoutUser');
+    //logout yaladerge sew login page edayaye
  }
-  */  
+  
  //for login
    public function showLoginForm(){
     return view('logins.login');
@@ -39,6 +41,7 @@ class LoginController extends Controller
  
     $request->session()->invalidate();
     $request->session()->regenerateToken();
-    return view('welcome');
+    //return view('welcome');
+    return redirect()->route('login');
    }
 }

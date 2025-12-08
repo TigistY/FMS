@@ -3,7 +3,7 @@
 @section('content')
 
 
-<h1>welcomè to dashbord</h1>
+<h2 class="text-primary">Welcome to Injibara University Feedback and Complaint System!</h2>
 
 
 

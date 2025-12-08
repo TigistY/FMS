@@ -2,25 +2,23 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Laravel\Sanctum\HasApiTokens;
 
-/**
- * User Model
- * Represents a standard user, who can also act as a 'responder' and belong to a 'Unit'.
- */
+
+use Spatie\Permission\Traits\HasRoles; 
+
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles; 
 
     /**
      * The attributes that are mass assignable.
      *
-     * Note: 'unit_id' is added here.
      * @var array<int, string>
      */
     protected $fillable = [
@@ -50,14 +48,12 @@ class User extends Authenticatable implements MustVerifyEmail
         'password' => 'hashed',
     ];
 
-    
+
+    // (One-to-Many inverse).
     public function unit(): BelongsTo
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
+        return $this->belongsTo(Unit::class);
     }
-
-    public function responses(): HasMany
-    {
-        return $this->hasMany(Response::class, 'responder_id');
-    }
+    
+    
 }

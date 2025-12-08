@@ -41,15 +41,7 @@ class Response extends Model
         'is_public' => 'boolean',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Get the owning respondable model (e.g., Feedback, Complaint, BugReport).
-     */
+   
     public function respondable(): MorphTo
     {
         return $this->morphTo();
@@ -64,15 +56,6 @@ class Response extends Model
         return $this->belongsTo(User::class, 'responder_id');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Query Scopes
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Scope a query to only include responses marked as public.
-     */
     public function scopePublic(Builder $query): Builder
     {
         return $query->where('is_public', true);
