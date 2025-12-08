@@ -10,6 +10,7 @@
           		<li><a class="text-white offset-1"  href="#">information</a></li>
           		<li><a class="text-white offset-1"  href="#">Contact us</a></li>
 					<li><a class="text-white offset-1"  href="#">tttt</a></li>
+					<li><a class="text-white offset-1"  href="#">tttt</a></li>
           	</ul>
           </div>
          <div class="col-sm-3">
