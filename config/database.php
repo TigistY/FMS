@@ -16,11 +16,10 @@ return [
     |
     */
 
-<<<<<<< HEAD
+
     'default' => env('DB_CONNECTION', 'mysql'),
-=======
+
     'default' => env('DB_CONNECTION', 'sqlite'),
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
 
     /*
     |--------------------------------------------------------------------------
@@ -52,11 +51,10 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-<<<<<<< HEAD
+
             'database' => env('DB_DATABASE', 'feedback-system'),
-=======
+
             'database' => env('DB_DATABASE', 'laravel'),
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),
@@ -76,11 +74,11 @@ return [
             'url' => env('DB_URL'),
             'host' => env('DB_HOST', '127.0.0.1'),
             'port' => env('DB_PORT', '3306'),
-<<<<<<< HEAD
+
             'database' => env('DB_DATABASE', 'feedback-system'),
-=======
+
             'database' => env('DB_DATABASE', 'laravel'),
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
+
             'username' => env('DB_USERNAME', 'root'),
             'password' => env('DB_PASSWORD', ''),
             'unix_socket' => env('DB_SOCKET', ''),

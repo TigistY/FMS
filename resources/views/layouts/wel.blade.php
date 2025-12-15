@@ -16,6 +16,30 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 
     <style>
+        .section-card {
+        background-color: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); 
+        transition: transform 0.2s, box-shadow 0.2s;
+        cursor: pointer; 
+        border-left: 5px solid #0d6efd; 
+    }
+
+    .section-card:hover {
+        transform: translateY(-3px); 
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    .section-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #004d40; 
+        margin-bottom: 8px;
+    }
+
+
         body { font-family: 'Noto Sans Ethiopic', sans-serif; background-color: #f8f9fa; } /* Changed background */
         
         /* Style for Complaint (Red/Orange Theme) */
@@ -52,11 +76,11 @@
 </head>
 <body>
     <div class="header-main-bar ">
-        <div class="container d-flex align-items-center justify-content-between py-2 mx-auto">
+        <div class="container d-flex align-items-center justify-content-between py-2 mx-2">
             <div class="logo-area d-flex align-items-center">
                 <img src="{{asset('image/logo.jfif')}}" alt="Logo" class="iu-logo">
                 <div class="text-area ms-3">
-                    <h1 class="iu-main-title mb-0">INJIBARA UNIVERSITY</h1>
+                    <h1 class="iu-main-title mb-0">INJIBARA UNIVERSITY</h1><br>
                     <p class="iu-tagline mb-0">Explore your creative potentials</p>
                 </div>
             </div>
@@ -77,7 +101,7 @@
                 <li><a class="nav-link text-white btn btn-sm btn-outline-light me-2" href="{{route('feedback.link')}}">Send Feedback</a></li>
                 <li><a class="nav-link text-white btn btn-sm btn-outline-light me-2" href="{{route('create')}}">Send Complaint</a></li>
             </ul>
-            <a href="{{ route('login') }}" class="btn btn-warning btn-sm fw-bold">Login</a>
+            <a href="{{ route('login') }}" class="btn btn-warning btn-outline-secondary btn-sm fw-bold">Login</a>
         </div>
     </nav>
 

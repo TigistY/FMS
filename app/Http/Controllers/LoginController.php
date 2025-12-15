@@ -32,7 +32,7 @@ public function __construct()
    
    else{
     
-   		return redirect()->back()->with('error',"Login Fails! please your correct data add");
+   		return redirect()->route('login')->with('error', "Login Fails! Please check your email and password.");
    }
 
    }

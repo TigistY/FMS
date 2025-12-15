@@ -1,60 +1,68 @@
-@extends('layouts.app')
+@extends('layouts.app') {{-- Assumed layout --}}
 
 @section('content')
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card shadow-lg">
+                <div class="card-header bg-danger text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-reply me-2"></i> Response & Status Adjustment
+                    </h2>
+                </div>
+                <div class="card-body">
 
-<div class="container mx-auto p-4 sm:p-6 lg:p-8">
-<div class="max-w-3xl mx-auto bg-white shadow-xl rounded-lg">
-<div class="p-6 border-b border-gray-200 bg-gray-50">
-<h1 class="text-2xl font-bold text-gray-800">Respond to Complaint</h1>
-<p class="text-sm text-gray-500">Responding to Complaint #{{ $complaint->id }}: {{ $complaint->subject }}</p>
-</div>
+                    <div class="alert alert-info border-0 mb-4">
+                        <h4 class="alert-heading">Complaint ID: #{{ $complaint->id }}</h4>
+                        <p class="mb-1">Subject: <strong>{{ $complaint->subject }}</strong></p>
+                        <p class="mb-1">Submitted by: <strong>{{ $complaint->is_anonymous ? 'Anonymous User' : ($complaint->guest_name ?? 'Guest User') }}</strong></p>
+                        <p class="mb-0">Current Status: <span class="badge bg-warning">{{ $complaint->status }}</span></p>
+                    </div>
 
-<form action="{{ route('processResponse', $complaint->id) }}" method="POST" class="p-6">
-    @csrf
+                    <h4 class="border-bottom pb-2 mb-3 mt-4">Complaint Body</h4>
+                    <div class="p-3 mb-4 border rounded bg-light">
+                        {{ $complaint->body }}
+                    </div>
 
-    {{-- Complaint Summary --}}
-    <div class="mb-6 p-4 bg-indigo-50 border-l-4 border-indigo-500 rounded-md">
-        <h3 class="text-lg font-semibold text-indigo-800 mb-2">Complaint Summary</h3>
-        <p class="text-gray-700 whitespace-pre-wrap text-sm">{{ \Illuminate\Support\Str::limit($complaint->body, 300) }}</p>
-        <p class="text-xs mt-2 text-indigo-600">View Full Complaint: <a href="{{ route('show', $complaint->id) }}" class="underline">Click Here</a></p>
+                    {{-- Form for Response and Status Update --}}
+                    <form action="{{ route('complaints.update_response', $complaint->id) }}" method="POST">
+                        @csrf
+                        @method('PUT')
+
+                        <h4 class="border-bottom pb-2 mb-3 mt-4">Update Status and Respond</h4>
+
+                        <div class="mb-3">
+                            <label for="status" class="form-label">Update Status:</label>
+                            <select id="status" name="status" class="form-select @error('status') is-invalid @enderror" required>
+                                <option value="Pending" {{ $complaint->status == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="In Progress" {{ $complaint->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
+                                <option value="Resolved" {{ $complaint->status == 'Resolved' ? 'selected' : '' }}>Resolved</option>
+                                <option value="Closed" {{ $complaint->status == 'Closed' ? 'selected' : '' }}>Closed</option>
+                            </select>
+                            @error('status')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="response_body" class="form-label">Your Official Response (Optional):</label>
+                            <textarea id="response_body" name="response_body" rows="6"
+                                class="form-control @error('response_body') is-invalid @enderror"
+                                placeholder="Type your official response to the complaint here. This will be sent to the complainant if they provided an email.">{{ old('response_body') }}</textarea>
+                            @error('response_body')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <div class="form-text">Note: Only non-anonymous complainants who provided an email will receive this response.</div>
+                        </div>
+
+                        <button type="submit" class="btn btn-danger w-100 py-2">
+                            <i class="fas fa-save me-2"></i> Save Status and Send Response
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
     </div>
-
-    {{-- Response Body --}}
-    <div class="mb-4">
-        <label for="response_body" class="block text-sm font-medium text-gray-700 mb-1">Your Response <span class="text-red-500">*</span></label>
-        <textarea id="response_body" name="response_body" rows="8" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" placeholder="Enter your detailed response here...">{{ old('response_body') }}</textarea>
-        @error('response_body')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-    </div>
-
-    {{-- Status Update --}}
-    <div class="mb-6">
-        <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Update Complaint Status <span class="text-red-500">*</span></label>
-        <select id="status" name="status" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-            {{-- All users who can respond can update the status --}}
-            @php
-                $statuses = ['Pending', 'Assigned', 'In Progress', 'Resolved', 'Closed'];
-            @endphp
-            @foreach ($statuses as $status)
-                <option value="{{ $status }}" {{ old('status', $complaint->status) == $status ? 'selected' : '' }}>
-                    {{ $status }}
-                </option>
-            @endforeach
-        </select>
-        @error('status')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
-    </div>
-
-    <div class="mt-6 flex justify-end space-x-3">
-        <a href="{{ route('show', $complaint->id) }}" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none">
-            Cancel
-        </a>
-        <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-green-600 border border-transparent rounded-md shadow-sm hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
-            Submit Response
-        </button>
-    </div>
-</form>
-
-
-</div>
-
 </div>
 @endsection

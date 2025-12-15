@@ -15,15 +15,19 @@ return new class extends Migration
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
             
-        
+            // ሪፖርተሩ የተመዘገበ ተጠቃሚ ከሆነ
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('set null');
+            // ሪፖርተሩ እንግዳ ከሆነ (Guest)
             $table->foreignId('guest_id')->nullable()->constrained('guests')->onDelete('set null');
+            
             $table->boolean('is_anonymous')->default(false);
-        
-            $table->foreignId('unit_id')->constrained('units')->onDelete('cascade');
+            
+            // 🆕 Polymorphic Recipient: ቅሬታው የደረሰበትን አካል ለመለየት
+            $table->morphs('recipient'); 
+
             $table->string('subject');
             $table->text('body');
-        
+            
             $table->enum('status', ['Pending', 'Assigned', 'In Progress', 'Resolved', 'Closed'])->default('Pending');
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->default('Medium');
             $table->timestamps();

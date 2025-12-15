@@ -3,7 +3,7 @@
    @section('content')
 
 <div class="login-container">
-    <h2><img src="{{asset('image/logo.jfif')}}" width="40" height="40" alt="log in" class=""></h2>
+    <h2><img src="{{asset('image/logo.jfif')}}" width="70" height="60" alt="log in" class=""></h2>
     @if(session('error'))
         <div class="alert alert-danger mb-4 text-center">{{ session('error') }}</div>
     @endif
@@ -35,7 +35,7 @@
             @enderror
         </div>
 
-        <button type="submit" class="btn btn-primary btn-outline-danger w-100 py-2">Log In</button>
+        <button type="submit" class="btn btn-primary btn-outline-danger w-100 py-2 fw-bold">Log In</button>
         
         <div class="text-center mt-3">
             <a href="{{ route('create.link') }}" class="text-decoration-none">Don't have an account? Register here.</a>

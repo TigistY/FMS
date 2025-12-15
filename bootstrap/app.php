@@ -1,9 +1,7 @@
 <?php
-<<<<<<< HEAD
-use App\Http\Middleware\MyCustomMiddleware; // Middleware ፋይልህን import አድርግ
-=======
 
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
+use App\Http\Middleware\MyCustomMiddleware; // የሚድልዌርዎ ክላስ
+
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,19 +12,15 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware): void {
-<<<<<<< HEAD
-     $middleware->alias([
-            'my_checker' => MyCustomMiddleware::class, // አሊያሱን (alias) እዚህ ይመዝግባል
-        ]);
-=======
-        //
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
-    })
-    ->withExceptions(function (Exceptions $exceptions): void {
-        //
-    })->create();
-<<<<<<< HEAD
+    ->withMiddleware(function (Middleware $middleware):void{
+        $middleware->alias([
+      'my_checker' =>\App\Http\middleware\MyCustomMiddleware::class,
 
-=======
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
+        ]);
+    })
+
+    ->withExceptions(function (Exceptions $exceptions): void {
+    
+    })->create();
+
+

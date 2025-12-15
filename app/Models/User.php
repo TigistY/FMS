@@ -2,59 +2,39 @@
 
 namespace App\Models;
 
-<<<<<<< HEAD
+// በትክክል የሚያስፈልጉት use statements
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-
-use Spatie\Permission\Traits\HasRoles; 
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles; 
-=======
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-
-class User extends Authenticatable
-{
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
+    // ሁሉም ትሬቶች በአንድ ላይ
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
      *
-<<<<<<< HEAD
      * @var array<int, string>
-=======
-     * @var list<string>
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
      */
     protected $fillable = [
         'name',
         'email',
         'password',
-<<<<<<< HEAD
-        'unit_id', 
-=======
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
+        'college_id',    // 🆕 አዲስ ለ College
+        'department_id', // 🆕 አዲስ ለ Department
+        'directory_id',  // 🆕 አዲስ ለ Directory
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-<<<<<<< HEAD
      * @var array<int, string>
-=======
-     * @var list<string>
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9
      */
     protected $hidden = [
         'password',
@@ -62,26 +42,6 @@ class User extends Authenticatable
     ];
 
     /**
-<<<<<<< HEAD
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-
-    // (One-to-Many inverse).
-    public function unit(): BelongsTo
-    {
-        return $this->belongsTo(Unit::class);
-    }
-    
-    
-}
-=======
      * Get the attributes that should be cast.
      *
      * @return array<string, string>
@@ -93,5 +53,32 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    
+    // 🆕 አዲስ የ Eloquent Relationships
+    
+    /**
+     * Get the college associated with the user.
+     */
+    public function college(): BelongsTo
+    {
+        return $this->belongsTo(College::class);
+    }
+
+    /**
+     * Get the department associated with the user.
+     */
+    public function department(): BelongsTo
+    {
+        // Department ሞዴል ካለዎት ይጠቀሙ
+        return $this->belongsTo(Department::class);
+    }
+    
+    /**
+     * Get the directory associated with the user.
+     */
+    public function directory(): BelongsTo
+    {
+        // Directory ሞዴል ካለዎት ይጠቀሙ
+        return $this->belongsTo(Directory::class);
+    }
 }
->>>>>>> 2519b2a0d4037301a2c385ffa0ddbf468b9ecfb9

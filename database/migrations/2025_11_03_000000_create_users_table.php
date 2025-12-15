@@ -18,9 +18,27 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+               // 1. College
+            $table->foreignId('college_id')
+                  ->nullable()
+                  ->constrained('colleges') // ከ 'colleges' table ጋር
+                  ->onDelete('set null'); // ኮሌጁ ቢሰረዝ ተጠቃሚው ኮሌጅ አልተመደበለትም ይሆናል
+
+            // 2. Department
+            $table->foreignId('department_id')
+                  ->nullable()
+                  ->constrained('departments') // ከ 'departments' table ጋር
+                  ->onDelete('set null');
+
+            // 3. Directory
+            $table->foreignId('directory_id')
+                  ->nullable()
+                  ->constrained('directories') // ከ 'directories' table ጋር
+                  ->onDelete('set null');
             $table->timestamps();
         });
 
+        // Other default Laravel tables 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
             $table->string('email')->primary();
             $table->string('token');
@@ -47,3 +65,6 @@ return new class extends Migration
         Schema::dropIfExists('sessions');
     }
 };
+
+
+

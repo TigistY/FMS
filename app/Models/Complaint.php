@@ -12,12 +12,13 @@ class Complaint extends Model
     protected $fillable = [
         'user_id',
         'guest_id',
-        'is_anonymous',
-        'unit_id',
+        'recipient_id',
+        'recipient_type',
         'subject',
         'body',
-        'status',    
-        'priority',  
+        'status',
+        'priority',
+        'is_anonymous',
     ];
     
    
@@ -42,10 +43,14 @@ class Complaint extends Model
         return $this->belongsTo(Guest::class, 'guest_id');
     }
 
-    public function unit()
+    /**
+     * Complaint የደረሰበትን አካል (College, Department, or Directory) መለየት
+     */
+    public function recipient(): MorphTo
     {
-        return $this->belongsTo(Unit::class, 'unit_id');
+        return $this->morphTo();
     }
+    
      public function responses()
     {
         return $this->morphMany(Response::class, 'respondable');
