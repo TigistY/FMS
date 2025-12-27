@@ -10,19 +10,28 @@ class CollegeController extends Controller
 {
     public function __construct()
     {
-        // ኮሌጅን የማስተዳደር መብት ያለው 'admin' ወይም 'super-admin' ብቻ መሆኑን ለማረጋገጥ
-        $this->middleware('permission:manage colleges'); 
+        // ሁሉም ዘዴዎች (methods) እንዲያዩ ተፈቅዶላቸዋል
+        $this->middleware('permission:view colleges')->only('index', 'show');
+        
+        // ለመፍጠር/ለመጨመር ፈቃድ
+        $this->middleware('permission:create colleges')->only('create', 'store');
+        
+        // ለማስተካከል/ለማዘመን ፈቃድ
+        $this->middleware('permission:edit colleges')->only('edit', 'update');
+        
+        // ለመሰረዝ ፈቃድ
+        $this->middleware('permission:delete colleges')->only('destroy');
     }
-
+    
     public function index()
     {
         $colleges = College::orderBy('name')->paginate(10);
-        return view('admin.colleges.index', compact('colleges'));
+        return view('colleges.index', compact('colleges'));
     }
 
     public function create()
     {
-        return view('admin.colleges.create');
+        return view('colleges.create');
     }
 
     public function store(Request $request)
@@ -34,13 +43,13 @@ class CollegeController extends Controller
         ]);
 
         College::create($request->all());
-        return redirect()->route('admin.colleges.index')
+        return redirect()->route('colleges.index')
                          ->with('success', 'College registered successfully.');
     }
 
     public function edit(College $college)
     {
-        return view('admin.colleges.edit', compact('college'));
+        return view('colleges.edit', compact('college'));
     }
 
     public function update(Request $request, College $college)
@@ -52,14 +61,14 @@ class CollegeController extends Controller
         ]);
 
         $college->update($request->all());
-        return redirect()->route('admin.colleges.index')
+        return redirect()->route('colleges.index')
                          ->with('success', 'College updated successfully.');
     }
 
     public function destroy(College $college)
     {
         $college->delete();
-        return redirect()->route('admin.colleges.index')
+        return redirect()->route('colleges.index')
                          ->with('success', 'College deleted successfully.');
     }
 }

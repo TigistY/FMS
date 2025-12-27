@@ -26,9 +26,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'name',
         'email',
         'password',
-        'college_id',    // 🆕 አዲስ ለ College
-        'department_id', // 🆕 አዲስ ለ Department
-        'directory_id',  // 🆕 አዲስ ለ Directory
+        'college_id',   
+        'department_id',
+        'directory_id',  
     ];
 
     /**
@@ -54,7 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
         ];
     }
     
-    // 🆕 አዲስ የ Eloquent Relationships
+
     
     /**
      * Get the college associated with the user.
@@ -69,7 +69,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function department(): BelongsTo
     {
-        // Department ሞዴል ካለዎት ይጠቀሙ
         return $this->belongsTo(Department::class);
     }
     
@@ -78,7 +77,6 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function directory(): BelongsTo
     {
-        // Directory ሞዴል ካለዎት ይጠቀሙ
         return $this->belongsTo(Directory::class);
     }
 }

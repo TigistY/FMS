@@ -15,18 +15,18 @@
 
         @if (Auth::check() && (Auth::user()->can('view-complaints') || Auth::user()->can('view-feedback')))
         <li class="nav-item dropdown mt-2">
-            <a class="nav-link dropdown-toggle text-white {{ Request::routeIs(['admin.complaints.index', 'admin.feedback.index']) ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <a class="nav-link dropdown-toggle text-white {{ Request::routeIs(['index', 'feedback.index']) ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-reply-all me-2"></i>
                 Response
             </a>
             <ul class="dropdown-menu bg-info" >
                 @can('view-complaints')
-                {{-- Make sure the route name is correct, I'm assuming 'admin.complaints.index' now --}}
+                
                 <li><a class="dropdown-item" href="{{route('index')}}"><i class="fas fa-exclamation-triangle mx-2"></i>View Complaints</a></li>
                 @endcan
                 
                 @can('view-feedback')
-                {{-- Assuming this route is 'admin.feedback.index' --}}
+               
                 <li><a class="dropdown-item" href="{{route('feedback.index')}}"><i class="fas fa-comment-dots mx-2"></i>View Feedback</a></li>
                 @endcan
             </ul>
@@ -44,18 +44,18 @@
             {{-- Updated title here --}}
             <a class="nav-link dropdown-toggle text-white {{ $isRouteActive ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fas fa-tools me-2"></i>
-                College & Directory Manage
+                Managemnt
             </a>
             
             <ul class="dropdown-menu bg-info" >
                 
                 @can('manage colleges')
-                <li><a class="dropdown-item {{ Request::routeIs('admin.colleges.*') ? 'active' : '' }}" href="{{route('colleges.index')}}"><i class="fas fa-building mx-2"></i>Colleges</a></li>
-                <li><a class="dropdown-item {{ Request::routeIs('admin.departments.*') ? 'active' : '' }}" href="{{route('departments.index')}}"><i class="fas fa-graduation-cap mx-2"></i>Departments</a></li>
+                <li><a class="dropdown-item {{ Request::routeIs('colleges.*') ? 'active' : '' }}" href="{{route('colleges.index')}}"><i class="fas fa-building mx-2"></i>Colleges</a></li>
+                <li><a class="dropdown-item {{ Request::routeIs('departments.*') ? 'active' : '' }}" href="{{route('departments.index')}}"><i class="fas fa-graduation-cap mx-2"></i>Departments</a></li>
                 @endcan
 
                 @can('manage directories')
-                <li><a class="dropdown-item {{ Request::routeIs('admin.directories.*') ? 'active' : '' }}" href="{{route('directories.index')}}"><i class="fas fa-sitemap mx-2"></i>Directories</a></li>
+                <li><a class="dropdown-item {{ Request::routeIs('directories.*') ? 'active' : '' }}" href="{{route('directories.index')}}"><i class="fas fa-sitemap mx-2"></i>Directories</a></li>
                 @endcan
                 
                 @can('role-management') {{-- Assuming you use this permission for role management --}}

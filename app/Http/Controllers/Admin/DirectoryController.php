@@ -8,9 +8,12 @@ use Illuminate\Http\Request;
 class DirectoryController extends Controller
 {
     public function __construct()
-    {
-        $this->middleware('permission:manage directories');
-    }
+{
+    $this->middleware('permission:view directories')->only('index', 'show');
+    $this->middleware('permission:create directories')->only('create', 'store');
+    $this->middleware('permission:edit directories')->only('edit', 'update');
+    $this->middleware('permission:delete directories')->only('destroy');
+}
 
     public function index()
     {

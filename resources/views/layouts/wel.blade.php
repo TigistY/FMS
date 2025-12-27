@@ -93,13 +93,13 @@
         <div class="container-fluid container mx-auto">
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a class="nav-link text-white btn btn-sm btn-outline-light me-2" aria-current="page" href="{{route('home.link')}}">Home</a>
+                    <a class="nav-link text-white btn btn-sm btn-outline-secondary me-2" aria-current="page" href="{{route('home.link')}}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-white btn btn-sm btn-outline-light me-2" href="#">Help Center</a>
+                    <a class="nav-link text-white btn btn-sm btn-outline-secondary me-2" href="#">Help Center</a>
                 </li>
-                <li><a class="nav-link text-white btn btn-sm btn-outline-light me-2" href="{{route('feedback.link')}}">Send Feedback</a></li>
-                <li><a class="nav-link text-white btn btn-sm btn-outline-light me-2" href="{{route('create')}}">Send Complaint</a></li>
+                <li><a class="nav-link text-white btn btn-sm btn-outline-secondary me-2" href="{{route('feedback.link')}}">Send Feedback</a></li>
+                <li><a class="nav-link text-white btn btn-sm btn-outline-secondary me-2" href="{{route('create')}}">Send Complaint</a></li>
             </ul>
             <a href="{{ route('login') }}" class="btn btn-warning btn-outline-secondary btn-sm fw-bold">Login</a>
         </div>

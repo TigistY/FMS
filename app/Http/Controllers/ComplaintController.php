@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Complaint;
-use App\Models\College; // አዲስ ሞዴሎች ጨምሩ
+use App\Models\College;
 use App\Models\Directory;
 use App\Models\Department;
 use App\Models\Guest;
@@ -18,7 +18,6 @@ class ComplaintController extends Controller
 {
     /**
      * Show the form for creating a new complaint.
-     * አሁን ኮሌጆች ለ dependent dropdown ያስፈልጋሉ
      */
     public function create()
     {
@@ -98,7 +97,7 @@ class ComplaintController extends Controller
         ]);
         
         $submitted_as = $userId ? 'Registered User (ID: ' . $userId . ')' :
-                                 ($guestId ? 'Guest (ID: ' . $guestId . ')' : 'Anonymous');
+                              ($guestId ? 'Guest (ID: ' . $guestId . ')' : 'Anonymous');
 
         Log::info("Complaint Submitted Successfully.", [
             'complaint_id' => $complaint->id,
@@ -117,6 +116,7 @@ class ComplaintController extends Controller
     {
         $user = Auth::user();
         
+        // 💥 FIX 1: latest(10) ወደ latest() ተቀየረ
         $query = Complaint::with(['recipient', 'user', 'guest'])->latest();
 
         // 1. System Administrator: View all complaints
@@ -126,7 +126,7 @@ class ComplaintController extends Controller
         // 2. Unit Responder: View only complaints for their assigned units (College/Dept/Directory)
         elseif ($user->hasRole('Unit Responder')) {
             $query->where(function ($q) use ($user) {
-                 // If user is a College Responder
+                // If user is a College Responder
                 if ($user->college_id) {
                     $q->orWhere(function($q) use ($user) {
                         $q->where('recipient_type', College::class)
@@ -154,11 +154,13 @@ class ComplaintController extends Controller
             $query->where('user_id', $user->id);
         }
 
-        $complaints = $query->get();
+        // 💥 FIX 2: get() ወደ paginate(10) ተቀየረ 
+        // ይህም Pagination እና $complaints->links()ን ያነቃቃል
+        $complaints = $query->paginate(10); 
 
         return view('complaints.index', compact('complaints'));
     }
-    
+
     /**
      * Display the specified complaint.
      * Authorization Logic Updated.
@@ -191,7 +193,6 @@ class ComplaintController extends Controller
     }
 
     // ... (destroy method remains largely the same, removed for brevity)
-    // ... (respond method authorization logic updated using isUserResponsibleForRecipient)
 
     /**
      * Process the complaint response and update its status.
@@ -242,10 +243,6 @@ class ComplaintController extends Controller
     
     /**
      * Helper method to check if a Unit Responder is responsible for the recipient.
-     * @param \App\Models\User $user
-     * @param string $recipientType (e.g., App\Models\College)
-     * @param int $recipientId
-     * @return bool
      */
     protected function isUserResponsibleForRecipient($user, $recipientType, $recipientId): bool
     {
@@ -259,5 +256,25 @@ class ComplaintController extends Controller
             return true;
         }
         return false;
+    }
+
+    // --- AJAX ENDPOINTS ---
+
+    public function getDepartmentsByCollege(Request $request)
+    {
+        $request->validate(['college_id' => 'required|exists:colleges,id']);
+
+        $departments = Department::where('college_id', $request->college_id)
+                                 ->select('id', 'name_en')
+                                 ->get();
+
+        return response()->json($departments);
+    }
+
+    public function getDirectoriesByRecipientType()
+    {
+        $directories = Directory::all(['id', 'name_en']); 
+
+        return response()->json($directories);
     }
 }

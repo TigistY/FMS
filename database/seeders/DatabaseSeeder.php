@@ -30,7 +30,6 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'System Admin',
                 'password' => Hash::make('tg1234tg'), 
-                // 'unit_id' is removed
                 'email_verified_at' => now(), 
             ]
         );
@@ -46,7 +45,6 @@ class DatabaseSeeder extends Seeder
             [
                 'name' => 'Unit Responder',
                 'password' => Hash::make('tg1234tg'), 
-                // 'unit_id' is removed
                 'email_verified_at' => now(), 
             ]
         );

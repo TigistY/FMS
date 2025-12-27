@@ -164,7 +164,7 @@ class FeedbackController extends Controller
              $query->whereRaw('1 = 0');
         }
 
-        $feedbacks = $query->get();
+        $feedbacks = $query->paginate(10);
 
         return view('fms.index', compact('feedbacks'));
     }

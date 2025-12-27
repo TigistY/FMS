@@ -48,16 +48,6 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/feedback/{feedback}/response', [FeedbackController::class, 'processResponse'])->name('feedback.processResponse');
     Route::delete('/feedback/{feedback}', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
 });
-/*
-    //for unit
-Route::middleware(['auth', 'can:manage-units'])->group(function () {
-	 // CRUD UnitController::class, 'index', 'edit', 'update', 'destroy'
-    Route::resource('units', UnitController::class)->except(['show']); 
-    //Route::get('/units/create', [UnitController::class, 'create'])->name('units.create');
-    //Route::post('/units', [UnitController::class, 'store'])->name('units.store'); 
-    //Route::get('/units', [UnitController::class, 'index'])->name('units.index'); 
-});
-*/
 
 //for rolemanagement
 
@@ -70,23 +60,24 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 });
 //for Api
 // ኮሌጆችን ይዘረዝራል (ለምሳሌ Recipient Type 'College' ሲመረጥ)
+// routes/api.php (API Routes - No Change Needed Here)
 Route::get('/api/colleges/list', [UnitApiController::class, 'getColleges'])->name('api.colleges.list');
 
-// ዳይሬክቶሬቶችን ይዘረዝራል (ለምሳሌ Recipient Type 'Directory' ሲመረጥ)
 Route::get('/api/directories/list', [UnitApiController::class, 'getDirectories'])->name('api.directories.list');
 
-// በcollege_id መሰረት ዲፓርትመንቶችን ይዘረዝራል (Recipient Type 'Department' ሲመረጥ)
 Route::get('/api/departments/list/{collegeId}', [UnitApiController::class, 'getDepartmentsByCollege'])->name('api.departments.list');
-//for collage and directory
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+
+// routes/web.php (Web Routes - The 'admin' prefix is removed)
+
+Route::middleware(['auth'])->group(function () {
     // ... ሌሎች የአድሚን ራውቶች (Dashboard, Users, Permissions)
 
     // College Management (CRUD)
-    Route::resource('colleges', CollegeController::class);
+    Route::resource('colleges', CollegeController::class); // URL: /colleges, Name: colleges.index
 
     // Directory Management (CRUD)
-    Route::resource('directories', DirectoryController::class);
+    Route::resource('directories', DirectoryController::class); // URL: /directories, Name: directories.index
 
     // Department Management (CRUD)
-    Route::resource('departments', DepartmentController::class);
+    Route::resource('departments', DepartmentController::class); // URL: /departments, Name: departments.index
 });
