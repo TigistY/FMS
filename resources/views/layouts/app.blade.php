@@ -109,6 +109,9 @@
         </div>
         
     </div>
+@include('partial.fooo')
+
+
 
 
     <!-- Bootstrap JS Bundle -->

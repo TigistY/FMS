@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CollegeController;
 use App\Http\Controllers\Admin\DirectoryController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\UnitApiController;
+use App\Http\Controllers\AboutController;
 
 Route::get('/',[HomeController::class,'welcomepage'])->name('wel.link');
 Route::get('/home2',[HomeController::class,'homesto'])->name('home.link');
@@ -79,14 +80,19 @@ Route::prefix('api')->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    // ... ሌሎች የአድሚን ራውቶች (Dashboard, Users, Permissions)
 
     // College Management (CRUD)
-    Route::resource('colleges', CollegeController::class); // URL: /colleges, Name: colleges.index
+    Route::resource('colleges', CollegeController::class); 
 
     // Directory Management (CRUD)
-    Route::resource('directories', DirectoryController::class); // URL: /directories, Name: directories.index
+    Route::resource('directories', DirectoryController::class); 
 
     // Department Management (CRUD)
-    Route::resource('departments', DepartmentController::class); // URL: /departments, Name: departments.index
+    Route::resource('departments', DepartmentController::class); 
 });
+Route::get('/system-info',[AboutController::class,'info'])->name('System.info');
+Route::get('/system-policy',[AboutController::class,'policy'])->name('System.policy');
+Route::get('/about-info',[AboutController::class,'abinfo'])->name('aboutinfo');
+Route::get('/about-policy',[AboutController::class,'abpolicy'])->name('aboutpolicy');
+Route::get('/aboutus',[AboutController::class,'abouts'])->name('aboutinu');
+Route::get('/helpcenter',[AboutController::class,'helps'])->name('help');
