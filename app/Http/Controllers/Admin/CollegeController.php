@@ -4,29 +4,21 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\College;
 use Illuminate\Http\Request;
-use Spatie\Permission\Models\Role; // Spatie Permissionን መጠቀምዎን ያረጋግጡ
+use Spatie\Permission\Models\Role;
 
 class CollegeController extends Controller
 {
     /*
     public function __construct()
     {
-        // ሁሉም ዘዴዎች (methods) እንዲያዩ ተፈቅዶላቸዋል
         $this->middleware('permission:view colleges')->only('index', 'show');
-        
-        // ለመፍጠር/ለመጨመር ፈቃድ
         $this->middleware('permission:create colleges')->only('create', 'store');
-        
-        // ለማስተካከል/ለማዘመን ፈቃድ
         $this->middleware('permission:edit colleges')->only('edit', 'update');
-        
-        // ለመሰረዝ ፈቃድ
         $this->middleware('permission:delete colleges')->only('destroy');
     }
     */
     public function index()
 {
-    // 'with' መጨመሩን እርግጠኛ ሁን
     $colleges = College::with('departments')->orderBy('name_en')->paginate(10);
     return view('colleges.index', compact('colleges'));
 }

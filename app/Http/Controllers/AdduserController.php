@@ -12,25 +12,21 @@ use Illuminate\Support\Facades\Hash;
 
 class AdduserController extends Controller
 {
-    // 1. ዝርዝር ማሳያ
     public function index()
     {
-        // ተጠቃሚዎችን ከነግንኙነታቸው (Eager Loading) መሳብ
         $users = User::with(['college', 'department', 'directory', 'roles'])->paginate(10);
         return view('admin.index', compact('users'));
     }
 
-    // 2. አዲስ መፍጠሪያ ፎርም
     public function create()
     {
         $colleges = College::all();
         $departments = Department::all();
         $directories = Directory::all();
-        $roles = Role::all(); // Spatie Roles
+        $roles = Role::all();
         return view('admin.create', compact('colleges', 'departments', 'directories', 'roles'));
     }
 
-    // 3. ዳታ ቤዝ ላይ መመዝገብ
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -57,7 +53,6 @@ class AdduserController extends Controller
         return redirect()->route('users.index')->with('success', 'User created successfully');
     }
 
-    // 4. ማስተካከያ ፎርም
     public function edit(User $user)
     {
         $colleges = College::all();
@@ -67,7 +62,6 @@ class AdduserController extends Controller
         return view('admin.edit', compact('user', 'colleges', 'departments', 'directories', 'roles'));
     }
 
-    // 5. ዳታ ማዘመን (Update)
     public function update(Request $request, User $user)
     {
         $validated = $request->validate([
@@ -87,7 +81,6 @@ class AdduserController extends Controller
             'directory_id' => $validated['directory_id'],
         ]);
 
-        // ፓስወርድ ከተቀየረ ብቻ ማዘመን
         if ($request->filled('password')) {
             $user->update(['password' => Hash::make($request->password)]);
         }
@@ -97,7 +90,7 @@ class AdduserController extends Controller
         return redirect()->route('users.index')->with('success', 'User updated successfully');
     }
 
-    // 6. መሰረዝ
+
     public function destroy(User $user)
     {
         $user->delete();

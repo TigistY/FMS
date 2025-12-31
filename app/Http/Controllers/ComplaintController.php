@@ -15,18 +15,12 @@ use Illuminate\Validation\Rule;
 
 class ComplaintController extends Controller
 {
-    /**
-     * Show the form for creating a new complaint.
-     */
     public function create()
     {
         $colleges = College::all(['id', 'name_en']);
         return view('complaints.create', compact('colleges'));
     }
 
-    /**
-     * Store a newly created complaint in storage.
-     */
     public function store(Request $request)
     {
         $validatedData = $request->validate([
@@ -48,7 +42,7 @@ class ComplaintController extends Controller
 
          $isAnonymous = $request->has('is_anonymous');
     $guestId = null; 
-    $userId = Auth::id(); // ሎጊን ካደረገ ይይዛል፣ ካልሆነ null ይሆናል
+    $userId = Auth::id();
 
     if (!$isAnonymous && !Auth::check() && $request->filled('guest_email')) {
         $guest = Guest::firstOrCreate(
@@ -78,19 +72,16 @@ class ComplaintController extends Controller
         return redirect()->back()->with('success', 'Your complaint has been successfully submitted');
     }
 
-    /**
-     * Display a listing of complaints based on roles.
-     */
     public function index()
 {
     $user = Auth::user();
     $query = Complaint::with(['recipient', 'user', 'guest'])->latest();
 
     if ($user->hasRole('System Administrator')) {
-        // Admin ሁሉንም ያያል
+
     } elseif ($user->hasRole('Unit Responder')) {
         $query->where(function ($q) use ($user) {
-            // እዚህ ጋር 'College', 'Department' የሚሉት ስሞች በዳታቤዝህ ውስጥ ካለው ጋር አንድ መሆን አለባቸው
+
             if ($user->college_id) {
                 $q->orWhere(fn($sq) => $sq->where('recipient_type', 'College')->where('recipient_id', $user->college_id));
             }
@@ -102,7 +93,7 @@ class ComplaintController extends Controller
             }
         });
     } else {
-        // መደበኛ ተጠቃሚ የራሱን ብቻ ያያል
+        
         $query->where('user_id', $user->id);
     }
 
@@ -110,9 +101,6 @@ class ComplaintController extends Controller
     return view('complaints.index', compact('complaints'));
 }
 
-    /**
-     * Display the specified complaint detail.
-     */
     public function show(Complaint $complaint)
     {
         $user = Auth::user();
@@ -130,9 +118,6 @@ class ComplaintController extends Controller
         abort(403, 'Unauthorized access.');
     }
 
-    /**
-     * Process response - Only for Admin and Assigned Responders.
-     */
     public function processResponse(Request $request, Complaint $complaint)
     {
         $user = Auth::user();
@@ -144,26 +129,29 @@ class ComplaintController extends Controller
 
         $validated = $request->validate([
             'response_body' => 'required|string|min:10',
-            'status' => ['required', Rule::in(['In Progress', 'Resolved', 'Closed'])],
+            'status'        => ['required', Rule::in(['In Progress', 'Resolved', 'Closed'])],
+            'priority'      => ['required', Rule::in(['Low', 'Medium', 'High'])], 
         ]);
         
         $response = new Response([
-            'response_text' => $validated['response_body'],
-            'responder_id' => $user->id,
-            'is_public' => true, 
+            'response_text'      => $validated['response_body'],
+            'responder_id'       => $user->id,
+            'is_public'          => true, 
             'status_at_response' => $validated['status'],
         ]);
         
         $complaint->responses()->save($response);
-        $complaint->update(['status' => $validated['status']]);
+
+        $complaint->update([
+            'status'   => $validated['status'],
+            'priority' => $validated['priority'],
+        ]);
 
         return redirect()->route('show', $complaint->id)
-                         ->with('success', 'Response submitted and status updated to ' . $validated['status']);
+                         ->with('success', 'Response submitted. Case updated to ' . $validated['status'] . ' with ' . $validated['priority'] . ' priority.');
     }
 
-    /**
-     * DELETE Complaint - System Admin Only.
-     */
+    
     public function destroy(Complaint $complaint)
     {
         if (!Auth::user()->hasRole('System Administrator')) {
@@ -174,12 +162,10 @@ class ComplaintController extends Controller
         return redirect()->route('index')->with('success', 'Complaint deleted successfully.');
     }
 
-    /**
-     * Helper to verify responder's authority.
-     */
+    
     protected function isUserResponsibleForRecipient($user, $type, $id): bool
 {
-    // በዳታቤዝህ ውስጥ ያለው 'recipient_type' 'College' ከሆነ በቀጥታ እናነጻጽራለን
+    
     return match($type) {
         'College'    => $user->college_id == $id,
         'Department' => $user->department_id == $id,

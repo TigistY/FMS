@@ -39,7 +39,7 @@ class RolesController extends Controller
     try {
         $roleId = $request->input('role_id');
         $permissionId = $request->input('permission_id');
-        $status = $request->input('status'); // 1 = Checked, 0 = Unchecked
+        $status = $request->input('status'); 
 
         $role = Role::findById($roleId);
         $permission = Permission::findById($permissionId);
@@ -50,7 +50,7 @@ class RolesController extends Controller
             $role->revokePermissionTo($permission);
         }
 
-        // ፐርሚሽኑ ወዲያውኑ እንዲሰራ ካሹን ማጽዳት
+        // this is permission automatically take value and clear catch
         app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
         return response()->json([

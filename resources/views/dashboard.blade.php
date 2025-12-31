@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="col-md-4 text-center text-md-end mt-3 mt-md-0">
-            <span class="text-muted small"><i class="far fa-calendar-alt me-1"></i> ዛሬ፡ {{ date('M d, Y') }}</span>
+            <span class="text-muted small"><i class="far fa-calendar-alt me-1"></i> Date፡ {{ date('M d, Y') }}</span>
         </div>
     </div>
 
@@ -75,7 +75,7 @@
                 {{-- Admin  --}}
                 @can('role-management')
                 <div class="alert alert-light border-start border-warning border-4 mb-3">
-                    <h6 class="fw-bold"><i class="fas fa-user-shield text-warning me-2"></i> የAdmin ተግባራት፡</h6>
+                    <h6 class="fw-bold"><i class="fas fa-user-shield text-warning me-2"></i> Admin፡</h6>
                     <ul class="mb-0 small text-dark">
                         <li>አዳዲስ ተጠቃሚዎችን መመዝገብ እና ፐርሚሽን (Roles) መስጠት።</li>
                         <li>የኮሌጅ፣ የዲፓርትመንት እና የዳይሬክቶሬት መረጃዎችን ማደራጀት።</li>
@@ -87,11 +87,11 @@
                 {{-- unit Respond --}}
                 @cannot('role-management')
                 <div class="alert alert-light border">
-                    <h6><i class="fas fa-reply-all text-success me-2"></i> የUnit Responder ተግባራት፡</h6>
+                    <h6><i class="fas fa-reply-all text-success me-2"></i> Unit Responder፡</h6>
                     <ul class="mb-0">
                         <li>ለሚመጡ ቅሬታዎች ፈጣን ምላሽ መስጠት።</li>
                         <li>የተሰጡ ግብረ-መልሶችን መገምገም።</li>
-                        <li>የተሰጡ ምላሾች መፍትሄ ማግኘታቸውን ማረጋገጥ።</li>
+                    
                     </ul>
                 </div>
                 @endcannot

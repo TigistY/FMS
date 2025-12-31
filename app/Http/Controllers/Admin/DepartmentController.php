@@ -20,14 +20,13 @@ class DepartmentController extends Controller
 */
     public function index()
     {
-        // with('college') በመጠቀም የኮሌጁን ስም መጫን
         $departments = Department::with('college')->orderBy('name_en')->paginate(15);
         return view('departments.index', compact('departments'));
     }
 
     public function create()
     {
-        $colleges = College::all(); // ኮሌጆችን ለምርጫ ማምጣት
+        $colleges = College::all(); 
         return view('departments.create', compact('colleges'));
     }
 

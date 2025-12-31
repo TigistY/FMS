@@ -52,10 +52,17 @@
                 <div class="col-md-5 mt-4 mt-md-0">
                     <div class="row g-2">
                         <div class="col-6">
-                            <img src="{{ asset('image/iu1.jpg') }}" class="img-fluid rounded-3 shadow-sm hover-zoom" alt="INU Building">
+                            <img src="{{ asset('image/inu10.jfif') }}" class="img-fluid rounded-3 shadow-sm hover-zoom" alt="INU Building">
                         </div>
                         <div class="col-6">
-                            <img src="{{ asset('image/iu2.jpg') }}" class="img-fluid rounded-3 shadow-sm hover-zoom" alt="INU Gate">
+                            <img src="{{ asset('image/inu7.jfif') }}" class="img-fluid rounded-3 shadow-sm hover-zoom" alt="INU Gate">
+                        </div>
+                        <div class="row g-2">
+                        <div class="col-6">
+                            <img src="{{ asset('image/inu9.jfif') }}" class="img-fluid rounded-3 shadow-sm hover-zoom" alt="INU Building">
+                        </div>
+                        <div class="col-6">
+                            <img src="{{ asset('image/inu5.jfif') }}" class="img-fluid rounded-3 shadow-sm hover-zoom" alt="INU Gate">
                         </div>
                         <div class="col-12 mt-3">
                             <div class="p-4 bg-white border border-start border-primary border-4 rounded shadow-sm">

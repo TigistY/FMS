@@ -55,10 +55,18 @@
                                     <label class="form-label fw-bold">Update Case Status</label>
                                     <select name="status" class="form-select" required>
                                         <option value="In Progress" {{ $complaint->status == 'In Progress' ? 'selected' : '' }}>In Progress</option>
-                                        <option value="Resolved" {{ $complaint->status == 'Resolved' ? 'selected' : '' }}>Resolved (Case Finished)</option>
+                                        <option value="Resolved" {{ $complaint->status == 'Resolved' ? 'selected' : '' }}>Resolved</option>
                                         <option value="Closed" {{ $complaint->status == 'Closed' ? 'selected' : '' }}>Closed</option>
                                     </select>
                                 </div>
+                                <div class="col-md-4 mb-3">
+        <label class="form-label fw-bold">Set Priority Level</label>
+        <select name="priority" class="form-select border-warning" required>
+            <option value="Low" {{ $complaint->priority == 'Low' ? 'selected' : '' }}>Low Level</option>
+            <option value="Medium" {{ $complaint->priority == 'Medium' ? 'selected' : '' }}>Medium Level</option>
+            <option value="High" {{ $complaint->priority == 'High' ? 'selected' : '' }}>High - Urgent</option>
+        </select>
+    </div>
                                 <div class="col-md-6 mb-3 text-end">
                                     <button type="submit" class="btn btn-primary px-5 shadow-sm">
                                         <i class="fas fa-paper-plane me-2"></i> Submit & Update
@@ -84,10 +92,17 @@
                         <span class="fw-bold">{{ $complaint->recipient->name_en ?? 'N/A' }}</span>
                     </div>
                     
-                    <h6 class="text-muted small fw-bold text-uppercase border-bottom pb-2 mt-4 mb-3">Urgency</h6>
-                    <div class="mb-4">
-                        <span class="badge bg-soft-danger text-danger border border-danger px-3 py-2">Medium Priority</span>
-                    </div>
+                   
+                    <h6 class="text-muted small fw-bold text-uppercase border-bottom pb-2 mt-4 mb-3">Urgency | ቅድሚያ የሚሰጠው</h6>
+                      <div class="mb-4">
+                        @if($complaint->priority == 'High')
+                     <span class="badge bg-danger px-3 py-2 w-100"><i class="fas fa-exclamation-triangle me-2"></i> High Priority</span>
+                   @elseif($complaint->priority == 'Medium')
+                       <span class="badge bg-warning text-dark px-3 py-2 w-100"><i class="fas fa-clock me-2"></i> Medium Priority</span>
+                 @else
+                    <span class="badge bg-info px-3 py-2 w-100"><i class="fas fa-info-circle me-2"></i> Low Priority</span>
+                 @endif
+</div>
 
                     <a href="{{ route('index') }}" class="btn btn-outline-secondary w-100">
                         <i class="fas fa-arrow-left me-2"></i> Back to All Complaints

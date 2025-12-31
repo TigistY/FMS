@@ -17,7 +17,6 @@ use App\Http\Controllers\AboutController;
 
 Route::get('/',[HomeController::class,'welcomepage'])->name('wel.link');
 Route::get('/home2',[HomeController::class,'homesto'])->name('home.link');
-//Route::get('/helpcenter',[HomeController::class,'help'])->name('helpcenter.link');
 Route::get('/dashbo',[HomeController::class,'dashBoard'])->name('dashboard')->middleware('auth');
 //for login
 Route::get('/login-user',[LoginController::class,'showLoginForm'])->name('login');//->middleware('checkLogin');
@@ -28,9 +27,7 @@ Route::get('/create-account',[UserController::class,'createaccount'])->name('cre
 Route::post('/createaccount',[UserController::class,'storeaccount'])->name('storeaccount.link');
 //for user managemnt
 Route::middleware(['auth'])->group(function () {
-    // User CRUD
-      Route::resource('users', AdduserController::class);
-   
+      Route::resource('users', AdduserController::class); 
 });
 
 // for Complaint Submission
@@ -48,7 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/complaints/{complaint}/destroy', [ComplaintController::class, 'destroy'])->name('complaints.destroy'); 
     Route::get('/complaint/{complaint}/respond', [ComplaintController::class, 'respond'])->name('respond');
     Route::post('/complaint/{complaint}/response', [ComplaintController::class, 'processResponse'])->name('processResponse');
-    // Note: It's better to use explicit resource naming for consistency
+    
     Route::delete('/complaint/{complaint}', [ComplaintController::class, 'destroy'])->name('destroy');
 
     Route::get('/feedback/list', [FeedbackController::class, 'index'])->name('feedback.index'); 
@@ -61,35 +58,26 @@ Route::middleware(['auth'])->group(function () {
 //for rolemanagement
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::get('/roles-management', [RolesController::class, 'index'])->name('roles.index');
-    // ለአንድ ፐርሚሽን ብቻ (AJAX)
+    Route::get('/roles-managements', [RolesController::class, 'index'])->name('roles.index');
     Route::post('/roles-management/update-single', [RolesController::class, 'updateSinglePermission'])->name('roles.update-single-permission');
-    // ለሙሉ ፎርሙ (የድሮው)
     Route::put('/roles-management', [RolesController::class, 'updatePermissions'])->name('roles.update-permissions');
 });
 
 Route::prefix('api')->group(function () {
-    // ሁሉንም ኮሌጆች ለማምጣት
     Route::get('/colleges/list', [UnitApiController::class, 'getColleges'])->name('api.colleges.list');
-    
-    // ሁሉንም ዳይሬክቶሬቶች ለማምጣት
-    Route::get('/directories/list', [UnitApiController::class, 'getDirectories'])->name('api.directories.list');
-    
-    // በተመረጠ ኮሌጅ ስር ያሉ ዲፓርትመንቶችን ለማምጣት (ለ JavaScriptዱ ${collegeId} እንዲሰራ)
+    Route::get('/directories/list', [UnitApiController::class, 'getDirectories'])->name('api.directories.list');  
     Route::get('/colleges/{collegeId}/departments', [UnitApiController::class, 'getDepartmentsByCollege'])->name('api.departments.by_college');
 });
 
 Route::middleware(['auth'])->group(function () {
-
-    // College Management (CRUD)
+    // for College(CRUD)
     Route::resource('colleges', CollegeController::class); 
-
-    // Directory Management (CRUD)
+    //for  Directory 
     Route::resource('directories', DirectoryController::class); 
-
-    // Department Management (CRUD)
+    // for Department
     Route::resource('departments', DepartmentController::class); 
 });
+
 Route::get('/system-info',[AboutController::class,'info'])->name('System.info');
 Route::get('/system-policy',[AboutController::class,'policy'])->name('System.policy');
 Route::get('/about-info',[AboutController::class,'abinfo'])->name('aboutinfo');

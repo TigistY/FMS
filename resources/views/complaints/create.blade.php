@@ -208,7 +208,7 @@
             window.fillCollegeFilter();
         }
     };
-
+//next use this AJAX
     window.fillCollegeFilter = async () => {
         const filterSelect = document.getElementById('filter_college_id');
         try {
@@ -226,7 +226,7 @@
         if (!collegeId) return;
         window.loadUnits(`{{ url('/api/colleges') }}/${collegeId}/departments`);
     };
-
+//use this AJAX 
     window.loadUnits = async (url) => {
         const idSelect = document.getElementById('recipient_id');
         const loading = document.getElementById('loading-text');
