@@ -4,9 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Models\College;   // አዲስ
-use App\Models\Department; // አዲስ
-use App\Models\Directory;  // አዲስ
+use App\Models\College;   
+use App\Models\Department; 
+use App\Models\Directory; 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 
@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function createaccount()
     {
-        // ለምዝገባ ቅጹ የሚያስፈልጉ ዳታዎችን መሳብ
+    
         $colleges = College::all();
         $directories = Directory::all();
         $departments = Department::all(); 

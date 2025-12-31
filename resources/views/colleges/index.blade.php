@@ -8,6 +8,11 @@
                 <i class="fas fa-plus me-1"></i> Add New College
             </a>
         </div>
+        <div class="btn-toolbar mb-2 mb-md-0 align-items-left">
+            <a href="{{ route('departments.create') }}" class="btn btn-sm btn-primary">
+                <i class="fas fa-plus me-1"></i> Add New Department
+            </a>
+        </div>
     </div>
 
     @if (session('success'))
@@ -23,7 +28,6 @@
                 <tr>
                     <th>#</th>
                     <th>College Name</th>
-                    <th>የኮሌጁ ስም </th>
                     <th>Code</th>
                     <th>Dean Name</th>
                     <th>Departments</th>
@@ -32,34 +36,54 @@
             </thead>
             <tbody>
                 @foreach ($colleges as $college)
-                    <tr>
-                        <td>{{ $colleges->firstItem() + $loop->index }}</td>
-                        <td>{{ $college->name_en }}</td>
-                        <td>{{ $college->name_am }}</td>
-                        <td>{{ $college->code }}</td>
-                        <td>{{ $college->dean_name ?? 'N/A' }}</td>
-                        <td>{{ $college->departments->count() }}</td>
-                        <td>
-                            <div class="dropdown">
-                                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <i class="fas fa-cog"></i> Action
-                                </button>
-                                <ul class="dropdown-menu">
-                                    {{-- Edit College --}}
-                                    <li><a class="dropdown-item text-primary" href="{{ route('colleges.edit', $college) }}"><i class="fas fa-edit me-2"></i> Edit</a></li>
-                                    {{-- Delete College --}}
-                                    <li>
-                                        <form action="{{ route('colleges.destroy', $college) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this college? All related departments will also be deleted!');" class="d-inline">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash me-2"></i> Delete</button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                @endforeach
+    <tr>
+        <td>{{ $colleges->firstItem() + $loop->index }}</td>
+        <td>
+            <strong>{{ $college->name_en }}</strong><br>
+            <small class="text-muted">{{ $college->name_am }}</small>
+        </td>
+        <td>{{ $college->code }}</td>
+        <td>{{ $college->dean_name ?? 'N/A' }}</td>
+        
+        <td>
+            <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#deptCollapse{{ $college->id }}">
+                <i class="fas fa-list me-1"></i> {{ $college->departments->count() }} Departments
+            </button>
+            
+            <div class="collapse mt-2" id="deptCollapse{{ $college->id }}">
+                <div class="card card-body p-2 bg-light shadow-sm">
+                    <ul class="list-unstyled mb-0" style="font-size: 0.85rem;">
+                        @forelse($college->departments as $dept)
+                            <li class="border-bottom py-1">
+                                <i class="fas fa-chevron-right text-muted small me-1"></i>
+                                {{ $dept->name_en }}
+                            </li>
+                        @empty
+                            <li class="text-muted small">No departments registered.</li>
+                        @endforelse
+                    </ul>
+                </div>
+            </div>
+        </td>
+
+        <td>
+            <div class="dropdown">
+                <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    <i class="fas fa-cog"></i> Action
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item text-primary" href="{{ route('colleges.edit', $college) }}"><i class="fas fa-edit me-2"></i> Edit</a></li>
+                    <li>
+                        <form action="{{ route('colleges.destroy', $college) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                            @csrf @method('DELETE')
+                            <button type="submit" class="dropdown-item text-danger"><i class="fas fa-trash me-2"></i> Delete</button>
+                        </form>
+                    </li>
+                </ul>
+            </div>
+        </td>
+    </tr>
+@endforeach
             </tbody>
         </table>
     </div>

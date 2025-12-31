@@ -16,9 +16,8 @@ class College extends Model
         'description'
     ];
 
-    // one-to-many relation
     public function departments()
-    {
-        return $this->hasMany(Department::class);
-    }
+{
+    return $this->hasMany(Department::class, 'college_id');
+}
 }

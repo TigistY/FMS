@@ -8,6 +8,7 @@ use Spatie\Permission\Models\Role; // Spatie Permissionን መጠቀምዎን �
 
 class CollegeController extends Controller
 {
+    /*
     public function __construct()
     {
         // ሁሉም ዘዴዎች (methods) እንዲያዩ ተፈቅዶላቸዋል
@@ -22,12 +23,13 @@ class CollegeController extends Controller
         // ለመሰረዝ ፈቃድ
         $this->middleware('permission:delete colleges')->only('destroy');
     }
-    
+    */
     public function index()
-    {
-        $colleges = College::orderBy('name')->paginate(10);
-        return view('colleges.index', compact('colleges'));
-    }
+{
+    // 'with' መጨመሩን እርግጠኛ ሁን
+    $colleges = College::with('departments')->orderBy('name_en')->paginate(10);
+    return view('colleges.index', compact('colleges'));
+}
 
     public function create()
     {
@@ -55,8 +57,8 @@ class CollegeController extends Controller
     public function update(Request $request, College $college)
     {
         $request->validate([
-            'name_en' => 'required|string|max:255|unique:colleges,name,' . $college->id,
-            'name_am' => 'required|string|max:255|unique:colleges,name,' . $college->id,
+            'name_en' => 'required|string|max:255|unique:colleges,name_en,' . $college->id,
+            'name_am' => 'required|string|max:255|unique:colleges,name_am,' . $college->id,
             'code' => 'required|string|max:10|unique:colleges,code,' . $college->id,
         ]);
 

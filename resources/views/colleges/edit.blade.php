@@ -1,4 +1,4 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
@@ -25,14 +25,14 @@
                 <div class="row">
                     {{-- College Name in English --}}
                     <div class="col-md-6 mb-3">
-                        <label for="name_en" class="form-label">College Name (English) <span class="text-danger">*</span></label>
+                        <label for="name_en" class="form-label">College Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name_en" name="name_en" 
                                value="{{ old('name_en', $college->name_en) }}" required>
                     </div>
                     
                     {{-- College Name in Amharic --}}
                     <div class="col-md-6 mb-3">
-                        <label for="name_am" class="form-label">የኮሌጁ ስም (አማርኛ) <span class="text-danger">*</span></label>
+                        <label for="name_am" class="form-label">የኮሌጁ ስም <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name_am" name="name_am" 
                                style="font-family: 'Noto Sans Ethiopic', sans-serif;" 
                                value="{{ old('name_am', $college->name_am) }}" required>
@@ -40,7 +40,7 @@
                 </div>
                 
                 <div class="mb-3">
-                    <label for="code" class="form-label">College Code (E.g., CSEE) <span class="text-danger">*</span></label>
+                    <label for="code" class="form-label">College Code (e.g. CS) <span class="text-danger">*</span></label>
                     <input type="text" class="form-control" id="code" name="code" 
                            value="{{ old('code', $college->code) }}" required>
                 </div>

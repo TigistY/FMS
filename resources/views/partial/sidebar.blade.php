@@ -6,65 +6,77 @@
     <hr class="text-secondary my-3">
 
     <ul class="nav nav-pills flex-column mb-auto">
+        {{-- Dashboard --}}
         <li class="nav-item">
             <a href="{{route('dashboard')}}" class="nav-link text-white {{ Request::routeIs('dashboard') ? 'active bg-primary' : '' }}">
-                <i class="fas fa-tachometer-alt me-2"></i>
-                Dashboard
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
             </a>
         </li>
 
-        @if (Auth::check() && (Auth::user()->can('view-complaints') || Auth::user()->can('view-feedback')))
-        <li class="nav-item dropdown mt-2">
-            <a class="nav-link dropdown-toggle text-white {{ Request::routeIs(['index', 'feedback.index']) ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-reply-all me-2"></i>
-                Response
+        {{-- User Management --}}
+        @canany(['view-users', 'create-users', 'edit-users', 'delete-users'])
+        <li class="nav-item">
+            <a href="{{route('users.index')}}" class="nav-link text-white {{ Request::routeIs('users.*') ? 'active bg-primary' : '' }}">
+                <i class="fa-solid fa-user me-2"></i> User Manage
             </a>
-            <ul class="dropdown-menu bg-info" >
+        </li>
+        @endcanany
+
+        {{-- View (Complaints and Feedback) --}}
+        @canany(['view-complaints', 'view-feedback'])
+        <li class="nav-item dropdown mt-2">
+            <a class="nav-link dropdown-toggle text-white {{ Request::routeIs(['index', 'feedback.index']) ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown">
+               <i class="fas fa-eye me-1"></i> View
+            </a>
+            <ul class="dropdown-menu bg-info">
                 @can('view-complaints')
-                
                 <li><a class="dropdown-item" href="{{route('index')}}"><i class="fas fa-exclamation-triangle mx-2"></i>View Complaints</a></li>
                 @endcan
                 
                 @can('view-feedback')
-               
                 <li><a class="dropdown-item" href="{{route('feedback.index')}}"><i class="fas fa-comment-dots mx-2"></i>View Feedback</a></li>
                 @endcan
             </ul>
         </li>
-        @endif
+          @endcanany
 
-        
-        @if (Auth::check() && Auth::user()->hasAnyPermission(['manage colleges', 'manage directories', 'role-management']))
+        {{-- Role Management  --}}
+        @can('role-management')
+        <li class="nav-item">
+            <a href="{{route('roles.index')}}" class="nav-link text-white {{ Request::routeIs('roles.*') ? 'active bg-primary' : '' }}">
+                <i class="fas fa-user-tag me-2"></i> Role Management
+            </a>
+        </li>
+        @endcan
+
+        {{-- Management (Colleges, Departments, Directories) --}}
+        @canany(['view-colleges', 'view-departments', 'view-directories'])
         <li class="nav-item dropdown mt-2">
             @php
-                $managementRoutes = ['admin.colleges.*', 'admin.departments.*', 'admin.directories.*', 'admin.roles.*'];
-                $isRouteActive = collect($managementRoutes)->contains(fn ($route) => Request::routeIs($route));
+                $isMgmtActive = Request::routeIs(['colleges.*', 'departments.*', 'directories.*']);
             @endphp
             
-            {{-- Updated title here --}}
-            <a class="nav-link dropdown-toggle text-white {{ $isRouteActive ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="fas fa-tools me-2"></i>
-                Managemnt
+            <a class="nav-link dropdown-toggle text-white {{ $isMgmtActive ? 'active bg-primary' : '' }}" href="#" role="button" data-bs-toggle="dropdown">
+                <i class="fas fa-tools me-2"></i>College/Directory
             </a>
             
-            <ul class="dropdown-menu bg-info" >
-                
-                @can('manage colleges')
+            <ul class="dropdown-menu bg-info">
+                @can('view-colleges')
                 <li><a class="dropdown-item {{ Request::routeIs('colleges.*') ? 'active' : '' }}" href="{{route('colleges.index')}}"><i class="fas fa-building mx-2"></i>Colleges</a></li>
+                @endcan
+
+                @can('view-departments')
                 <li><a class="dropdown-item {{ Request::routeIs('departments.*') ? 'active' : '' }}" href="{{route('departments.index')}}"><i class="fas fa-graduation-cap mx-2"></i>Departments</a></li>
                 @endcan
 
-                @can('manage directories')
+                @can('view-directories')
                 <li><a class="dropdown-item {{ Request::routeIs('directories.*') ? 'active' : '' }}" href="{{route('directories.index')}}"><i class="fas fa-sitemap mx-2"></i>Directories</a></li>
-                @endcan
-                
-                @can('role-management') {{-- Assuming you use this permission for role management --}}
-                <li><a class="dropdown-item {{ Request::routeIs('admin.roles.*') ? 'active' : '' }}" href="{{route('roles.index')}}"><i class="fas fa-user-tag mx-2"></i>Role Management</a></li> 
                 @endcan
             </ul>
         </li>
-        @endif
+        @endcanany
         
+        {{-- Logout --}}
         <li class="nav-item mt-auto pt-5">
             <form method="post" action="{{ route('logout') }}" class="w-100">
                 @csrf
@@ -79,12 +91,11 @@
     
     @auth
     <div class="dropdown">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown">
             <img src="https://placehold.co/100x100/E2E8F0/4A5568?text={{ strtoupper(substr(Auth::user()->name, 0, 1)) }}" alt="user" width="32" height="32" class="rounded-circle me-2">
-            
             <strong>{{ Auth::user()->name }}</strong>
         </a>
-        <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+        <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
             <li><a class="dropdown-item" href="#">Edit Profile</a></li>
         </ul>
     </div>

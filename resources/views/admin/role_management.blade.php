@@ -114,4 +114,48 @@
     z-index: 10;
 }
 </style>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(document).ready(function() {
+    // ስዊች (Checkbox) ሲቀየር
+    $('.form-check-input').on('change', function() {
+        let checkbox = $(this);
+        
+        // ከ id="perm_{roleId}_{permissionId}" ላይ ቁጥሮቹን መለየት
+        let idParts = checkbox.attr('id').split('_');
+        let roleId = idParts[1];
+        let permissionId = idParts[2];
+        let isChecked = checkbox.is(':checked') ? 1 : 0;
+
+        // ሰርቨሩ ምላሽ እስኪሰጥ ስዊቹን ማቆየት (Double click ለመከላከል)
+        checkbox.prop('disabled', true);
+
+        $.ajax({
+            url: "{{ route('roles.update-single-permission') }}",
+            method: "POST",
+            data: {
+                _token: "{{ csrf_token() }}",
+                role_id: roleId,
+                permission_id: permissionId,
+                status: isChecked
+            },
+            success: function(response) {
+                checkbox.prop('disabled', false);
+                
+                // 💥 እዚህ ጋር ነው መሆን ያለበት 💥
+                // ገጹን Refresh በማድረግ Sidebar እና ሌሎች ፈቃዶችን ወዲያው እንዲሰሩ ያደርጋል
+                location.reload(); 
+            },
+            error: function(xhr) {
+                checkbox.prop('disabled', false);
+                checkbox.prop('checked', !isChecked); // ስህተት ካለ ስዊቹን ወደ ነበረበት ይመልሰዋል
+                
+                let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'ስህተት ተከስቷል';
+                alert('ስህተት ተከስቷል፡ ' + errorMsg);
+            }
+        });
+    });
+});
+</script>
 @endsection

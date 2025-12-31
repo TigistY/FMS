@@ -4,30 +4,38 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\DB;
+use Spatie\Permission\PermissionRegistrar; // ይህንን ጨምር
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // CRUD actions for use in the dynamic loop
+        // 1. የ Spatie ፐርሚሽን ካሽን ማጽዳት (ይህ ካልመጣ ስህተት ያሳያል)
+        app()[PermissionRegistrar::class]->forgetCachedPermissions();
+
+        // 2. Foreign key ቼክ ለጊዜው እንዲቆም ማድረግ
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+
+        // 3. ሰንጠረዦቹን ማጽዳት
+        DB::table('role_has_permissions')->truncate();
+        DB::table('model_has_permissions')->truncate();
+        DB::table('permissions')->truncate();
+
+        // 4. Foreign key ቼክ እንዲመለስ ማድረግ
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
+        // የተቀሩት ፐርሚሽኖች ዝርዝር
         $unit_actions = ['view', 'create', 'edit', 'delete'];
 
         $permissions = [
-            // Feedback Permissions
             ['name' => 'view-feedback', 'display_name' => 'ግብረመልስ መመልከት', 'guard_name' => 'web'],
             ['name' => 'respond-feedback', 'display_name' => 'ግብረመልስ ምላሽ መስጠት', 'guard_name' => 'web'],
-            
-            // Complaint Permissions
             ['name' => 'view-complaints', 'display_name' => 'ቅሬታ መመልከት', 'guard_name' => 'web'],
             ['name' => 'respond-complaints', 'display_name' => 'ቅሬታ ምላሽ መስጠት', 'guard_name' => 'web'],
-            
-            // Role Management Permission (Kept as single, broad permission)
             ['name' => 'role-management', 'display_name' => 'ሮሎችን ማስተዳደር', 'guard_name' => 'web'],
         ];
 
-        // =======================================================
-        // 💥 Granular CRUD Permissions for ALL Units and Users 💥
-        // =======================================================
         $units_and_users = [
             'users' => 'ተጠቃሚዎች',
             'colleges' => 'ኮሌጆች',
@@ -44,11 +52,9 @@ class PermissionSeeder extends Seeder
 
         foreach ($units_and_users as $unit_en => $unit_am) {
             foreach ($unit_actions as $action_en) {
-                
                 $action_am = $action_amharic_map[$action_en];
-                
-                $name = $action_en . ' ' . $unit_en; // Example: 'create users'
-                $display_name = $unit_am . ' ' . $action_am; // Example: 'ተጠቃሚዎች መፍጠር'
+                $name = $action_en . '-' . $unit_en; 
+                $display_name = $unit_am . ' ' . $action_am; 
                 
                 $permissions[] = [
                     'name' => $name,
@@ -57,10 +63,10 @@ class PermissionSeeder extends Seeder
                 ];
             }
         }
-        // =======================================================
 
+        // በመጨረሻም ፐርሚሽኖችን መፍጠር
         foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission['name']], $permission);
+            Permission::create($permission);
         }
     }
 }

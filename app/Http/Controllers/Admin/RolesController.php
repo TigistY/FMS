@@ -34,32 +34,34 @@ class RolesController extends Controller
         ]);
     }
 
-    public function updatePermissions(Request $request)
-    {
-        $permissionsData = $request->input('permissions', []);
-        
-        foreach ($permissionsData as $roleId => $permissionMap) {
-            // Role::findById() 
-            $role = Role::findById($roleId);
-            
-            if (!$role) {
-                continue;
-            }
+   public function updateSinglePermission(Request $request)
+{
+    try {
+        $roleId = $request->input('role_id');
+        $permissionId = $request->input('permission_id');
+        $status = $request->input('status'); // 1 = Checked, 0 = Unchecked
 
-            $newPermissions = [];
+        $role = Role::findById($roleId);
+        $permission = Permission::findById($permissionId);
 
-            foreach ($permissionMap as $permissionId => $value) {
-                // chackbox  click ketedrge (Value 1 )
-                if ($value == 1) {
-                    $newPermissions[] = $permissionId;
-                }
-            }
-
-           //remove old permission then add new permission
-            $role->syncPermissions($newPermissions);
+        if ($status == 1) {
+            $role->givePermissionTo($permission);
+        } else {
+            $role->revokePermissionTo($permission);
         }
 
+        // ፐርሚሽኑ ወዲያውኑ እንዲሰራ ካሹን ማጽዳት
+        app()[\Spatie\Permission\PermissionRegistrar::class]->forgetCachedPermissions();
 
-        return redirect()->route('roles.index')->with('success', 'Role permissions updated successfully.');
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Permission updated successfully'
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => $e->getMessage()
+        ], 500);
     }
+}
 }

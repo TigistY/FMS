@@ -8,17 +8,21 @@ use Illuminate\Database\Eloquent\Model;
 class Department extends Model
 {
     use HasFactory;
+
     protected $fillable = [
-    	'college_id', 
+        'college_id', 
         'name_en',  
-    	'name_am',
-    	'head_name', 
-    	'description'
+        'name_am',
+        'head_name', 
+        'description'
     ];
 
-    // one-to-one r/ship
+    /**
+     * Get the college that owns the department.
+     * (Many Departments belong to One College)
+     */
     public function college()
     {
-        return $this->belongsTo(College::class);
+        return $this->belongsTo(College::class, 'college_id');
     }
 }
