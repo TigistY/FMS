@@ -4,21 +4,34 @@
 <div class="container py-5">
     <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
         
-        {{-- የዩኒቨርሲቲው ምስል መለጠፊያ (Main Banner) --}}
-        <div class="position-relative text-white p-5 text-center" style="background: url('{{ asset('image/f4.jpg') }}') center/cover no-repeat; min-height: 350px;">
-            {{-- የጥቁር ጥላ ውጤት (Overlay) --}}
-            <div class="position-absolute top-0 start-0 w-100 h-100 shadow-inset" style="background: rgba(0, 0, 0, 0.5);"></div>
-            
-            <div class="position-relative mt-4">
-                {{-- የዩኒቨርሲቲው ሎጎ (Logo) --}}
-                <div class="mb-3">
-                    <img src="{{ asset('image/logo.jfif') }}" alt="IU Logo" class="rounded-circle border border-4 border-white shadow" style="width: 120px; height: 120px; object-fit: cover; background: white;">
-                </div>
-                
-                <h1 class="fw-bold display-5">Injibara University | እንጅባራ ዩኒቨርሲቲ</h1>
-                <p class="lead fst-italic">"Explore Your Creative Potentials"</p>
-            </div>
+      <div class="position-relative text-white p-5 text-center overflow-hidden" 
+     style="background: url('{{ asset('image/inu5.jfif') }}') center/cover no-repeat; min-height: 450px; display: flex; align-items: center; justify-content: center;">
+    
+    <div class="position-absolute top-0 start-0 w-100 h-100" style="background: rgba(0, 0, 0, 0.3);"></div>
+    
+    <div class="position-relative p-4 p-md-5 rounded-4 shadow-lg" 
+         style="background: rgba(0, 0, 0, 0.4); /* ጥቁር ነካ ያለ ከለር ጽሁፉን ያጎላዋል */
+                backdrop-filter: blur(10px); /* የሳጥኑን ውስጥ ብቻ ብዥ ያደርጋል */
+                -webkit-backdrop-filter: blur(10px); 
+                border: 1px solid rgba(255, 255, 255, 0.2); 
+                max-width: 800px;
+                z-index: 3;">
+        
+        <div class="mb-3">
+            <img src="{{ asset('image/logo.jfif') }}" alt="IU Logo" 
+                 class="rounded-circle border border-3 border-white shadow" 
+                 style="width: 115px; height: 115px; object-fit: cover; background: white;">
         </div>
+        
+        <h1 class="fw-bold display-5 mb-2" style="text-shadow: 2px 2px 8px rgba(0,0,0,0.5);">
+            Injibara University <br> እንጅባራ ዩኒቨርሲቲ
+        </h1>
+        
+        <div class="h4 fw-light fst-italic mb-0" style="color: #ffffff; text-shadow: 1px 1px 4px rgba(0,0,0,0.5);">
+            "Explore Your Creative Potentials"
+        </div>
+    </div>
+</div>
 
         <div class="card-body p-5">
             <div class="row">
@@ -88,8 +101,6 @@
         transform: scale(1.05);
     }
     
-    .shadow-inset {
-        box-shadow: inset 0 0 100px rgba(0,0,0,0.5);
-    }
+    
 </style>
 @endsection

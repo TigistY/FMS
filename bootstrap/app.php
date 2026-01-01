@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Middleware\MyCustomMiddleware; // የሚድልዌርዎ ክላስ
-
+use App\Http\Middleware\MyCustomMiddleware;
+use App\Http\Middleware\SetLanguage; 
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -12,15 +12,17 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-    ->withMiddleware(function (Middleware $middleware):void{
-        $middleware->alias([
-      'my_checker' =>\App\Http\middleware\MyCustomMiddleware::class,
+    ->withMiddleware(function (Middleware $middleware): void {
+        
+        // በ 'web' ግሩፕ ውስጥ ቋንቋውን የሚቀይረውን ሚድልዌር እንጨምራለን
+        $middleware->web(append: [
+            SetLanguage::class,
+        ]);
 
+        $middleware->alias([
+            'my_checker' => MyCustomMiddleware::class,
         ]);
     })
-
     ->withExceptions(function (Exceptions $exceptions): void {
-    
+        //
     })->create();
-
-

@@ -95,31 +95,34 @@
         
         h2 { margin-left: 150px; color: #007bff; margin-bottom: 30px; font-weight: 600; }
         
-        .header-main-bar { background-color: #004d40; color: white; }
+        .header-main-bar { background-color: #1e3a5f; color: white; }
         
         .iu-logo { width: 70px; height: 70px; }
-        .iu-main-title { font-size: 1.5rem; font-weight: 700; line-height: 1.1; }
+        .iu-main-title { font-size: 1.5rem; font-weight: 700; line-height: 1.1;}
         .iu-tagline { font-size: 0.75rem; font-weight: 300; line-height: 1; }
         .system-title-text { font-size: 1.5rem; font-weight: 300; }
         
-        .navbar-custom { background-color: #0d6efd !important; } /* Blue Navigation Bar */
+        .navbar-custom { background-color:#004d40; !important; } /* Blue Navigation Bar */
     </style>
 </head>
 <body>
 
-    <div class="header-main-bar ">
-        <div class="container d-flex align-items-center justify-content-between py-2 mx-2">
-            <div class="logo-area d-flex align-items-center">
-                <img src="{{asset('image/logo.jfif')}}" alt="Logo" class="iu-logo rounded-circle border border-4 border-white shadow">
-                <div class="text-area ms-3">
-                    <h1 class="iu-main-title mb-0">INJIBARA UNIVERSITY</h1><br>
-                    <p class="iu-tagline mb-0">Explore your creative potentials</p>
-                </div>
+    <div class="header-main-bar">
+    <div class="container-fluid d-flex align-items-center justify-content-between py-2">
+        <div class="logo-area d-flex align-items-center">
+            <img src="{{asset('image/logo.jfif')}}" alt="Logo" class="iu-logo rounded-circle border border-4 border-white shadow">
+            <div class="text-area ms-3">
+                <h1 class="iu-main-title mb-0">INJIBARA UNIVERSITY</h1>
+                <h1 class="iu-main-title mb-0 px-4">እንጅባራ ዩኒቨርሲቲ</h1>
+                <p class="iu-tagline mb-0">Explore your creative potentials</p>
             </div>
-
-            <span class="system-title-text d-none d-md-block">Feedback And Complaint System</span>
         </div>
+
+        <span class="system-title-text d-none d-md-block ms-auto text-end pe-3">
+            Feedback And Complaint System
+        </span>
     </div>
+</div>
 
     <nav class="navbar navbar-expand-lg navbar-custom">
     <div class="container-fluid container mx-auto">
