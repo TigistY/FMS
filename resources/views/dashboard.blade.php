@@ -5,9 +5,9 @@
    
     <div class="row mb-4 align-items-center">
         <div class="col-md-8 text-center text-md-start">
-            <h3 class="fw-bold text-dark mb-1">እንኳን ደህና መጡ፣ {{ Auth::user()->name }}!</h3>
+            <h3 class="fw-bold text-dark mb-1">{{ __('messages.Welcome') }}፣ {{ Auth::user()->name }}!</h3>
             <div class="d-flex flex-wrap justify-content-center justify-content-md-start align-items-center gap-2">
-                <span class="text-secondary small">የሥራ ድርሻዎ፦</span>
+                <span class="text-secondary small">{{ __('messages.Your Role') }}፦</span>
                 @foreach(Auth::user()->roles as $role)
                     <span class="badge rounded-pill bg-info text-dark px-3 shadow-sm">
                         <i class="fas fa-user-tag me-1 small"></i> {{ $role->name }}
@@ -26,7 +26,7 @@
         <div class="col-md-4 mb-4">
             <div class="card border-0 shadow-sm card-hover-effect" style="border-left: 5px solid #0d6efd !important;">
                 <div class="card-body p-4 text-center text-md-start">
-                    <h6 class="text-secondary mb-1 small">ጠቅላላ ቅሬታዎች</h6>
+                    <h6 class="text-secondary mb-1 small">{{ __('messages.Total Complaint') }}</h6>
                     <h2 class="fw-bold mb-0 text-primary">{{ $totalComplaints }}</h2>
                 </div>
             </div>
@@ -34,7 +34,7 @@
         <div class="col-md-4 mb-4">
             <div class="card border-0 shadow-sm card-hover-effect" style="border-left: 5px solid #198754 !important;">
                 <div class="card-body p-4 text-center text-md-start">
-                    <h6 class="text-secondary mb-1 small">አጠቃላይ ግብረ-መልስ</h6>
+                    <h6 class="text-secondary mb-1 small">{{ __('messages.Total Feedback') }}</h6>
                     <h2 class="fw-bold mb-0 text-success">{{ $totalFeedback }}</h2>
                 </div>
             </div>
@@ -42,7 +42,7 @@
         <div class="col-md-4 mb-4">
             <div class="card border-0 shadow-sm card-hover-effect" style="border-left: 5px solid #ffc107 !important;">
                 <div class="card-body p-4 text-center text-md-start">
-                    <h6 class="text-secondary mb-1 small">የሲስተም ተጠቃሚዎች</h6>
+                    <h6 class="text-secondary mb-1 small">{{ __('messages.Accessed User') }}</h6>
                     <h2 class="fw-bold mb-0 text-warning">{{ $totalUsers }}</h2>
                 </div>
             </div>
@@ -51,11 +51,9 @@
         <div class="col-md-4 mb-4">
     <div class="card border-0 shadow-sm" style="border-left: 5px solid #6c757d !important;">
         <div class="card-body p-4">
-            <h6 class="text-secondary mb-1 small">ማንነታቸው ያልታወቁ ተጠቃሚዎች </h6>
+            <h6 class="text-secondary mb-1 small">{{ __('messages.Anonymous User') }} </h6>
             <h2 class="fw-bold mb-0 text-dark">{{ $totalAnonymousRequests }}</h2>
-            <p class="extra-small text-muted mt-2">
-                (ስም ሳይጠቀሱ የቀረቡ ቅሬታዎችና አስተያየቶች)
-            </p>
+            
         </div>
     </div>
 </div>
@@ -69,17 +67,16 @@
     <div class="row mt-2 mb-4">
         <div class="col-md-12">
             <div class="card shadow-sm border-0 p-4">
-                <h5 class="fw-bold text-primary mb-3"><i class="fas fa-tasks me-2 text-info"></i> የሚጠበቁ ተግባራት</h5>
+                <h5 class="fw-bold text-primary mb-3"><i class="fas fa-tasks me-2 text-info"></i> {{ __('messages.Expected Tasks') }}</h5>
                 <hr>
                 
-                {{-- Admin  --}}
                 @can('role-management')
                 <div class="alert alert-light border-start border-warning border-4 mb-3">
-                    <h6 class="fw-bold"><i class="fas fa-user-shield text-warning me-2"></i> Admin፡</h6>
+                    <h6 class="fw-bold"><i class="fas fa-user-shield text-warning me-2"></i>{{ __('messages.Admin') }}፡</h6>
                     <ul class="mb-0 small text-dark">
-                        <li>አዳዲስ ተጠቃሚዎችን መመዝገብ እና ፐርሚሽን (Roles) መስጠት።</li>
-                        <li>የኮሌጅ፣ የዲፓርትመንት እና የዳይሬክቶሬት መረጃዎችን ማደራጀት።</li>
-                        <li>አጠቃላይ የሲስተሙን እንቅስቃሴ እና ደህንነት መከታተል።</li>
+                        <li>{{ __('messages.Registering new users and assigning permissions (Roles).') }}</li>
+                        <li>{{ __('messages.Organizing college, department, and directorate information.') }}</li>
+                        <li>{{ __('messages.Monitoring overall system activity and security.') }}</li>
                     </ul>
                 </div>
                 @endcan
@@ -87,10 +84,10 @@
                 {{-- unit Respond --}}
                 @cannot('role-management')
                 <div class="alert alert-light border">
-                    <h6><i class="fas fa-reply-all text-success me-2"></i> Unit Responder፡</h6>
+                    <h6><i class="fas fa-reply-all text-success me-2"></i> {{ __('messages.Unit Responder') }}፡</h6>
                     <ul class="mb-0">
-                        <li>ለሚመጡ ቅሬታዎች ፈጣን ምላሽ መስጠት።</li>
-                        <li>የተሰጡ ግብረ-መልሶችን መገምገም።</li>
+                        <li>{{ __('messages.Providing timely responses to incoming complaints.') }}</li>
+                        <li>{{ __('messages.Reviewing and evaluating feedback provided.') }}</li>
                     
                     </ul>
                 </div>

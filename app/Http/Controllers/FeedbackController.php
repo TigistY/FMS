@@ -86,48 +86,38 @@ class FeedbackController extends Controller
 }
 
     
-    public function index()
+public function index(Request $request)
 {
-   /* if (Gate::denies('view-feedback')) {
-        abort(403, 'Unauthorized action.');
-    }*/
-
     $user = Auth::user();
-    $query = Feedback::with(['recipient', 'user', 'guest'])->latest();
+    $query = Feedback::with(['recipient']);
 
     if ($user->hasRole('System Administrator')) {
-    
-    } 
-    elseif ($user->hasRole('Unit Responder')) {
-        $query->where(function ($q) use ($user) {
-            
-            if ($user->college_id) {
-                $q->orWhere(function($sq) use ($user) {
-                    $sq->where('recipient_type', 'College') 
-                       ->where('recipient_id', $user->college_id);
-                });
-            }
-            
-            if ($user->department_id) {
-                $q->orWhere(function($sq) use ($user) {
-                    $sq->where('recipient_type', 'Department')
-                       ->where('recipient_id', $user->department_id);
-                });
-            }
+        // ሀ. ከሪፖርት ገጽ በመንካት የመጣ ከሆነ (Filtering by Exact Unit ID)
+        if ($request->filled('unit_type') && $request->filled('unit_id')) {
+            $query->where('recipient_type', $request->unit_type)
+                  ->where('recipient_id', $request->unit_id);
+        }
 
-            if ($user->directory_id) {
-                $q->orWhere(function($sq) use ($user) {
-                    $sq->where('recipient_type', 'Directory')
-                       ->where('recipient_id', $user->directory_id);
-                });
-            }
-        });
-    } 
-    elseif (Auth::check()) {
-        $query->where('user_id', $user->id)->where('is_anonymous', false);
+        // ለ. በሰርች ባሩ የመጣ ፍለጋ (Searching by Name)
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->whereHasMorph('recipient', ['App\Models\College', 'App\Models\Directory', 'App\Models\Department'], function($q) use ($searchTerm) {
+                $q->where('name_en', 'like', '%' . $searchTerm . '%')
+                  ->orWhere('name_am', 'like', '%' . $searchTerm . '%');
+            });
+        }
+    } else {
+        // ሬስፖንደር የራሱን ብቻ እንዲያይ
+        if ($user->college_id) {
+            $query->where('recipient_type', 'College')->where('recipient_id', $user->college_id);
+        } elseif ($user->directory_id) {
+            $query->where('recipient_type', 'Directory')->where('recipient_id', $user->directory_id);
+        } elseif ($user->department_id) {
+            $query->where('recipient_type', 'Department')->where('recipient_id', $user->department_id);
+        }
     }
 
-   $feedbacks = $query->simplePaginate(10);
+    $feedbacks = $query->latest()->paginate(10);
     return view('fms.index', compact('feedbacks'));
 }
 public function show(Feedback $feedback)

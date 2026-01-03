@@ -1,7 +1,7 @@
 <?php
 
 return [
-	'University Name' => 'እንጅባራ ዩኒቨርሲቲ',
+    'University Name' => 'እንጅባራ ዩኒቨርሲቲ',
     'dashboard' => 'ዳሽቦርድ',
     'User Manage' => 'ተጠቃሚዎች',
     'View' => 'ተመልከት',
@@ -18,6 +18,21 @@ return [
     'Colleges' => 'ኮሌጆች',
     'Departments' => 'ትምህርት ክፍሎች',
     'Directories' => 'ዳይሬክቶሬቶች',
-    'Submit Feedback' => 'አስተያየት ስት',
+    'Submit Feedback' => 'አስተያየት ስጥ',
     'Privacy Policy' => 'የግል መረጃ ጥበቃ',
+    'Unit Reports' => 'የክፍል ሪፖርቶች',
+    'Total Complaint' => 'ጠቅላላ ቅሬታዎች',
+    'Total Feedback' => 'አጠቃላይ ግብረ-መልስ',
+    'Accessed User' => 'የሲስተም ተጠቃሚዎች',
+    'Anonymous User' => 'ማንነታቸው ያልታወቁ ተጠቃሚዎች',
+    'Welcome' => 'እንኳን ደህና መጡ',
+    'Your Role' => 'የሥራ ድርሻዎ',
+    'Expected Tasks' => 'የሚጠበቁ ተግባራት',
+    'Admin' => 'አድሚን',
+    'Unit Responder' => 'ክፍል ምላሽ ሰጪ',
+    'Registering new users and assigning permissions (Roles).' => 'አዳዲስ ተጠቃሚዎችን መመዝገብ እና ፐርሚሽን (Roles) መስጠት።',
+    'Organizing college, department, and directorate information.' => 'የኮሌጅ፣ የዲፓርትመንት እና የዳይሬክቶሬት መረጃዎችን ማደራጀት።',
+    'Monitoring overall system activity and security.' => 'አጠቃላይ የሲስተሙን እንቅስቃሴ እና ደህንነት መከታተል።',
+    'Providing timely responses to incoming complaints.' => 'ለሚመጡ ቅሬታዎች ፈጣን ምላሽ መስጠት።', // እዚህ ጋር ኮማ ተጨምሯል
+    'Reviewing and evaluating feedback provided.' => 'የተሰጡ ግብረ-መልሶችን መገምገም።',
 ];

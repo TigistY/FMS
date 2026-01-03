@@ -10,7 +10,24 @@
             <span class="badge bg-info">Unit: {{ Auth::user()->college->name_en ?? Auth::user()->department->name_en ?? Auth::user()->directory->name_en ?? 'Your Unit' }}</span>
         @endif
     </div>
-
+@if(Auth::user()->hasRole('System Administrator'))
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body bg-light">
+        <form action="{{ route('feedback.index') }}" method="GET" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search by unit name..." 
+                       value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-1"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
@@ -31,13 +48,13 @@
                         <tr>
                             <td class="ps-4 text-muted">{{ $feedbacks->firstItem() + $key }}</td>
                             <td>
-    <span class="fw-bold text-dark d-block">{{ $feedback->subject }}</span>
-    @if($feedback->status == 'Forwarded' || $feedback->forward_note)
-        <small class="badge bg-light text-warning border border-warning mt-1" style="font-size: 0.7rem;">
-            <i class="fas fa-share"></i> Forwarded
-        </small>
-    @endif
-</td>
+                            <span class="fw-bold text-dark d-block">{{ $feedback->subject }}</span>
+                                @if($feedback->status == 'Forwarded' || $feedback->forward_note)
+                        <small class="badge bg-light text-warning border border-warning mt-1" style="font-size: 0.7rem;">
+                          <i class="fas fa-share"></i> Forwarded
+                          </small>
+                            @endif
+                         </td>
                             <td>
                                 <small class="badge bg-secondary-subtle text-dark border">
                                     {{ $feedback->recipient_type }}: {{ $feedback->recipient->name_en ?? 'N/A' }}
@@ -104,4 +121,25 @@
         margin: 0 4px;
     }
 </style>
+<script>
+    $('#search_unit_type').on('change', function() {
+    let type = $(this).val();
+    $('#main_search_div').addClass('d-none');
+    $('#dept_search_div').addClass('d-none');
+    
+    if(type === 'College' || type === 'Department') {
+        $('#main_label').text('ኮሌጅ ምረጥ');
+        loadColleges();
+        $('#main_search_div').removeClass('d-none');
+    } else if(type === 'Directory') {
+        $('#main_label').text('ዳይሬክቶሬት ምረጥ');
+        loadDirectories();
+        $('#main_search_div').removeClass('d-none');
+    }
+});
+
+function loadColleges() {
+    // እዚህ ጋር ኮሌጆችን በ AJAX ወይም ቀድሞ በመጣ ዳታ መሙላት ትችላለህ
+}
+</script>
 @endsection

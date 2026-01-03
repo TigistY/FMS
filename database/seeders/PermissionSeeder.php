@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\DB;
-use Spatie\Permission\PermissionRegistrar; // ይህንን ጨምር
+use Spatie\Permission\PermissionRegistrar;
 
 class PermissionSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. የ Spatie ፐርሚሽን ካሽን ማጽዳት (ይህ ካልመጣ ስህተት ያሳያል)
+        // 1. የ Spatie ፐርሚሽን ካሽን ማጽዳት
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         // 2. Foreign key ቼክ ለጊዜው እንዲቆም ማድረግ
@@ -25,17 +25,17 @@ class PermissionSeeder extends Seeder
         // 4. Foreign key ቼክ እንዲመለስ ማድረግ
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // የተቀሩት ፐርሚሽኖች ዝርዝር
-        $unit_actions = ['view', 'create', 'edit', 'delete'];
-
+        // 5. መሰረታዊ ፐርሚሽኖች
         $permissions = [
             ['name' => 'view-feedback', 'display_name' => 'ግብረመልስ መመልከት', 'guard_name' => 'web'],
             ['name' => 'respond-feedback', 'display_name' => 'ግብረመልስ ምላሽ መስጠት', 'guard_name' => 'web'],
             ['name' => 'view-complaints', 'display_name' => 'ቅሬታ መመልከት', 'guard_name' => 'web'],
             ['name' => 'respond-complaints', 'display_name' => 'ቅሬታ ምላሽ መስጠት', 'guard_name' => 'web'],
             ['name' => 'role-management', 'display_name' => 'ሮሎችን ማስተዳደር', 'guard_name' => 'web'],
+            ['name' => 'view-unit-reports', 'display_name' => 'የክፍሎችን ሪፖርት መመልከት', 'guard_name' => 'web'],
         ];
 
+        // 6. ለተለያዩ ክፍሎች የሚሆኑ ፐርሚሽኖች
         $units_and_users = [
             'users' => 'ተጠቃሚዎች',
             'colleges' => 'ኮሌጆች',
@@ -43,6 +43,8 @@ class PermissionSeeder extends Seeder
             'directories' => 'ዳይሬክቶሬቶች'
         ];
         
+        $unit_actions = ['view', 'create', 'edit', 'delete'];
+
         $action_amharic_map = [
             'view' => 'መመልከት',
             'create' => 'መፍጠር',
@@ -64,7 +66,7 @@ class PermissionSeeder extends Seeder
             }
         }
 
-        // በመጨረሻም ፐርሚሽኖችን መፍጠር
+        // 7. በመጨረሻም ፐርሚሽኖችን መፍጠር
         foreach ($permissions as $permission) {
             Permission::create($permission);
         }

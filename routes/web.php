@@ -13,8 +13,10 @@ use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\Admin\CollegeController;
 use App\Http\Controllers\Admin\DirectoryController;
 use App\Http\Controllers\Admin\DepartmentController;
+use App\Http\Controllers\Admin\ReportController;
 use App\Http\Controllers\UnitApiController;
 use App\Http\Controllers\AboutController;
+
 
 Route::get('/',[HomeController::class,'welcomepage'])->name('wel.link');
 Route::get('/home2',[HomeController::class,'homesto'])->name('home.link');
@@ -71,6 +73,8 @@ Route::prefix('api')->group(function () {
     Route::get('/colleges/list', [UnitApiController::class, 'getColleges'])->name('api.colleges.list');
     Route::get('/directories/list', [UnitApiController::class, 'getDirectories'])->name('api.directories.list');  
     Route::get('/colleges/{collegeId}/departments', [UnitApiController::class, 'getDepartmentsByCollege'])->name('api.departments.by_college');
+    //for search
+    Route::get('/units/search', [UnitApiController::class, 'searchUnits'])->name('api.units.search');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -80,6 +84,11 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('directories', DirectoryController::class); 
     // for Department
     Route::resource('departments', DepartmentController::class); 
+});
+
+//for report
+Route::middleware(['auth', 'role:System Administrator'])->group(function () {
+    Route::get('/admin/unit-reports', [ReportController::class, 'unitStats'])->name('admin.reports.units');
 });
 
 Route::get('/system-info',[AboutController::class,'info'])->name('System.info');
@@ -93,7 +102,7 @@ Route::get('/helpcenter',[AboutController::class,'helps'])->name('help');
 Route::get('lang/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'am'])) {
         session()->put('locale', $locale);
-        session()->save(); // ሴሽኑ ወዲያው እንዲቀመጥ ያደርጋል
+        session()->save(); 
     }
     return redirect()->back();
 });

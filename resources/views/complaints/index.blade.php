@@ -13,6 +13,24 @@
             @endif
         </div>
     </div>
+@if(Auth::user()->hasRole('System Administrator'))
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body bg-light">
+        <form action="{{ route('index') }}" method="GET" class="row g-2">
+            <div class="col-md-10">
+                <input type="text" name="search" class="form-control" 
+                       placeholder="Search by unit name or subject..." 
+                       value="{{ request('search') }}">
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="fas fa-search me-1"></i> Search
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+@endif
 
     @if (session('success'))
         <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show">
@@ -42,8 +60,6 @@
                                 <td class="ps-4 text-muted">{{ $complaints->firstItem() + $key }}</td>
                                 <td>
                                     <span class="fw-bold d-block">{{ $complaint->subject }}</span>
-                                    
-                                    {{-- Forward የተደረገ ከሆነ ምልክት ያሳያል --}}
                                     @if($complaint->forward_note)
                                         <small class="badge bg-light text-warning border border-warning mb-1" style="font-size: 0.7rem;">
                                             <i class="fas fa-share"></i> Forwarded
@@ -85,9 +101,8 @@
                                         </a>
 
                                         @if(Auth::user()->hasRole('System Administrator'))
-                                            <form action="{{ route('complaints.destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form action="{{ route('complaints.destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Are you sure?')">
+                                                @csrf @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-outline-danger">
                                                     <i class="fas fa-trash-alt"></i>
                                                 </button>
@@ -105,20 +120,63 @@
                 </table>
             </div>
         </div>
-    <div class="card-footer bg-white border-0 py-3">
-    <div class="d-flex justify-content-center">
-        {{ $complaints->links() }}
+        <div class="card-footer bg-white border-0 py-3">
+            <div class="d-flex justify-content-center">
+                {{ $complaints->links() }}
+            </div>
+        </div>
     </div>
 </div>
-    </div>
-</div>
+
 <style>
-    .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
-        display: none !important;
-    }
-    .pagination .page-link {
-        padding: 5px 15px !important;
-        font-size: 14px !important;
-    }
+    .pagination .page-item:not(.active):not(:first-child):not(:last-child) { display: none !important; }
+    .pagination .page-link { padding: 5px 15px !important; font-size: 14px !important; }
 </style>
+
+<script>
+$(document).ready(function() {
+    $('#unit_type_select').on('change', function() {
+        let type = $(this).val();
+        $('#main_unit_div, #dept_unit_div').addClass('d-none');
+        $('#main_unit_list, #dept_unit_list').empty().append('<option value="">-- ምረጥ --</option>');
+        $('#target_unit_id').val('');
+
+        if (type === 'College' || type === 'Department') {
+            $.get("{{ route('api.colleges.list') }}", function(data) {
+                $.each(data, function(key, value) {
+                    $('#main_unit_list').append('<option value="' + value.id + '">' + value.name_en + '</option>');
+                });
+                $('#main_unit_div').removeClass('d-none');
+            });
+        } else if (type === 'Directory') {
+            $.get("{{ route('api.directories.list') }}", function(data) {
+                $.each(data, function(key, value) {
+                    $('#main_unit_list').append('<option value="' + value.id + '">' + value.name_en + '</option>');
+                });
+                $('#main_unit_div').removeClass('d-none');
+            });
+        }
+    });
+
+    $('#main_unit_list').on('change', function() {
+        let id = $(this).val();
+        let type = $('#unit_type_select').val();
+        if (type === 'Department' && id) {
+            $.get("/api/colleges/" + id + "/departments", function(data) {
+                $('#dept_unit_list').empty().append('<option value="">-- ዲፓርትመንት ምረጥ --</option>');
+                $.each(data, function(key, value) {
+                    $('#dept_unit_list').append('<option value="' + value.id + '">' + value.name_en + '</option>');
+                });
+                $('#dept_unit_div').removeClass('d-none');
+            });
+        } else {
+            $('#target_unit_id').val(id);
+        }
+    });
+
+    $('#dept_unit_list').on('change', function() {
+        $('#target_unit_id').val($(this).val());
+    });
+});
+</script>
 @endsection

@@ -61,6 +61,14 @@
         </li>
         @endcanany
 
+           @can('view-unit-reports')
+<li class="nav-item">
+    <a href="{{ route('admin.reports.units') }}" class="nav-link {{ request()->routeIs('admin.reports.units') ? 'active' : '' }} text-white">
+        <i class="nav-icon fas fa-chart-line"></i>
+        {{ __('messages.Unit Reports') }}
+    </a>
+</li>
+@endcan
         <li class="nav-item mt-auto pt-5">
             <form method="post" action="{{ route('logout') }}" class="w-100">
                 @csrf

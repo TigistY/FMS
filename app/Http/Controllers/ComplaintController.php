@@ -72,34 +72,56 @@ class ComplaintController extends Controller
 
         return redirect()->back()->with('success', 'Your complaint has been successfully submitted');
     }
-
- public function index()
+public function index(Request $request)
 {
     $user = Auth::user();
-    $query = Complaint::with(['recipient', 'user', 'guest'])->latest();
+    $query = Complaint::with(['recipient', 'user', 'guest']);
 
     if ($user->hasRole('System Administrator')) {
-        // ...
-    } elseif ($user->hasRole('Unit Responder')) {
+        // ሀ. ከሪፖርት ገጽ በመንካት የመጣ ከሆነ (Filtering by Exact Unit ID)
+        if ($request->filled('unit_type') && $request->filled('unit_id')) {
+            $query->where('recipient_type', $request->unit_type)
+                  ->where('recipient_id', $request->unit_id);
+        }
+
+        // ለ. በሰርች ባሩ የመጣ ፍለጋ (Searching by Name/Subject)
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+            $query->where(function($q) use ($searchTerm) {
+                $q->where('subject', 'like', '%' . $searchTerm . '%')
+                  ->orWhereHasMorph('recipient', ['App\Models\College', 'App\Models\Directory', 'App\Models\Department'], function($sq) use ($searchTerm) {
+                      $sq->where('name_en', 'like', '%' . $searchTerm . '%')
+                         ->orWhere('name_am', 'like', '%' . $searchTerm . '%');
+                  });
+            });
+        }
+    } 
+    elseif ($user->hasRole('Unit Responder')) {
+        // ሬስፖንደሩ የራሱን ብቻ እንዲያይ
         $query->where(function ($q) use ($user) {
             if ($user->college_id) {
                 $q->orWhere(fn($sq) => $sq->where('recipient_type', 'College')->where('recipient_id', $user->college_id));
             }
-            if ($user->department_id) {
-                $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Department')->where('recipient_id', $user->department_id));
-            }
             if ($user->directory_id) {
                 $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Directory')->where('recipient_id', $user->directory_id));
+            }
+            if ($user->department_id) {
+                $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Department')->where('recipient_id', $user->department_id));
             }
         });
     } else {
         $query->where('user_id', $user->id);
     }
 
-    // ጠቃሚ ማስታወሻ፡ እዚህ ጋር የግድ simplePaginate መሆን አለበት!
-    $complaints = $query->simplePaginate(10); 
-    
+    $complaints = $query->latest()->paginate(10);
     return view('complaints.index', compact('complaints'));
+}
+// AJAX: ኮሌጅ ሲመረጥ ዲፓርትመንቶችን ለመላክ
+public function getDepartmentsJson(Request $request)
+{
+    $departments = \App\Models\Department::where('college_id', $request->college_id)
+                    ->get(['id', 'name_en']);
+    return response()->json($departments);
 }
 
 public function show(Complaint $complaint)
