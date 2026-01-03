@@ -31,8 +31,13 @@
                         <tr>
                             <td class="ps-4 text-muted">{{ $feedbacks->firstItem() + $key }}</td>
                             <td>
-                                <span class="fw-bold text-dark">{{ $feedback->subject }}</span>
-                            </td>
+    <span class="fw-bold text-dark d-block">{{ $feedback->subject }}</span>
+    @if($feedback->status == 'Forwarded' || $feedback->forward_note)
+        <small class="badge bg-light text-warning border border-warning mt-1" style="font-size: 0.7rem;">
+            <i class="fas fa-share"></i> Forwarded
+        </small>
+    @endif
+</td>
                             <td>
                                 <small class="badge bg-secondary-subtle text-dark border">
                                     {{ $feedback->recipient_type }}: {{ $feedback->recipient->name_en ?? 'N/A' }}
@@ -46,12 +51,19 @@
                                 @endif
                             </td>
                             <td>
-                                @if($feedback->responses->count() > 0)
-                                    <span class="badge bg-success-subtle text-success border border-success">Responded</span>
-                                @else
-                                    <span class="badge bg-warning-subtle text-warning border border-warning">Pending</span>
-                                @endif
-                            </td>
+    @php
+        $statusColor = match($feedback->status) {
+            'New'        => 'danger',             
+            'Forwarded'  => 'warning text-dark',  
+            'Viewed'     => 'info text-white',    
+            'Responded'  => 'success',          
+            default      => 'secondary'
+        };
+    @endphp
+    <span class="badge bg-{{ $statusColor }} shadow-sm px-2 py-1">
+        {{ $feedback->status }}
+    </span>
+</td>
                             <td>{{ $feedback->created_at->format('M d, Y') }}</td>
                             <td class="text-end pe-4">
                                 <a href="{{ route('feedback.show', $feedback->id) }}" class="btn btn-sm btn-outline-primary shadow-sm">
@@ -78,8 +90,18 @@
             </div>
         </div>
     </div>
-    <div class="mt-4">
-        {{ $feedbacks->links() }}
-    </div>
+    <div class="mt-4 d-flex justify-content-center">
+    {{ $feedbacks->links() }}
 </div>
+</div>
+<style>
+    
+    .pagination .page-link {
+        padding: 6px 16px !important;
+        font-size: 14px !important;
+        color: #0d6efd;
+        border-radius: 4px !important;
+        margin: 0 4px;
+    }
+</style>
 @endsection

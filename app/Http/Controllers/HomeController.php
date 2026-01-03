@@ -15,35 +15,40 @@ class HomeController extends Controller
         return view('welcome');
     }
 
-    public function dashBoard()
+public function dashBoard()
 {
-    // 1. ማንነታቸው እንዳይታወቅ (Anonymous) ሆነው የቀረቡ ቅሬታዎች እና ግብረ-መልሶች
-    // በዳታቤዝህ Boolean ስለሆነ 'true' ወይም 1 መጠቀም ትችላለህ
-    $anonymousComplaints = Complaint::where('is_anonymous', true)->count();
-    $anonymousFeedback = Feedback::where('is_anonymous', true)->count();
+    $user = auth()->user();
     
-    // ድምር (ማንነታቸው ያልታወቁ ተጠቃሚዎች ያቀረቡት ጠቅላላ ብዛት)
-    $totalAnonymousRequests = $anonymousComplaints + $anonymousFeedback;
-
-    // 2. አጠቃላይ ለዳሽቦርዱ የሚያስፈልጉ ቁጥሮች
+    // 1. ለአጠቃላይ ዳሽቦርድ ካርዶች (ያሉህ ኮዶች)
     $totalComplaints = Complaint::count();
     $totalFeedback = Feedback::count();
+    $totalUsers = User::count() + Guest::count();
+    $totalAnonymousRequests = Complaint::where('is_anonymous', true)->count() + Feedback::where('is_anonymous', true)->count();
 
-    // 3. የተመዘገቡ ተጠቃሚዎችን እና እንግዶችን መቁጠር
-    $registeredUsersCount = User::count();
-    $guestCount = Guest::count();
-
-    // 4. ጠቅላላ የሲስተም ተጠቃሚዎች (Registered + Guests) ድምር
-    $totalUsers = $registeredUsersCount + $guestCount;
+    // 2. ለኖቲፊኬሽን ባጅ (Badges) የሚሆኑ ቁጥሮች
+    if ($user->hasRole('System Administrator')) {
+        // አድሚን በሲስተሙ ያሉትን በሙሉ ያያል
+        $pendingComplaints = Complaint::where('status', 'Pending')->count();
+        $newFeedback = Feedback::doesntHave('responses')->count();
+    } elseif ($user->hasRole('Unit Responder')) {
+        // Responder የራሱን ዩኒት ብቻ ያያል
+        $pendingComplaints = Complaint::where('recipient_type', $user->managed_unit_type)
+            ->where('recipient_id', $user->managed_unit_id)
+            ->where('status', 'Pending')->count();
+            
+        $newFeedback = Feedback::where('recipient_type', $user->managed_unit_type)
+            ->where('recipient_id', $user->managed_unit_id)
+            ->doesntHave('responses')->count();
+    } else {
+        $pendingComplaints = 0;
+        $newFeedback = 0;
+    }
 
     return view('dashboard', compact(
-        'totalComplaints', 
-        'totalFeedback', 
-        'totalUsers', 
-        'totalAnonymousRequests'
+        'totalComplaints', 'totalFeedback', 'totalUsers', 'totalAnonymousRequests',
+        'pendingComplaints', 'newFeedback'
     ));
 }
-
     public function homesto() {
         return view('logins.home');
     }

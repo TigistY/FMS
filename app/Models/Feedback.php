@@ -20,6 +20,10 @@ class Feedback extends Model
         'subject',
         'body',
         'is_anonymous',
+        'forwarded_from_user_id',
+         'forward_note', 
+         'status'
+
     ];
 
     /**
@@ -49,4 +53,8 @@ class Feedback extends Model
     {
         return $this->morphMany(Response::class, 'respondable');
     }
+    public function forwarder()
+{
+    return $this->belongsTo(User::class, 'forwarded_from_user_id');
+}
 }

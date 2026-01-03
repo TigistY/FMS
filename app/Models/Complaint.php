@@ -20,6 +20,8 @@ class Complaint extends Model
         'status',
         'priority',
         'is_anonymous',
+        'forwarded_from_user_id', 
+        'forward_note',           
     ];
     
    
@@ -56,4 +58,8 @@ class Complaint extends Model
     {
         return $this->morphMany(Response::class, 'respondable');
     }
+    public function forwarder()
+{
+    return $this->belongsTo(User::class, 'forwarded_from_user_id');
+}
 }

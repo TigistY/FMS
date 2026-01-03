@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        
+        //aseflagi
         Schema::create('complaints', function (Blueprint $table) {
             $table->id();
             
@@ -28,7 +28,7 @@ return new class extends Migration
             $table->string('subject');
             $table->text('body');
             
-            $table->enum('status', ['Pending', 'Assigned', 'In Progress', 'Resolved', 'Closed'])->default('Pending');
+           $table->string('status')->default('Pending')->change();
             $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->default('Medium');
             $table->timestamps();
         });

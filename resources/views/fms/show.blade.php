@@ -7,12 +7,30 @@
             <div class="card shadow-sm border-0 mb-4">
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold text-dark">Feedback Details</h5>
-                    <span class="badge bg-soft-info text-info border border-info px-3">Received</span>
+                    <span class="badge 
+    {{ $feedback->status == 'Forwarded' ? 'bg-warning text-dark' : 
+       ($feedback->status == 'Viewed' ? 'bg-info' : 
+       ($feedback->status == 'New' ? 'bg-success' : 'bg-primary')) }} 
+    px-3">
+    {{ $feedback->status }}
+</span>
                 </div>
                 <div class="card-body">
                     <h3 class="fw-bold mb-3">{{ $feedback->subject }}</h3>
                     <div class="bg-light p-4 rounded mb-4" style="min-height: 120px; white-space: pre-wrap;">{{ $feedback->body }}</div>
-                    
+@if($feedback->forward_note)
+    <div class="alert alert-warning border-0 shadow-sm mb-4">
+        <h6 class="fw-bold text-dark"><i class="fas fa-share me-2"></i> Forwarding Note:</h6>
+        <p class="mb-2 text-dark" style="font-style: italic;">"{{ $feedback->forward_note }}"</p>
+        <hr class="my-2">
+        <small class="text-muted">
+            <strong>Forwarded by:</strong> {{ $feedback->forwarder->name ?? 'System' }} 
+            <span class="mx-2">|</span>
+            <strong>On:</strong> {{ $feedback->updated_at->format('M d, Y H:i') }}
+        </small>
+    </div>
+@endif
+
                     <div class="d-flex text-muted small border-top pt-3">
                         <div class="me-4"><i class="fas fa-calendar-alt me-1"></i> <strong>Submitted:</strong> {{ $feedback->created_at->format('M d, Y H:i') }}</div>
                         <div><i class="fas fa-user me-1"></i> <strong>From:</strong> {{ $feedback->is_anonymous ? 'Anonymous' : ($feedback->user->name ?? $feedback->guest->name ?? 'Guest') }}</div>
@@ -32,10 +50,10 @@
                     </div>
                 </div>
             @empty
-                <div class="alert alert-light border text-center text-muted">No responses given to this feedback yet.</div>
+                <div class="alert alert-light border text-center text-muted">No responses given yet.</div>
             @endforelse
 
-            {{-- Response Form: ለ Admin ወይም ለሚመለከተው Unit Responder ብቻ --}}
+            {{-- Response & Forward Form: ለ Admin ወይም ለሚመለከተው Unit Responder ብቻ --}}
             @if(Auth::user()->hasRole('System Administrator') || Auth::user()->hasRole('Unit Responder'))
                 <div class="card shadow-sm border-0 mt-5 border-top border-info border-4">
                     <div class="card-header bg-white py-3">
@@ -46,13 +64,20 @@
                             @csrf
                             <div class="mb-3">
                                 <label class="form-label fw-bold">Response Message</label>
-                                <textarea name="response_body" rows="5" class="form-control @error('response_body') is-invalid @enderror" placeholder="Enter your response here..." required>{{ old('response_body') }}</textarea>
+                                <textarea name="response_body" rows="4" class="form-control @error('response_body') is-invalid @enderror" placeholder="Enter your response here..." required>{{ old('response_body') }}</textarea>
                                 @error('response_body') <div class="invalid-feedback">{{ $message }}</div> @enderror
                             </div>
-                            <div class="text-end">
-                                <button type="submit" class="btn btn-info text-white px-5 shadow-sm">
-                                    <i class="fas fa-paper-plane me-2"></i> Submit Response
-                                </button>
+                            <div class="row align-items-center">
+                                <div class="col-md-6 mb-2">
+                                    <button type="submit" class="btn btn-info text-white w-100 shadow-sm">
+                                        <i class="fas fa-paper-plane me-2"></i> Submit Response
+                                    </button>
+                                </div>
+                                <div class="col-md-6 mb-2">
+                                    <button type="button" class="btn btn-outline-warning w-100 shadow-sm" data-bs-toggle="modal" data-bs-target="#forwardModal">
+                                        <i class="fas fa-share me-2"></i> Forward Feedback
+                                    </button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -87,4 +112,103 @@
         </div>
     </div>
 </div>
+
+{{-- Forward Modal --}}
+<div class="modal fade" id="forwardModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow">
+            <form action="{{ route('feedback.forward', $feedback->id) }}" method="POST">
+                @csrf
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title fw-bold"><i class="fas fa-share me-2"></i> Forward Feedback</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Recipient Type</label>
+                        <select id="forward_recipient_type" name="recipient_type" class="form-select" onchange="handleForwardTypeChange()" required>
+                            <option value="">Select Type</option>
+                            <option value="College">College</option>
+                            <option value="Department">Department</option>
+                            <option value="Directory">Directory</option>
+                        </select>
+                    </div>
+
+                    <div id="forward_college_filter_container" class="mb-3 d-none">
+                        <label class="form-label fw-bold text-primary">Select College First</label>
+                        <select id="forward_filter_college_id" class="form-select border-primary" onchange="loadForwardDepartments(this.value)">
+                            <option value=""> Choose College </option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Target Unit</label>
+                        <select id="forward_recipient_id" name="recipient_id" class="form-select" required disabled>
+                            <option value="">Select Unit</option>
+                        </select>
+                        <small id="forward_loading" class="text-muted d-none"><i class="fas fa-spinner fa-spin me-1"></i></small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">Forwarding Message</label>
+                        <textarea name="forward_note" class="form-control" rows="3" placeholder="Reason for forwarding this feedback..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-warning px-4 fw-bold">Confirm Forward</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+async function handleForwardTypeChange() {
+    const type = document.getElementById('forward_recipient_type').value;
+    const collegeFilter = document.getElementById('forward_college_filter_container');
+    const idSelect = document.getElementById('forward_recipient_id');
+    const collegeSelect = document.getElementById('forward_filter_college_id');
+
+    idSelect.innerHTML = '<option value="">Select Unit</option>';
+    idSelect.disabled = true;
+    collegeFilter.classList.add('d-none');
+
+    if (type === 'College') {
+        fillForwardUnits('{{ route('api.colleges.list') }}');
+    } else if (type === 'Directory') {
+        fillForwardUnits('{{ route('api.directories.list') }}');
+    } else if (type === 'Department') {
+        collegeFilter.classList.remove('d-none');
+        const resp = await fetch('{{ route('api.colleges.list') }}');
+        const colleges = await resp.json();
+        collegeSelect.innerHTML = '<option value="">-- Choose College --</option>';
+        colleges.forEach(c => {
+            collegeSelect.innerHTML += `<option value="${c.id}">${c.name_en}</option>`;
+        });
+    }
+}
+
+async function loadForwardDepartments(collegeId) {
+    if (!collegeId) return;
+    fillForwardUnits(`{{ url('/api/colleges') }}/${collegeId}/departments`);
+}
+
+async function fillForwardUnits(url) {
+    const idSelect = document.getElementById('forward_recipient_id');
+    const loader = document.getElementById('forward_loading');
+    idSelect.disabled = true;
+    loader.classList.remove('d-none');
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        idSelect.innerHTML = '<option value="">Select Unit</option>';
+        data.forEach(item => {
+            idSelect.innerHTML += `<option value="${item.id}">${item.name_en}</option>`;
+        });
+        idSelect.disabled = false;
+    } catch (e) { console.error(e); }
+    loader.classList.add('d-none');
+}
+</script>
 @endsection

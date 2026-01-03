@@ -46,14 +46,17 @@ Route::middleware(['auth'])->group(function () {
     Route::delete('/complaints/{complaint}/destroy', [ComplaintController::class, 'destroy'])->name('complaints.destroy'); 
     Route::get('/complaint/{complaint}/respond', [ComplaintController::class, 'respond'])->name('respond');
     Route::post('/complaint/{complaint}/response', [ComplaintController::class, 'processResponse'])->name('processResponse');
-    
     Route::delete('/complaint/{complaint}', [ComplaintController::class, 'destroy'])->name('destroy');
+Route::post('/complaints/{complaint}/forward', [ComplaintController::class, 'forward'])
+    ->name('complaints.forward')
+    ->middleware('auth');
 
     Route::get('/feedback/list', [FeedbackController::class, 'index'])->name('feedback.index'); 
     Route::get('/feedback/{feedback}', [FeedbackController::class, 'show'])->name('feedback.show');
     Route::get('/feedback/{feedback}/respond', [FeedbackController::class, 'respond'])->name('feedback.respond');
     Route::post('/feedback/{feedback}/response', [FeedbackController::class, 'processResponse'])->name('feedback.processResponse');
     Route::delete('/feedback/{feedback}/destroy', [FeedbackController::class, 'destroy'])->name('feedback.destroy');
+    Route::post('/feedback/{feedback}/forward', [FeedbackController::class, 'forward'])->name('feedback.forward');
 });
 
 //for rolemanagement

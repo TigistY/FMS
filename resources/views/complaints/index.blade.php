@@ -7,11 +7,10 @@
             <h2><i class="fas fa-list-ul me-2 text-primary"></i> Complaints List</h2>
         
             @if(Auth::user()->hasRole('System Administrator'))
-            <span class="badge bg-danger">Admin View: All complaints</span>
-        @else
-            <span class="badge bg-info">Unit: {{ Auth::user()->college->name_en ?? Auth::user()->department->name_en ?? Auth::user()->directory->name_en ?? 'Your Unit' }}</span>
-        @endif
-
+                <span class="badge bg-danger">Admin View: All complaints</span>
+            @else
+                <span class="badge bg-info">Unit: {{ Auth::user()->college->name_en ?? Auth::user()->department->name_en ?? Auth::user()->directory->name_en ?? 'Your Unit' }}</span>
+            @endif
         </div>
     </div>
 
@@ -28,37 +27,55 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
-                            <th class="ps-4">ID</th>
+                            <th class="ps-4">No.</th>
                             <th>Subject</th>
                             <th>Recipient Unit</th>
+                            <th>Sender</th>
                             <th>Status</th>
                             <th>Date Submitted</th>
                             <th class="text-end pe-4">Action</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse ($complaints as $complaint)
+                        @forelse ($complaints as $key => $complaint)
                             <tr>
-                                <td class="ps-4">#{{ $complaint->id }}</td>
+                                <td class="ps-4 text-muted">{{ $complaints->firstItem() + $key }}</td>
                                 <td>
                                     <span class="fw-bold d-block">{{ $complaint->subject }}</span>
-                                    <small class="text-muted">By: {{ $complaint->is_anonymous ? 'Anonymous' : ($complaint->user->name ?? $complaint->guest->name ?? 'Guest') }}</small>
+                                    
+                                    {{-- Forward የተደረገ ከሆነ ምልክት ያሳያል --}}
+                                    @if($complaint->forward_note)
+                                        <small class="badge bg-light text-warning border border-warning mb-1" style="font-size: 0.7rem;">
+                                            <i class="fas fa-share"></i> Forwarded
+                                        </small>
+                                    @endif
                                 </td>
                                 <td>
                                     <span class="badge bg-light text-dark border fw-normal">{{ $complaint->recipient_type }}</span><br>
-                                    <small>{{ $complaint->recipient->name_en ?? 'N/A' }}</small>
+                                    <small class="text-muted">{{ $complaint->recipient->name_en ?? 'N/A' }}</small>
+                                </td>
+                                <td>
+                                    @if($complaint->is_anonymous)
+                                        <span class="text-muted italic"><i class="fas fa-user-secret me-1"></i> Anonymous</span>
+                                    @else
+                                        <span class="text-primary">{{ $complaint->user->name ?? $complaint->guest->name ?? 'Unknown' }}</span>
+                                    @endif
                                 </td>
                                 <td>
                                     @php
                                         $color = match($complaint->status) {
-                                            'Resolved' => 'success',
-                                            'Pending' => 'warning',
-                                            'In Progress' => 'info',
-                                            'Closed' => 'secondary',
-                                            default => 'primary'
+                                            'Resolved'    => 'success',
+                                            'Pending'     => 'warning text-dark',
+                                            'In Progress' => 'info text-white',
+                                            'Closed'      => 'secondary',
+                                            'Forwarded'   => 'warning', 
+                                            'Viewed'      => 'primary',  
+                                            default       => 'dark'
                                         };
                                     @endphp
-                                    <span class="badge bg-{{ $color }}">{{ $complaint->status }}</span>
+                                    <span class="badge bg-{{ $color }} shadow-sm px-3 py-2">
+                                        {{ $complaint->status }}
+                                    </span>
                                 </td>
                                 <td>{{ $complaint->created_at->format('M d, Y') }}</td>
                                 <td class="text-end pe-4">
@@ -81,16 +98,27 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="text-center py-5">No complaints found.</td>
+                                <td colspan="7" class="text-center py-5 text-muted">No complaints found.</td>
                             </tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
         </div>
-        <div class="card-footer bg-white">
-            {{ $complaints->links() }}
-        </div>
+    <div class="card-footer bg-white border-0 py-3">
+    <div class="d-flex justify-content-center">
+        {{ $complaints->links() }}
     </div>
 </div>
+    </div>
+</div>
+<style>
+    .pagination .page-item:not(.active):not(:first-child):not(:last-child) {
+        display: none !important;
+    }
+    .pagination .page-link {
+        padding: 5px 15px !important;
+        font-size: 14px !important;
+    }
+</style>
 @endsection

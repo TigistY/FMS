@@ -13,6 +13,25 @@
      <link rel="stylesheet" href="{{asset('css/layout.css')}}" type="text/css">
     <!-- Custom CSS for Layout -->
     <style>
+        /* ለኖቲፊኬሽን ባጅ አኒሜሽን እንዲኖረው */
+.badge.rounded-pill.bg-danger {
+    border: 2px solid #fff;
+}
+
+/* Dropdown መልክ ማስተካከያ */
+.dropdown-menu {
+    border-radius: 12px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.extra-small {
+    font-size: 0.75rem;
+}
         body {
             font-family: 'Inter', sans-serif; /* A nice, clean font */
         }

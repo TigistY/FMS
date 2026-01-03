@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Mail;
 
 class ComplaintController extends Controller
 {
@@ -72,16 +73,15 @@ class ComplaintController extends Controller
         return redirect()->back()->with('success', 'Your complaint has been successfully submitted');
     }
 
-    public function index()
+ public function index()
 {
     $user = Auth::user();
     $query = Complaint::with(['recipient', 'user', 'guest'])->latest();
 
     if ($user->hasRole('System Administrator')) {
-
+        // ...
     } elseif ($user->hasRole('Unit Responder')) {
         $query->where(function ($q) use ($user) {
-
             if ($user->college_id) {
                 $q->orWhere(fn($sq) => $sq->where('recipient_type', 'College')->where('recipient_id', $user->college_id));
             }
@@ -93,64 +93,83 @@ class ComplaintController extends Controller
             }
         });
     } else {
-        
         $query->where('user_id', $user->id);
     }
 
-    $complaints = $query->paginate(10); 
+    // ጠቃሚ ማስታወሻ፡ እዚህ ጋር የግድ simplePaginate መሆን አለበት!
+    $complaints = $query->simplePaginate(10); 
+    
     return view('complaints.index', compact('complaints'));
 }
 
-    public function show(Complaint $complaint)
-    {
-        $user = Auth::user();
-        $complaint->load(['responses.responder', 'recipient']); 
+public function show(Complaint $complaint)
+{
+    $user = Auth::user();
+    $complaint->load(['responses.responder', 'recipient', 'forwarder']); // 'forwarder' እዚህ ጋር መጫኑን እርግጠኛ ሁን
 
-        $isResponder = $this->isUserResponsibleForRecipient($user, $complaint->recipient_type, $complaint->recipient_id);
+    $isResponder = $this->isUserResponsibleForRecipient($user, $complaint->recipient_type, $complaint->recipient_id);
 
-        if ($user->hasRole('System Administrator') || 
-           ($user->hasRole('Unit Responder') && $isResponder) || 
-           ($user->id === $complaint->user_id && !$complaint->is_anonymous)) {
-            
-            return view('complaints.show', compact('complaint'));
+    if ($user->hasRole('System Administrator') || ($user->hasRole('Unit Responder') && $isResponder) || ($user->id === $complaint->user_id && !$complaint->is_anonymous)) {
+        
+        if ($user->hasRole('Unit Responder') && $isResponder) {
+            if (in_array($complaint->status, ['Pending', 'Forwarded'])) {
+                // እዚህ ጋር update ስታደርግ note-ን እንዳይነካው
+                $complaint->status = 'Viewed';
+                $complaint->save(); 
+            }
         }
+        
+        return view('complaints.show', compact('complaint'));
+    }
+    abort(403);
+}
 
-        abort(403, 'Unauthorized access.');
+   public function processResponse(Request $request, Complaint $complaint)
+{
+    $user = Auth::user();
+    $isResponder = $this->isUserResponsibleForRecipient($user, $complaint->recipient_type, $complaint->recipient_id);
+    
+    if (!$user->hasRole('System Administrator') && !($user->hasRole('Unit Responder') && $isResponder)) {
+        abort(403, 'Unauthorized to respond.');
     }
 
-    public function processResponse(Request $request, Complaint $complaint)
-    {
-        $user = Auth::user();
-        $isResponder = $this->isUserResponsibleForRecipient($user, $complaint->recipient_type, $complaint->recipient_id);
-        
-        if (!$user->hasRole('System Administrator') && !($user->hasRole('Unit Responder') && $isResponder)) {
-            abort(403, 'Unauthorized to respond.');
+    $validated = $request->validate([
+        'response_body' => 'required|string|min:10',
+        'status'        => ['required', Rule::in(['In Progress', 'Resolved', 'Closed','Forwarded'])],
+        'priority'      => ['required', Rule::in(['Low', 'Medium', 'High'])], 
+    ]);
+    
+    // ምላሹን ሴቭ ማድረግ
+    $response = new Response([
+        'response_text'      => $validated['response_body'],
+        'responder_id'       => $user->id,
+        'is_public'          => true, 
+        'status_at_response' => $validated['status'],
+    ]);
+    
+    $complaint->responses()->save($response);
+
+    $complaint->update([
+        'status'   => $validated['status'],
+        'priority' => $validated['priority'],
+    ]);
+
+    // --- የኢሜይል መላኪያ ክፍል (ከመመለሱ በፊት መሆን አለበት) ---
+    if (!$complaint->is_anonymous) {
+        $recipientEmail = $complaint->user->email ?? $complaint->guest->email ?? null;
+        if ($recipientEmail) {
+            try {
+                \Illuminate\Support\Facades\Mail::to($recipientEmail)
+                    ->send(new \App\Mail\ResponseNotification($complaint, $validated['response_body']));
+            } catch (\Exception $e) {
+                Log::error("Email failed: " . $e->getMessage());
+            }
         }
-
-        $validated = $request->validate([
-            'response_body' => 'required|string|min:10',
-            'status'        => ['required', Rule::in(['In Progress', 'Resolved', 'Closed'])],
-            'priority'      => ['required', Rule::in(['Low', 'Medium', 'High'])], 
-        ]);
-        
-        $response = new Response([
-            'response_text'      => $validated['response_body'],
-            'responder_id'       => $user->id,
-            'is_public'          => true, 
-            'status_at_response' => $validated['status'],
-        ]);
-        
-        $complaint->responses()->save($response);
-
-        $complaint->update([
-            'status'   => $validated['status'],
-            'priority' => $validated['priority'],
-        ]);
-
-        return redirect()->route('show', $complaint->id)
-                         ->with('success', 'Response submitted. Case updated to ' . $validated['status'] . ' with ' . $validated['priority'] . ' priority.');
     }
 
+    return redirect()->route('show', $complaint->id)
+                     ->with('success', 'Response submitted and email sent to the user!');
+}
     
     public function destroy(Complaint $complaint)
     {
@@ -174,6 +193,24 @@ class ComplaintController extends Controller
     };
 }
 
+public function forward(Request $request, Complaint $complaint)
+{
+    $validated = $request->validate([
+        'recipient_type' => 'required|in:College,Department,Directory',
+        'recipient_id'   => 'required|integer',
+        'forward_note'   => 'nullable|string', // እዚህ ጋር 'required' የነበረውን 'nullable' አደረግነው
+    ]);
+
+    $complaint->update([
+        'recipient_type'         => $validated['recipient_type'],
+        'recipient_id'           => $validated['recipient_id'],
+        'forwarded_from_user_id' => Auth::id(),
+        'forward_note'           => $validated['forward_note'], // Note ከሌለ null ይሆናል
+        'status'                 => 'Forwarded',
+    ]);
+
+    return redirect()->route('index')->with('success', 'Complaint forwarded successfully!');
+}
     // --- AJAX Methods ---
     public function getDepartmentsByCollege(Request $request)
     {
