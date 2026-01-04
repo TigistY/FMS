@@ -1,7 +1,7 @@
-<div class="sidebar d-flex flex-column p-3">
+<div class="sidebar d-flex flex-column p-3" style="background-color: #1e3a5f; min-height: 100vh;border-right: 1px solid rgba(255,255,255,0.1);">
     <div class="sidebar-header text-center">
         <a class="navbar-brand d-block" href="{{ route('dashboard') }}">
-            <img class="logo shadow-sm mb-2" src="{{ asset('image/logo.jfif') }}" width="85" height="85" style="border: 3px solid #fff; border-radius: 50%; padding: 2px; object-fit: cover;">
+            <img class="logo shadow-sm mb-2" src="{{ asset('image/logo.jfif') }}" width="85" height="85" >
             <div class="mt-1 fw-bold text-primary small">{{ __('messages.University Name') }}</div>
             
         </a>
@@ -69,6 +69,12 @@
     </a>
 </li>
 @endcan
+
+        <li class="nav-item mt-auto pt-5">
+        <a href="{{ route('wel.link') }}" class="btn text-info btn-outline-secondary w-100">
+            <i class="fas fa-arrow-left me-2"></i> {{ __('messages.Back to Home') }}
+        </a></li>
+    
         <li class="nav-item mt-auto pt-5">
             <form method="post" action="{{ route('logout') }}" class="w-100">
                 @csrf

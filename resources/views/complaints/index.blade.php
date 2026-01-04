@@ -3,14 +3,14 @@
 @section('content')
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <div>
             <h2><i class="fas fa-list-ul me-2 text-primary"></i> Complaints List</h2>
-        
-            @if(Auth::user()->hasRole('System Administrator'))
-                <span class="badge bg-danger">Admin View: All complaints</span>
-            @else
-                <span class="badge bg-info">Unit: {{ Auth::user()->college->name_en ?? Auth::user()->department->name_en ?? Auth::user()->directory->name_en ?? 'Your Unit' }}</span>
-            @endif
+        @if(request()->has('unit_id') || request()->has('unit_type') || request()->has('search'))
+        <div>
+            <a href="{{ route('admin.reports.units') }}" class="btn btn-outline-primary shadow-sm fw-bold">
+                <i class="fas fa-arrow-left me-2"></i> Back 
+            </a>
+        </div>
+    @endif
         </div>
     </div>
 @if(Auth::user()->hasRole('System Administrator'))
@@ -132,51 +132,4 @@
     .pagination .page-item:not(.active):not(:first-child):not(:last-child) { display: none !important; }
     .pagination .page-link { padding: 5px 15px !important; font-size: 14px !important; }
 </style>
-
-<script>
-$(document).ready(function() {
-    $('#unit_type_select').on('change', function() {
-        let type = $(this).val();
-        $('#main_unit_div, #dept_unit_div').addClass('d-none');
-        $('#main_unit_list, #dept_unit_list').empty().append('<option value="">-- ምረጥ --</option>');
-        $('#target_unit_id').val('');
-
-        if (type === 'College' || type === 'Department') {
-            $.get("{{ route('api.colleges.list') }}", function(data) {
-                $.each(data, function(key, value) {
-                    $('#main_unit_list').append('<option value="' + value.id + '">' + value.name_en + '</option>');
-                });
-                $('#main_unit_div').removeClass('d-none');
-            });
-        } else if (type === 'Directory') {
-            $.get("{{ route('api.directories.list') }}", function(data) {
-                $.each(data, function(key, value) {
-                    $('#main_unit_list').append('<option value="' + value.id + '">' + value.name_en + '</option>');
-                });
-                $('#main_unit_div').removeClass('d-none');
-            });
-        }
-    });
-
-    $('#main_unit_list').on('change', function() {
-        let id = $(this).val();
-        let type = $('#unit_type_select').val();
-        if (type === 'Department' && id) {
-            $.get("/api/colleges/" + id + "/departments", function(data) {
-                $('#dept_unit_list').empty().append('<option value="">-- ዲፓርትመንት ምረጥ --</option>');
-                $.each(data, function(key, value) {
-                    $('#dept_unit_list').append('<option value="' + value.id + '">' + value.name_en + '</option>');
-                });
-                $('#dept_unit_div').removeClass('d-none');
-            });
-        } else {
-            $('#target_unit_id').val(id);
-        }
-    });
-
-    $('#dept_unit_list').on('change', function() {
-        $('#target_unit_id').val($(this).val());
-    });
-});
-</script>
 @endsection

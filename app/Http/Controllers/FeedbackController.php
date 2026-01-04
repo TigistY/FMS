@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Mail;//for email
+use App\Mail\ResponseNotification;//for email
 
 class FeedbackController extends Controller
 {
@@ -48,13 +49,11 @@ class FeedbackController extends Controller
         'guest_type'     => 'nullable|in:Student,Teacher,Employee,Other',
     ]);
 
-    // 2. Recipient Validation
     $modelClass = $typeMapping[$validatedData['recipient_type']];
     if (!$modelClass::where('id', $validatedData['recipient_id'])->exists()) {
-         return redirect()->back()->withInput()->withErrors(['recipient_id' => 'የተመረጠው ክፍል አልተገኘም።']);
+         return redirect()->back()->withInput()->withErrors(['recipient_id' => 'apsent selected unit']);
     }
 
-    // 3. Reporter Identification
     $isAnonymous = $request->has('is_anonymous');
     $guestId = null; 
     $userId = Auth::id(); 
@@ -70,7 +69,6 @@ class FeedbackController extends Controller
         $guestId = $guest->id;
     }
 
-    // 4. Save Feedback
     $feedback = Feedback::create([
         'subject'        => $validatedData['subject'],
         'body'           => $validatedData['body'],
@@ -79,7 +77,7 @@ class FeedbackController extends Controller
         'guest_id'       => $guestId,
         'recipient_id'   => $validatedData['recipient_id'],
         'recipient_type' => $validatedData['recipient_type'], 
-        'status'         => 'New',// አጭር ስም (ለምሳሌ 'College')
+        'status'         => 'New',
     ]);
 
     return redirect()->back()->with('success', 'Your feedback has been successfully submitted.');
@@ -92,13 +90,12 @@ public function index(Request $request)
     $query = Feedback::with(['recipient']);
 
     if ($user->hasRole('System Administrator')) {
-        // ሀ. ከሪፖርት ገጽ በመንካት የመጣ ከሆነ (Filtering by Exact Unit ID)
         if ($request->filled('unit_type') && $request->filled('unit_id')) {
             $query->where('recipient_type', $request->unit_type)
                   ->where('recipient_id', $request->unit_id);
         }
 
-        // ለ. በሰርች ባሩ የመጣ ፍለጋ (Searching by Name)
+        // for search
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->whereHasMorph('recipient', ['App\Models\College', 'App\Models\Directory', 'App\Models\Department'], function($q) use ($searchTerm) {
@@ -107,7 +104,7 @@ public function index(Request $request)
             });
         }
     } else {
-        // ሬስፖንደር የራሱን ብቻ እንዲያይ
+        // for individual unit responder
         if ($user->college_id) {
             $query->where('recipient_type', 'College')->where('recipient_id', $user->college_id);
         } elseif ($user->directory_id) {
@@ -117,7 +114,7 @@ public function index(Request $request)
         }
     }
 
-    $feedbacks = $query->latest()->paginate(10);
+    $feedbacks = $query->latest()->simplePaginate(10);
     return view('fms.index', compact('feedbacks'));
 }
 public function show(Feedback $feedback)
@@ -129,7 +126,6 @@ public function show(Feedback $feedback)
 
     if ($user->hasRole('System Administrator') || ($user->hasRole('Unit Responder') && $isResponder)) {
         
-        // 'New' ወይም 'Forwarded' ከሆነ ሪስፖንደሩ ስላየው ወደ 'Viewed' ይቀየራል
         if ($user->hasRole('Unit Responder') && $isResponder) {
             if (in_array($feedback->status, ['New', 'Forwarded'])) {
                 $feedback->update(['status' => 'Viewed']);
@@ -139,7 +135,7 @@ public function show(Feedback $feedback)
         return view('fms.show', compact('feedback'));
     }
     
-    // ለተጠቃሚው (Reporter)
+
     if ($user->id === $feedback->user_id && !$feedback->is_anonymous) {
          return view('fms.show', compact('feedback'));
     }
@@ -149,11 +145,7 @@ public function show(Feedback $feedback)
  
 public function destroy(Feedback $feedback) 
 {
-    /*
-    if (!Auth::user()->hasRole('System Administrator')) {
-        abort(403, 'Only admins can delete feedback.');
-    }
-*/
+    
     $feedback->delete();
 
     return redirect()->route('feedback.index')
@@ -164,8 +156,7 @@ public function destroy(Feedback $feedback)
     public function respond(Feedback $feedback)
     {
         $user = Auth::user();
-        
-        // Authorization check: Only Admin or the responsible Unit Responder can respond.
+  
         $isResponder = $this->isUserResponsibleForRecipient($user, $feedback->recipient_type, $feedback->recipient_id);
 
         if (Gate::denies('respond-feedback') || (
@@ -181,13 +172,11 @@ public function destroy(Feedback $feedback)
 public function processResponse(Request $request, Feedback $feedback)
 {
     $user = Auth::user();
-    
-    // 1. Validation (Status-ን እዚህ ጋር አናስገድደውም)
     $validated = $request->validate([
         'response_body' => 'required|string|min:5',
     ]);
     
-    // 2. Response መመዝገብ
+    //for register response 
     $response = new Response([
         'response_text' => $validated['response_body'],
         'responder_id' => $user->id,
@@ -196,15 +185,28 @@ public function processResponse(Request $request, Feedback $feedback)
     ]);
     
     $feedback->responses()->save($response);
-
-    // 3. Status-ን ወደ 'Responded' መቀየር
     $feedback->update(['status' => 'Responded']);
 
-    // 4. Email መላክ (ካለህበት ይቀጥል...)
-    // ...
+    // 2. የኢሜይል መላኪያ ክፍል
+    // Feedback ስም በሌለው መልኩ (Anonymous) ሊላክ ስለሚችል መጀመሪያ ቼክ እናደርጋለን
+    if (!$feedback->is_anonymous) {
+        // የላኪውን ኢሜይል መፈለግ (ከሰርቲፊኬት ተጠቃሚ ወይም ከእንግዳ)
+        $recipientEmail = $feedback->user->email ?? $feedback->guest->email ?? null;
+
+        if ($recipientEmail) {
+            try {
+                // ለ Complaint የተጠቀምክበትን ResponseNotification Mailable ለ Feedbackም መጠቀም ትችላለህ
+                \Illuminate\Support\Facades\Mail::to($recipientEmail)
+                    ->send(new \App\Mail\ResponseNotification($feedback, $validated['response_body']));
+            } catch (\Exception $e) {
+                // ኢሜይሉ ባይሳካ እንኳን ሲስተሙ እንዳይቆም በ Log መመዝገብ
+                \Illuminate\Support\Facades\Log::error("Feedback Email failed: " . $e->getMessage());
+            }
+        }
+    }
 
     return redirect()->route('feedback.show', $feedback->id)
-                     ->with('success', 'Response submitted successfully.');
+                     ->with('success', 'Response submitted and notification email sent!');
 }
 public function forward(Request $request, Feedback $feedback)
 {

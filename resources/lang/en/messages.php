@@ -10,6 +10,7 @@ return [
     'Role Management' => 'Role Management',
     'College/Directorate' => 'College/Directorate',
     'Logout' => 'Log Out',
+    'Back to Home'=>'Back to Home',
     'Get Started' => 'Get Started',
     'About FMS' => 'About FMS',
     'System Info' => 'System Info',

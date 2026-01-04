@@ -1,30 +1,30 @@
-<div style="font-family: sans-serif; line-height: 1.6; color: #333;">
-    <h3>Hello {{ $content->is_anonymous ? 'Guest' : ($content->user->name ?? $content->guest->name) }},</h3>
-    <p>A response has been provided regarding your submission:</p>
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: auto; border: 1px solid #eee; border-radius: 10px; overflow: hidden;">
+    <div style="background-color: #1e3a5f; padding: 20px; text-align: center; color: white;">
+        <h2 style="margin: 0;">Injibara University</h2>
+        <small>Feedback Management System (FMS)</small>
+    </div>
 
-    <h3 style="margin-top: 20px;">ሰላም {{ $content->is_anonymous ? 'Guest' : ($content->user->name ?? $content->guest->name) }},</h3>
-    <p>ባስገቡት ጉዳይ ላይ ምላሽ ተሰጥቷል፡</p>
+    <div style="padding: 30px;">
+        <h3 style="color: #1e3a5f;">Hello {{ $content->is_anonymous ? 'Guest' : ($content->user->name ?? $content->guest->name) }},</h3>
+        <p>A response has been provided regarding your submission. / ባስገቡት ጉዳይ ላይ ምላሽ ተሰጥቷል፡</p>
 
-    <div style="background: #f4f4f4; padding: 20px; border-left: 4px solid #007bff; margin: 20px 0;">
-        <div style="margin-bottom: 15px;">
-            <strong>Subject / ጉዳዩ፦</strong><br>
-            {{ $content->subject }}
+        <div style="background: #f9f9f9; padding: 20px; border-left: 5px solid #ffc107; margin: 25px 0;">
+            <div style="margin-bottom: 15px;">
+                <strong style="color: #1e3a5f;">Subject / ጉዳዩ፦</strong><br>
+                <span style="font-size: 1.1em;">{{ $content->subject }}</span>
+            </div>
+            <div>
+                <strong style="color: #1e3a5f;">Response / የተሰጠ ምላሽ፦</strong><br>
+                <div style="white-space: pre-line;">{{ $responseText }}</div>
+            </div>
         </div>
-        <div>
-            <strong>Response / የተሰጠ ምላሽ፦</strong><br>
-            {{ $responseText }}
+
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="{{ url('/login') }}" style="background-color: #1e3a5f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Login to System / ሲስተሙ ውስጥ ይግቡ</a>
         </div>
     </div>
 
-    <hr style="border: 0; border-top: 1px solid #eee;">
-    
-    <p>
-        For more information, please log in to the system.<br>
-        ለበለጠ መረጃ ሲስተሙን መመልከት ይችላሉ።
-    </p>
-    
-    <p>
-        Thank you! / እናመሰግናለን!<br>
-        <strong>Injibara University / እንጅባራ ዩኒቨርሲቲ</strong>
-    </p>
+    <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 0.85em; color: #777;">
+        <p>&copy; {{ date('Y') }} Injibara University. All Rights Reserved.</p>
+    </div>
 </div>

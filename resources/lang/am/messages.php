@@ -10,6 +10,7 @@ return [
     'Role Management' => 'የሚና አስተዳደር',
     'College/Directorate' => 'ኮሌጅ/ዳይሬክቶሬት',
     'Logout' => 'ውጣ',
+    'Back to Home'=>'ወደ ዋና ገጽ ተመለስ',
     'Get Started' => 'ይጀምሩ',
     'About FMS' => 'ስለ ሲስተሙ',
     'System Info' => 'የሲስተም መረጃ',

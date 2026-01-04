@@ -4,12 +4,17 @@
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold"><i class="fas fa-list-alt text-primary me-2"></i> Feedback List</h2>
-        @if(Auth::user()->hasRole('System Administrator'))
-            <span class="badge bg-danger">Admin View: All Feedbacks</span>
-        @else
-            <span class="badge bg-info">Unit: {{ Auth::user()->college->name_en ?? Auth::user()->department->name_en ?? Auth::user()->directory->name_en ?? 'Your Unit' }}</span>
-        @endif
+        
+@if(request()->has('unit_id') || request()->has('unit_type') || request()->has('search'))
+        <div>
+            <a href="{{ route('admin.reports.units') }}" class="btn btn-outline-primary shadow-sm fw-bold">
+                <i class="fas fa-arrow-left me-2"></i> Back 
+            </a>
+        </div>
+    @endif
     </div>
+</div>
+
 @if(Auth::user()->hasRole('System Administrator'))
 <div class="card border-0 shadow-sm mb-4">
     <div class="card-body bg-light">
@@ -121,25 +126,5 @@
         margin: 0 4px;
     }
 </style>
-<script>
-    $('#search_unit_type').on('change', function() {
-    let type = $(this).val();
-    $('#main_search_div').addClass('d-none');
-    $('#dept_search_div').addClass('d-none');
-    
-    if(type === 'College' || type === 'Department') {
-        $('#main_label').text('ኮሌጅ ምረጥ');
-        loadColleges();
-        $('#main_search_div').removeClass('d-none');
-    } else if(type === 'Directory') {
-        $('#main_label').text('ዳይሬክቶሬት ምረጥ');
-        loadDirectories();
-        $('#main_search_div').removeClass('d-none');
-    }
-});
 
-function loadColleges() {
-    // እዚህ ጋር ኮሌጆችን በ AJAX ወይም ቀድሞ በመጣ ዳታ መሙላት ትችላለህ
-}
-</script>
 @endsection

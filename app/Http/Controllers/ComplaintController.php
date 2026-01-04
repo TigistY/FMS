@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Mail;
+use App\Mail\ResponseNotification;
 
 class ComplaintController extends Controller
 {
@@ -78,13 +79,12 @@ public function index(Request $request)
     $query = Complaint::with(['recipient', 'user', 'guest']);
 
     if ($user->hasRole('System Administrator')) {
-        // ሀ. ከሪፖርት ገጽ በመንካት የመጣ ከሆነ (Filtering by Exact Unit ID)
         if ($request->filled('unit_type') && $request->filled('unit_id')) {
             $query->where('recipient_type', $request->unit_type)
                   ->where('recipient_id', $request->unit_id);
         }
 
-        // ለ. በሰርች ባሩ የመጣ ፍለጋ (Searching by Name/Subject)
+        // for search
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->where(function($q) use ($searchTerm) {
@@ -113,10 +113,10 @@ public function index(Request $request)
         $query->where('user_id', $user->id);
     }
 
-    $complaints = $query->latest()->paginate(10);
+    $complaints = $query->latest()->simplePaginate(10);
     return view('complaints.index', compact('complaints'));
 }
-// AJAX: ኮሌጅ ሲመረጥ ዲፓርትመንቶችን ለመላክ
+// AJAX: collage semret deparetmentochin yichenal
 public function getDepartmentsJson(Request $request)
 {
     $departments = \App\Models\Department::where('college_id', $request->college_id)
@@ -127,15 +127,13 @@ public function getDepartmentsJson(Request $request)
 public function show(Complaint $complaint)
 {
     $user = Auth::user();
-    $complaint->load(['responses.responder', 'recipient', 'forwarder']); // 'forwarder' እዚህ ጋር መጫኑን እርግጠኛ ሁን
-
+    $complaint->load(['responses.responder', 'recipient', 'forwarder']); 
     $isResponder = $this->isUserResponsibleForRecipient($user, $complaint->recipient_type, $complaint->recipient_id);
 
     if ($user->hasRole('System Administrator') || ($user->hasRole('Unit Responder') && $isResponder) || ($user->id === $complaint->user_id && !$complaint->is_anonymous)) {
         
         if ($user->hasRole('Unit Responder') && $isResponder) {
             if (in_array($complaint->status, ['Pending', 'Forwarded'])) {
-                // እዚህ ጋር update ስታደርግ note-ን እንዳይነካው
                 $complaint->status = 'Viewed';
                 $complaint->save(); 
             }
@@ -161,7 +159,7 @@ public function show(Complaint $complaint)
         'priority'      => ['required', Rule::in(['Low', 'Medium', 'High'])], 
     ]);
     
-    // ምላሹን ሴቭ ማድረግ
+    // for register responce
     $response = new Response([
         'response_text'      => $validated['response_body'],
         'responder_id'       => $user->id,
@@ -170,7 +168,6 @@ public function show(Complaint $complaint)
     ]);
     
     $complaint->responses()->save($response);
-
     $complaint->update([
         'status'   => $validated['status'],
         'priority' => $validated['priority'],
@@ -220,14 +217,14 @@ public function forward(Request $request, Complaint $complaint)
     $validated = $request->validate([
         'recipient_type' => 'required|in:College,Department,Directory',
         'recipient_id'   => 'required|integer',
-        'forward_note'   => 'nullable|string', // እዚህ ጋር 'required' የነበረውን 'nullable' አደረግነው
+        'forward_note'   => 'nullable|string', 
     ]);
 
     $complaint->update([
         'recipient_type'         => $validated['recipient_type'],
         'recipient_id'           => $validated['recipient_id'],
         'forwarded_from_user_id' => Auth::id(),
-        'forward_note'           => $validated['forward_note'], // Note ከሌለ null ይሆናል
+        'forward_note'           => $validated['forward_note'], 
         'status'                 => 'Forwarded',
     ]);
 

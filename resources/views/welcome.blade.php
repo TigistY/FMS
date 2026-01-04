@@ -10,28 +10,33 @@
         </p>
 
         <h3 class="mb-3" style="border-bottom: 2px solid #ddd; padding-bottom: 5px;">Submit Your Input</h3>
-        
-        <div class="section-card" onclick="window.location.href='feedback_form.html'">
-            <p class="section-title">General Feedback & Suggestions</p>
-            <p class="mb-0">
-                Use this option to share positive feedback, suggestions for improvement, or ideas related to general university operations and processes.
-            </p>
-        </div>
+    <div class="section-card" onclick="window.location.href='{{ route('feedback.link') }}'">
+    <p class="section-title">General Feedback & Suggestions</p>
+    <p class="mb-0">
+        Share your thoughts, appreciation, or suggestions to help us improve our services. Use this for non-urgent ideas related to university operations.
+    </p>
+</div>
 
-        <div class="section-card" onclick="window.location.href='complaint_form.html'">
-            <p class="section-title">Formal Complaint Submission</p>
-            <p class="mb-0">
-                Submit a formal complaint regarding misconduct, service failures, or specific issues with staff or facilities. This process ensures formal review and resolution.
-            </p>
-        </div>
+<div class="section-card" onclick="window.location.href='{{ route('create') }}'">
+    <p class="section-title">Formal Complaint Submission</p>
+    <p class="mb-0">
+        Submit a formal complaint regarding service failures, misconduct, or facility issues. This track ensures your case is officially reviewed and resolved.
+    </p>
+</div>
 
-        <div class="section-card" onclick="window.location.href='anonymous_form.html'">
-            <p class="section-title">Anonymous Reporting</p>
-            <p class="mb-0">
-                Report sensitive issues anonymously. While follow-up is limited, this channel provides a safe space for confidential disclosures.
-            </p>
-        </div>
+<div class="section-card" onclick="window.location.href='{{ route('create', ['anonymous' => true]) }}'">
+    <p class="section-title">Anonymous Complaint Reporting</p>
+    <p class="mb-0">
+        Report sensitive issues or misconduct without revealing your identity. Ideal for whistleblowing or sensitive matters where privacy is your priority.
+    </p>
+</div>
 
+<div class="section-card" onclick="window.location.href='{{ route('feedback.link', ['anonymous' => true]) }}'">
+    <p class="section-title">Anonymous Feedback Submission</p>
+    <p class="mb-0">
+        Provide honest feedback or suggestions anonymously. Your input helps us improve while ensuring your personal information remains completely private.
+    </p>
+</div>
 <div class="mt-5 pt-4">
     <h3 class="mb-4 fw-bold text-dark border-bottom pb-2">
         <i class="fas fa-question-circle text-primary me-2"></i>Frequently Asked Questions (FAQ)
@@ -40,18 +45,18 @@
     <div class="accordion accordion-flush" id="faqAccordion">
         
         <div class="accordion-item faq-hover-card mb-3 shadow-sm border rounded-3 overflow-hidden">
-            <h2 class="accordion-header">
-                <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
-                     How do I track the status of my complaint? | የቅሬታዬን ደረጃ እንዴት መከታተል እችላለሁ?
-                </button>
-            </h2>
-            <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                <div class="accordion-body bg-white text-muted">
-                    After submitting a formal complaint, you will receive a reference number. You can use this number to check the progress through the "Track Status" menu. <br>
-                    <span class="small text-primary">ቅሬታዎን ካስገቡ በኋላ የመለያ ቁጥር ይሰጥዎታል። ይህንን ቁጥር በመጠቀም "Track Status" በሚለው ሜኑ ውስጥ ሂደቱን መከታተል ይችላሉ።</span>
-                </div>
-            </div>
+    <h2 class="accordion-header">
+        <button class="accordion-button collapsed fw-bold py-3" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+            How will I receive a response to my submission? | ለላክሁት ጉዳይ እንዴት ምላሽ ይደርሰኛል?
+        </button>
+    </h2>
+    <div id="faq1" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+        <div class="accordion-body bg-white text-muted">
+            Once a response is provided by the university, you will receive an automatic notification via the email address you provided. Registered users can also check status updates by logging into their dashboard. <br>
+            <span class="small text-primary">ዩኒቨርሲቲው ምላሽ ሲሰጥዎት ባስገቡት የኢሜይል አድራሻ አማካኝነት አውቶማቲክ ማሳወቂያ ይደርስዎታል። አካውንት ያላቸው ተጠቃሚዎች ደግሞ ሲስተሙ ውስጥ በመግባት የደረሰበትን ደረጃ ማየት ይችላሉ።</span>
         </div>
+    </div>
+</div>
 
         <div class="accordion-item faq-hover-card mb-3 shadow-sm border rounded-3 overflow-hidden">
             <h2 class="accordion-header">
