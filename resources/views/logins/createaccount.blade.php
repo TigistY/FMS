@@ -27,40 +27,7 @@
         </div>
        
         {{--this part use optional or access the admin --}}
-  <!--
-        <div class="form-group mb-3">
-            <label for="college_id">College (Optional):</label>
-            <select name="college_id" id="college_id" class="form-control">
-                <option value="">-- Select College --</option>
-                @foreach($colleges as $college)
-                    <option value="{{ $college->id }}">{{ $college->name_en }}</option>
-                @endforeach
-            </select>
-        </div>
-
-       {{--departemnt  --}}
-     
-        <div class="form-group mb-3">
-            <label for="department_id">Department (Optional):</label>
-            <select name="department_id" id="department_id" class="form-control">
-                <option value="">-- Select Department --</option>
-                @foreach($departments as $dept)
-                    <option value="{{ $dept->id }}">{{ $dept->name_en }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        {{-- directory --}}
-        <div class="form-group mb-3">
-            <label for="directory_id">Directory (Optional):</label>
-            <select name="directory_id" id="directory_id" class="form-control">
-                <option value="">-- Select Directory --</option>
-                @foreach($directories as $dir)
-                    <option value="{{ $dir->id }}">{{ $dir->name_en }}</option>
-                @endforeach
-            </select>
-        </div>
--->
+ 
         <div class="form-group mb-3">
             <label for="password">Password:</label>
             <input type="password" id="password" name="Password" class="form-control @error('Password') is-invalid @enderror" required>

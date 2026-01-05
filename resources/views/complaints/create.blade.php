@@ -1,140 +1,150 @@
 @extends('layouts.wel')
 
 @section('content')
-    <div class="container py-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8 col-lg-7">
-                <div class="card p-4 shadow-lg border-0 complaint-theme">
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-lg-11">
+            {{-- Hover effect ያለው ካርድ --}}
+            <div class="card shadow-lg border-0 complaint-card">
+                
+                {{-- Header Section --}}
+                <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
+                    <div class="d-flex justify-content-between align-items-center px-3">
+                        <h2 class="fw-bold text-danger mb-0" id="main-title" style="font-size: 1.5rem;">
+                            <i class="fas fa-exclamation-triangle me-2"></i> Complaint Submission
+                        </h2>
+                        <div style="width: 150px;">
+                            <select id="language_selector" onchange="window.switchLanguage(this.value)" class="form-select form-select-sm bg-danger-subtle border-danger">
+                                <option value="am">አማርኛ</option>
+                                <option value="en" selected>English</option>
+                            </select>
+                        </div>
+                    </div>
+                    <p class="text-muted mt-2 mb-0" id="subtitle" style="font-size: 0.9rem;">Please select the relevant unit and enter your complaint details.</p>
+                </div>
 
-                    <h1 class="text-3xl font-bold text-gray-800 mb-4 text-center border-bottom pb-3" id="main-title">
-                        <i class="fas fa-exclamation-triangle text-danger me-2"></i> Complaint Submission
-                    </h1>
-                    <p class="text-muted mb-4 text-center" id="subtitle">Please select the relevant unit and enter the details of your complaint.</p>
-
+                {{-- Alert Messages --}}
+                <div class="px-4 mt-3">
                     @if ($errors->any())
-                        <div class="alert alert-danger p-3 mb-4">
-                            <ul class="list-unstyled mb-0">
+                        <div class="alert alert-danger p-2 small">
+                            <ul class="mb-0 list-unstyled">
                                 @foreach ($errors->all() as $error)
-                                    <li><i class="fas fa-times-circle me-2"></i> {{ $error }}</li>
+                                    <li><i class="fas fa-times-circle me-1"></i> {{ $error }}</li>
                                 @endforeach
                             </ul>
                         </div>
                     @endif
                     @if(session('success'))
-                        <div class="alert alert-success text-center mb-4">{{ session('success') }}</div>
+                        <div class="alert alert-success text-center p-2 small">{{ session('success') }}</div>
                     @endif
+                </div>
 
-                    <form action="{{route('complaints.submit')}}" method="POST" class="needs-validation" novalidate>
+                <div class="card-body p-4">
+                    <form action="{{ route('complaints.submit') }}" method="POST" class="needs-validation" novalidate>
                         @csrf
-                        
-                        {{-- ቋንቋ መምረጫ --}}
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label for="language_selector" class="form-label" id="label-language">Select Language:</label>
-                                <select id="language_selector" onchange="window.switchLanguage(this.value)"
-                                        class="form-select bg-danger-subtle border-danger">
-                                    <option value="am">አማርኛ</option>
-                                    <option value="en" selected>English</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <h5 class="text-dark border-bottom pb-2 mt-4 mb-3" id="title-recipient-info">Recipient Information</h5>
-
-                        <div class="row g-3 mb-4">
-                            {{-- 1. Recipient Type --}}
-                            <div class="col-md-6">
-                                <label for="recipient_type" class="form-label" id="label-recipient-type">Recipient Type: <span class="text-danger">*</span></label>
-                                <select id="recipient_type" name="recipient_type" required 
-                                        class="form-select @error('recipient_type') is-invalid @enderror" onchange="window.handleTypeChange()">
-                                    <option value="" id="option-select-recipient-type">Select Type</option>
-                                    <option value="College" {{ old('recipient_type') == 'College' ? 'selected' : '' }} id="option-college">College</option>
-                                    <option value="Department" {{ old('recipient_type') == 'Department' ? 'selected' : '' }} id="option-department">Department</option>
-                                    <option value="Directory" {{ old('recipient_type') == 'Directory' ? 'selected' : '' }} id="option-directory">Directory</option>
-                                </select>
-                            </div>
-                            
-                            {{-- 2. College Filter (Department ሲመረጥ ብቻ የሚታይ) --}}
-                            <div class="col-md-6 d-none" id="college_filter_container">
-                                <label for="filter_college_id" class="form-label" id="label-filter-college">Select College first: <span class="text-danger">*</span></label>
-                                <select id="filter_college_id" class="form-select" onchange="window.loadDepartmentsByCollege(this.value)">
-                                    <option value="" id="option-select-filter-college">Choose College</option>
-                                </select>
-                            </div>
-
-                            {{-- 3. Actual Recipient ID --}}
-                            <div class="col-md-6">
-                                <label for="recipient_id" class="form-label" id="label-recipient-id">Select Recipient: <span class="text-danger">*</span></label>
-                                <select id="recipient_id" name="recipient_id" required 
-                                        class="form-select @error('recipient_id') is-invalid @enderror">
-                                    <option value="" id="option-select-recipient">Select Recipient Unit</option>
-                                </select>
-                                <small class="form-text text-danger d-none" id="loading-text"></small>
-                            </div>
-                        </div>
-                        
-                        <h5 class="text-dark border-bottom pb-2 mt-4 mb-3" id="title-complaint-details">Complaint Details</h5>
-
-                        <div class="mb-3">
-                            <label for="subject" class="form-label" id="label-subject">Subject: <span class="text-danger">*</span></label>
-                            <input type="text" id="subject" name="subject" required
-                                class="form-control @error('subject') is-invalid @enderror"
-                                value="{{ old('subject') }}" placeholder="Short and clear subject">
-                        </div>
-
-                        <div class="mb-4">
-                            <label for="body" class="form-label" id="label-description">Detailed Description: <span class="text-danger">*</span></label>
-                            <textarea id="body" name="body" rows="5" required
-                                class="form-control @error('body') is-invalid @enderror"
-                                placeholder="Describe your complaint in detail...">{{ old('body') }}</textarea>
-                        </div>
-                        
-                       <div class="form-check p-3 bg-info-subtle rounded border border-primary-subtle mb-4">
-                            <input id="is_anonymous" name="is_anonymous" type="checkbox" onchange="window.toggleGuestFields()"
-                                class="form-check-input text-primary" {{ old('is_anonymous') ? 'checked' : '' }}>
-                            <label for="is_anonymous" class="form-check-label text-primary" id="label-anonymous">I wish to remain Anonymous.</label>
-                        </div>
-                        <p class="text-sm text-danger mb-4" id="text-anonymous-warning">If you choose this, your identity will be hidden, but you may not receive a response.</p>
-
-                        <div id="guest-fields" class="space-y-4 pt-4 border-top border-gray-200" style="display: none;">
-                            <h5 class="h5 text-dark border-bottom pb-2" id="title-contact">Contact Information</h5>
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label for="guest_email" class="form-label" id="label-email">Email: <span class="text-danger">*</span></label>
-                                    <input type="email" id="guest_email" name="guest_email" class="form-control" value="{{ old('guest_email') }}">
+                        <div class="row">
+                            {{-- Left Column: Recipient & Details --}}
+                            <div class="col-md-6 border-end">
+                                <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="title-recipient-info">Recipient Information</h6>
+                                <div class="row g-2 mb-3">
+                                    <div class="col-6">
+                                        <label class="form-label small fw-bold" id="label-recipient-type">Type *</label>
+                                        <select id="recipient_type" name="recipient_type" required class="form-select form-select-sm" onchange="window.handleTypeChange()">
+                                            <option value="" id="option-select-recipient-type">Select Type</option>
+                                            <option value="College" id="option-college">College</option>
+                                            <option value="Department" id="option-department">Department</option>
+                                            <option value="Directory" id="option-directory">Directory</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-6 d-none" id="college_filter_container">
+                                        <label class="form-label small fw-bold" id="label-filter-college">Select College *</label>
+                                        <select id="filter_college_id" class="form-select form-select-sm" onchange="window.loadDepartmentsByCollege(this.value)">
+                                            <option value="" id="option-select-filter-college">Choose College</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-12 mt-2">
+                                        <label class="form-label small fw-bold" id="label-recipient-id">Select Recipient Unit *</label>
+                                        <select id="recipient_id" name="recipient_id" required class="form-select form-select-sm">
+                                            <option value="" id="option-select-recipient">Select Recipient Unit</option>
+                                        </select>
+                                        <small id="loading-text" class="text-danger d-none fw-bold">Loading...</small>
+                                    </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <label for="guest_name" class="form-label" id="label-name">Name (Optional):</label>
-                                    <input type="text" id="guest_name" name="guest_name" class="form-control" value="{{ old('guest_name') }}">
+
+                                <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="label-description">Complaint Content</h6>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold" id="label-subject">Subject *</label>
+                                    <input type="text" id="subject" name="subject" required class="form-control form-control-sm border-danger-subtle" placeholder="Short and clear subject">
                                 </div>
-                                <div class="col-12">
-                                    <label for="guest_type" class="form-label" id="label-type">Reporter Type: <span class="text-danger">*</span></label>
-                                    <select id="guest_type" name="guest_type" class="form-select">
-                                        <option value="" id="option-select-type">Select Type</option>
-                                        <option value="Student">Student</option>
-                                        <option value="Teacher">Teacher</option>
-                                        <option value="Employee">Employee</option>
-                                        <option value="Other">Other</option>
-                                    </select>
+                                <div class="mb-2">
+                                    <label class="form-label small fw-bold" id="label-body-text">Detailed Description *</label>
+                                    <textarea id="body" name="body" rows="4" required class="form-control form-control-sm border-danger-subtle" placeholder="Describe your complaint..."></textarea>
+                                </div>
+                            </div>
+
+                            {{-- Right Column: Identity & Contact --}}
+                            <div class="col-md-6 ps-md-4">
+                                <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="title-contact">Identity & Contact</h6>
+                                <div class="form-check form-switch p-3 bg-danger-subtle rounded mb-2 border border-danger-subtle">
+                                    <input id="is_anonymous" name="is_anonymous" type="checkbox" role="switch" onchange="window.toggleGuestFields()" class="form-check-input" {{ old('is_anonymous') ? 'checked' : '' }}>
+                                    <label for="is_anonymous" class="form-check-label fw-bold text-danger" id="label-anonymous">I wish to remain Anonymous.</label>
+                                </div>
+                                <p class="small text-muted mb-3" id="text-anonymous-warning" style="font-size: 0.8rem;">If you choose this, your identity will be hidden.</p>
+
+                                <div id="guest-fields" class="p-3 border rounded bg-light shadow-sm">
+                                    <div class="row g-2">
+                                        <div class="col-12">
+                                            <label class="form-label small mb-1 fw-bold" id="label-email">Email *</label>
+                                            <input type="email" id="guest_email" name="guest_email" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <label class="form-label small mb-1 fw-bold" id="label-name">Full Name (Optional)</label>
+                                            <input type="text" id="guest_name" name="guest_name" class="form-control form-control-sm">
+                                        </div>
+                                        <div class="col-12 mt-2">
+                                            <label class="form-label small mb-1 fw-bold" id="label-type">Reporter Type *</label>
+                                            <select id="guest_type" name="guest_type" class="form-select form-select-sm">
+                                                <option value="" id="option-select-type">Select Type</option>
+                                                <option value="Student">Student</option>
+                                                <option value="Teacher">Teacher</option>
+                                                <option value="Employee">Employee</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mt-4">
+                                    <button type="submit" id="button-submit" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">
+                                        <i class="fas fa-file-signature me-2"></i> Submit Complaint
+                                    </button>
                                 </div>
                             </div>
                         </div>
-
-                        <button type="submit" id="button-submit" class="btn btn-danger w-100 mt-4 py-2 fw-bold">
-                            <i class="fas fa-file-signature me-2"></i> Submit Complaint
-                        </button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <script>
+<style>
+    .complaint-card { 
+        transition: transform 0.3s ease, box-shadow 0.3s ease; 
+        border-top: 5px solid #dc3545 !important; 
+    }
+    .complaint-card:hover { 
+        transform: translateY(-8px); 
+        box-shadow: 0 15px 30px rgba(220, 53, 69, 0.15) !important; 
+    }
+    .border-danger-subtle { border-color: #f5c2c7 !important; }
+</style>
+
+<script>
     window.translations = {
         'am': {
             'main-title': 'ቅሬታ ማስገቢያ',
             'subtitle': 'ቅሬታዎን የሚመለከተውን ክፍል በመምረጥ ዝርዝር ሁኔታውን ያስገቡ።',
-            'label-language': 'ቋንቋ ይምረጡ:',
             'title-recipient-info': 'ቅሬታው የሚቀርብበት አካል መረጃ',
             'label-recipient-type': 'የመቀበያ አይነት:',
             'option-select-recipient-type': 'አይነት ይምረጡ',
@@ -146,22 +156,20 @@
             'label-recipient-id': 'ክፍሉን ይምረጡ:',
             'option-select-recipient': 'ክፍል ይምረጡ',
             'label-subject': 'ርዕስ:',
-            'placeholder-subject': 'አጭርና ግልጽ ርዕስ',
-            'label-description': 'ዝርዝር መግለጫ:',
-            'placeholder-description': 'ቅሬታዎን በዝርዝር ያስቀምጡ...',
+            'label-description': 'የአቤቱታ ዝርዝር',
+            'label-body-text': 'ዝርዝር መግለጫ:',
             'label-anonymous': 'ስም-አልባ መሆን እፈልጋለሁ።',
-            'text-anonymous-warning': 'ይህን ከመረጡ ማንነትዎ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
-            'title-contact': 'የእውቂያ መረጃ',
+            'text-anonymous-warning': 'ማንነትዎ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
+            'title-contact': 'ማንነትና እውቂያ',
             'label-email': 'ኢሜይል:',
-            'label-name': 'ስም (አማራጭ):',
-            'label-type': 'የሪፖርተር አይነት:',
-            'option-select-type': 'ይመድቡ',
+            'label-name': 'ሙሉ ስም (አማራጭ):',
+            'label-type': 'የአመልካች አይነት:',
+            'option-select-type': 'ይምረጡ',
             'button-submit': 'ቅሬታ አስገባ'
         },
         'en': {
             'main-title': 'Complaint Submission',
-            'subtitle': 'Please select the relevant unit and enter the details of your complaint.',
-            'label-language': 'Select Language:',
+            'subtitle': 'Please select the relevant unit and enter your complaint details.',
             'title-recipient-info': 'Recipient Information',
             'label-recipient-type': 'Recipient Type:',
             'option-select-recipient-type': 'Select Type',
@@ -169,18 +177,17 @@
             'option-department': 'Department',
             'option-directory': 'Directory',
             'label-filter-college': 'Select College first:',
-            'option-select-filter-college': ' Choose College ',
+            'option-select-filter-college': 'Choose College',
             'label-recipient-id': 'Select Recipient:',
             'option-select-recipient': 'Select Recipient Unit',
             'label-subject': 'Subject:',
-            'placeholder-subject': 'Short and clear subject',
-            'label-description': 'Detailed Description:',
-            'placeholder-description': 'Describe your complaint in detail...',
+            'label-description': 'Complaint Content',
+            'label-body-text': 'Detailed Description:',
             'label-anonymous': 'I wish to remain Anonymous.',
-            'text-anonymous-warning': 'If you choose this, your identity will be hidden, but you may not receive a response.',
-            'title-contact': 'Contact Information',
+            'text-anonymous-warning': 'If you choose this, your identity will be hidden.',
+            'title-contact': 'Identity & Contact',
             'label-email': 'Email:',
-            'label-name': 'Name (Optional):',
+            'label-name': 'Full Name (Optional):',
             'label-type': 'Reporter Type:',
             'option-select-type': 'Select Type',
             'button-submit': 'Submit Complaint'
@@ -189,35 +196,50 @@
 
     let currentLanguage = 'en';
 
+    window.switchLanguage = (lang) => {
+        currentLanguage = lang;
+        const t = window.translations[lang];
+        for (let key in t) {
+            const el = document.getElementById(key);
+            if (el) el.textContent = t[key];
+        }
+        // Update placeholders
+        document.getElementById('subject').placeholder = lang === 'am' ? 'አጭር ርዕስ' : 'Short subject';
+        document.getElementById('body').placeholder = lang === 'am' ? 'ዝርዝር መረጃ እዚህ ይጻፉ...' : 'Describe your complaint...';
+    };
+
     window.handleTypeChange = async () => {
         const type = document.getElementById('recipient_type').value;
         const collegeFilter = document.getElementById('college_filter_container');
         const idSelect = document.getElementById('recipient_id');
         
-        // Reset
         idSelect.innerHTML = `<option value="">${window.translations[currentLanguage]['option-select-recipient']}</option>`;
-        idSelect.disabled = true;
         collegeFilter.classList.add('d-none');
 
         if (type === 'College') {
-            window.loadUnits('{{ route('api.colleges.list') }}');
+            window.loadUnits('{{ route("api.colleges.list") }}');
         } else if (type === 'Directory') {
-            window.loadUnits('{{ route('api.directories.list') }}');
+            window.loadUnits('{{ route("api.directories.list") }}');
         } else if (type === 'Department') {
             collegeFilter.classList.remove('d-none');
             window.fillCollegeFilter();
         }
     };
-//next use this AJAX
+
     window.fillCollegeFilter = async () => {
         const filterSelect = document.getElementById('filter_college_id');
         try {
-            const response = await fetch('{{ route('api.colleges.list') }}');
+            const response = await fetch('{{ route("api.colleges.list") }}');
             const colleges = await response.json();
             filterSelect.innerHTML = `<option value="">${window.translations[currentLanguage]['option-select-filter-college']}</option>`;
             colleges.forEach(c => {
-                const name = currentLanguage === 'am' ? (c.name_am || c.name_en) : c.name_en;
-                filterSelect.innerHTML += `<option value="${c.id}">${name}</option>`;
+                const opt = document.createElement('option');
+                opt.value = c.id;
+                const nameAm = c.name_am || c.name_en;
+                opt.textContent = currentLanguage === 'am' ? nameAm : c.name_en;
+                opt.setAttribute('data-am-name', nameAm);
+                opt.setAttribute('data-en-name', c.name_en);
+                filterSelect.appendChild(opt);
             });
         } catch (e) { console.error(e); }
     };
@@ -226,11 +248,10 @@
         if (!collegeId) return;
         window.loadUnits(`{{ url('/api/colleges') }}/${collegeId}/departments`);
     };
-//use this AJAX 
+
     window.loadUnits = async (url) => {
         const idSelect = document.getElementById('recipient_id');
         const loading = document.getElementById('loading-text');
-        
         loading.classList.remove('d-none');
         idSelect.disabled = true;
 
@@ -239,13 +260,12 @@
             const data = await response.json();
             idSelect.innerHTML = `<option value="">${window.translations[currentLanguage]['option-select-recipient']}</option>`;
             data.forEach(item => {
-                const nameAm = item.name_am || item.name_en;
-                const nameEn = item.name_en;
                 const opt = document.createElement('option');
                 opt.value = item.id;
-                opt.textContent = currentLanguage === 'am' ? nameAm : nameEn;
+                const nameAm = item.name_am || item.name_en;
+                opt.textContent = currentLanguage === 'am' ? nameAm : item.name_en;
                 opt.setAttribute('data-am-name', nameAm);
-                opt.setAttribute('data-en-name', nameEn);
+                opt.setAttribute('data-en-name', item.name_en);
                 idSelect.appendChild(opt);
             });
             idSelect.disabled = false;
@@ -253,43 +273,9 @@
         loading.classList.add('d-none');
     };
 
-    window.switchLanguage = (lang) => {
-        currentLanguage = lang;
-        const t = window.translations[lang];
-        
-        // Update all IDs
-        for (let key in t) {
-            const el = document.getElementById(key);
-            if (el) el.textContent = t[key];
-        }
-
-        // Placeholders
-        document.getElementById('subject').placeholder = t['placeholder-subject'];
-        document.getElementById('body').placeholder = t['placeholder-description'];
-
-        // Dynamic units names update
-        const idSelect = document.getElementById('recipient_id');
-        Array.from(idSelect.options).forEach(opt => {
-            if(opt.value === "") opt.textContent = t['option-select-recipient'];
-            else opt.textContent = opt.getAttribute(`data-${lang}-name`) || opt.textContent;
-        });
-        // 4. አዲስ የተጨመረ፦ የ "ኮሌጅ መምረጫ (Filter)" ዝርዝር ስሞችን ቀይር
-    const filterSelect = document.getElementById('filter_college_id');
-    if (filterSelect) {
-        Array.from(filterSelect.options).forEach(opt => {
-            if(opt.value === "") {
-                opt.textContent = t['option-select-filter-college'];
-            } else {
-                // እዚህ ጋር በ fillCollegeFilter ጊዜ የተቀመጠውን ዳታ እንጠቀማለን
-                opt.textContent = opt.getAttribute(`data-${lang}-name`) || opt.textContent;
-            }
-        });
-    }
-    };
-
     window.toggleGuestFields = () => {
         const isAnon = document.getElementById('is_anonymous').checked;
-        document.getElementById('guest-fields').style.display = isAnon ? 'none' : 'block';
+        document.getElementById('guest-fields').classList.toggle('d-none', isAnon);
     };
 
     document.addEventListener('DOMContentLoaded', () => {
