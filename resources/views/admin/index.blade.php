@@ -1,76 +1,115 @@
-@extends('layouts.app') {{-- የእርስዎን Layout ስም ይጠቀሙ --}}
+@extends('layouts.app')
 
 @section('content')
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
+<script>
+$(document).ready(function() {
+    let table = new DataTable('#users', {
+        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
+        pagingType: "full_numbers",
+        
+        layout: {    //for button,search,paging position
+
+            topStart: {
+                buttons: [
+                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
+                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                ]
+            },
+            topEnd: 'search',
+
+            bottomStart: {
+                pageLength: {}, // for drowpdown to page
+                info: {}        // for Showing
+            },
+            bottomEnd: 'paging' 
+        }
+    });
+});
+</script>
 <div class="container-fluid">
     <div class="card">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>User Management</h4>
-            @can('create-users')
-            <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm">Add New User</a>
-            @endcan
-        </div>
+        <div class="card-header d-flex justify-content-between align-items-center bg-white py-3">
+    <h5 class="mb-0 fw-bold text-primary"><i class="fas fa-users-cog me-2"></i> User Management</h5>
+    @can('create-users')
+        <a href="{{ route('users.create') }}" class="btn btn-primary btn-sm shadow-sm">
+            <i class="fas fa-user-plus me-1"></i> Add New User
+        </a>
+    @endcan
+</div>
         <div class="card-body">
-            @if(session('success'))
-                <div class="alert alert-success">{{ session('success') }}</div>
-            @endif
-
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Assigned Unit</th>
-                        <th>Roles</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($users as $user)
-                    <tr>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-                        <td>
-                            @if($user->college)
-                                <span class="badge bg-info">College: {{ $user->college->name_en }}</span>
-                            @elseif($user->department)
-                                <span class="badge bg-secondary">Dept: {{ $user->department->name_en }}</span>
-                            @elseif($user->directory)
-                                <span class="badge bg-dark">Dir: {{ $user->directory->name_en }}</span>
-                            @else
-                                <span class="text-muted">Not Assigned</span>
-                            @endif
-                        </td>
-                        <td>
-                            @foreach($user->roles as $role)
-                                <span class="badge bg-primary">{{ $role->name }}</span>
-                            @endforeach
-                        </td>
-                        <td>
-                            @can('edit-users')
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            @endcan
-
-                            @can('delete-users')
-                            <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure?')">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
-                            @endcan
-                        </td>
-                    </tr>
-                    @empty
-                    <tr>
-                        <td colspan="5" class="text-center">No users found.</td>
-                    </tr>
-                    @endforelse
-                </tbody>
-            </table>
-
-            <div class="mt-3">
-                {{ $users->links() }}
-            </div>
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
+    @endif
+
+    <table class="table table-hover border" id="users">
+        <thead class="table-light">
+            <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Assigned Unit</th>
+                <th>Roles</th>
+                <th class="text-center">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($users as $user)
+            <tr>
+                <td>{{ $user->name }}</td>
+                <td>{{ $user->email }}</td>
+                <td>
+                    @if($user->college)
+                        <span class="badge bg-info text-dark">
+                             {{ $user->college->name_en }}</span>
+                    @elseif($user->department)
+                        <span class="badge bg-secondary"> {{ $user->department->name_en }}</span>
+                    @elseif($user->directory)
+                        <span class="badge bg-dark"> {{ $user->directory->name_en }}</span>
+                    @else
+                        <span class="text-muted italic">Not Assigned</span>
+                    @endif
+                </td>
+                <td>
+                    @foreach($user->roles as $role)
+                        <span class="badge rounded-pill bg-primary">{{ $role->name }}</span>
+                    @endforeach
+                </td>
+                <td class="text-center">
+                    <div class="dropdown">
+                        <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                            Action
+                        </button>
+                        <ul class="dropdown-menu shadow border-0">
+                            <li><a class="dropdown-item" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit text-warning me-2"></i> Edit</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">
+                                    @csrf @method('DELETE')
+                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Delete user?')"><i class="fas fa-trash me-2"></i> Delete</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5" class="text-center py-4 text-muted">No users found.</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
+    
+</div>
     </div>
 </div>
+
 @endsection

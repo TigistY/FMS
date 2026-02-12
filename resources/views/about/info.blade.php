@@ -13,11 +13,7 @@
         <div class="col-md-6">
             <h5 class="fw-bold text-secondary">ዝርዝር መረጃ</h5>
             <ul class="list-unstyled">
-                <!--<li class="mb-2"><i class="fas fa-code-branch me-2"></i> <strong>Version:</strong> 1.0.0</li> 
-                1=Major Version ይባላል። ሲስተሙ ሙሉ በሙሉ ሲቀየር ወይም ትልቅ ለውጥ ሲደረግ ይጨምራል (ለምሳሌ፡ ከ 1 ወደ 2)።
-                0=Minor Version ይባላል። አዳዲስ ትናንሽ ነገሮች ወይም ገጾች ሲጨመሩ ይጨምራል (ለምሳሌ፡ 1.1.0)።
-                0=Patch Version ይባላል። በሲስተሙ ላይ የታዩ ስህተቶችን (Bugs) ብቻ ስታስተካክሉ የሚጨምር ነው (ለምሳሌ፡ 1.0.1)።
-                -->
+                
                 <li class="mb-2"><i class="fas fa-user-graduate me-2"></i> <strong>Developers:</strong> INU Computer Science Students</li>
                 <li class="mb-2"><i class="fas fa-chalkboard-teacher me-2"></i> <strong>Adviser:</strong> Mr. Andualem Muche (CS Teacher)</li>
                 <li class="mb-2"><i class="fas fa-shield-alt me-2"></i> <strong>Managed by:</strong> INU ICT Directorate</li>

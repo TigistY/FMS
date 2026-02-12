@@ -29,7 +29,7 @@
                         <div class="row">
                             {{-- Left Column: Recipient & Details --}}
                             <div class="col-md-6 border-end">
-                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="title-recipient-info">1. Recipient Information</h6>
+                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="title-recipient-info"> Recipient Information</h6>
                                 <div class="row g-2 mb-3">
                                     <div class="col-6">
                                         <label class="form-label small fw-bold" id="label-recipient-type">Type *</label>
@@ -54,7 +54,16 @@
                                     </div>
                                 </div>
 
-                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="title-feedback-details">2. Feedback Content</h6>
+                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="title-feedback-details">Feedback Content</h6>
+                            
+                       <div class="mb-3">
+                           <label for="feedback_type" class="form-label" id="label-feedback-type">Feedback Nature: <span                        class="text-danger">*</span></label>
+                           <select id="feedback_type" name="feedback_type" required class="form-select                        border-primary-subtle">
+                               <option value="Neutral" id="opt-neutral">Neutral</option>
+                               <option value="Positive" id="opt-positive">Positive</option>
+                               <option value="Negative" id="opt-negative">Negative</option>
+                           </select>
+                       </div>
                                 <div class="mb-2">
                                     <label class="form-label small fw-bold" id="label-subject">Subject *</label>
                                     <input type="text" id="subject" name="subject" required class="form-control form-control-sm" placeholder="Subject">
@@ -65,9 +74,9 @@
                                 </div>
                             </div>
 
-                            {{-- Right Column: Identity & Contact --}}
+                          
                             <div class="col-md-6 ps-md-4">
-                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="label-anonymous">3. Identity Options</h6>
+                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="label-anonymous">Identity Options</h6>
                                 <div class="form-check form-switch p-3 bg-light rounded mb-2">
                                     <input id="is_anonymous" name="is_anonymous" type="checkbox" role="switch" onchange="window.toggleGuestFields()" class="form-check-input" {{ old('is_anonymous') ? 'checked' : '' }}>
                                     <label for="is_anonymous" class="form-check-label fw-bold">Remain Anonymous</label>
@@ -128,7 +137,7 @@
             'option-select-filter-college': 'ኮሌጅ ይምረጡ ',
             'label-recipient-id': 'ክፍሉን ይምረጡ:',
             'option-select-recipient': 'ክፍል ይምረጡ',
-            'title-feedback-details': 'የግብረመልስ ዝርዝሮች', // ይህ ተጨምሯል
+            'title-feedback-details': 'የግብረመልስ ዝርዝሮች', 
             'label-subject': 'ርዕስ:',
             'placeholder-subject': 'አጭርና ግልጽ ርዕስ',
             'label-description': 'ዝርዝር መግለጫ:',
@@ -140,7 +149,11 @@
             'label-name': 'ስም (አማራጭ):',
             'label-type': 'የሪፖርተር አይነት:',
             'option-select-type': 'ይመድቡ',
-            'button-submit': 'ግብረመልስ አስገባ'
+            'button-submit': 'ግብረመልስ አስገባ',
+            'label-feedback-type': 'የአስተያየቱ አይነት:',
+            'opt-neutral': 'መካከለኛ',
+            'opt-positive': 'ምስጋና',
+            'opt-negative': 'ቅሬታ',
         },
         'en': {
             'main-title': 'Feedback Submission',
@@ -156,7 +169,7 @@
             'option-select-filter-college': 'Choose College',
             'label-recipient-id': 'Select Recipient:',
             'option-select-recipient': 'Select Recipient Unit',
-            'title-feedback-details': 'Feedback Details', // ይህ ተጨምሯል
+            'title-feedback-details': 'Feedback Details', 
             'label-subject': 'Subject:',
             'placeholder-subject': 'Short and clear subject',
             'label-description': 'Detailed Description:',
@@ -168,7 +181,11 @@
             'label-name': 'Name (Optional):',
             'label-type': 'Reporter Type:',
             'option-select-type': 'Select Type',
-            'button-submit': 'Submit Feedback'
+            'button-submit': 'Submit Feedback',
+            'label-feedback-type': 'Nature of Feedback:',
+            'opt-neutral': 'Neutral',
+            'opt-positive': 'Positive',
+            'opt-negative': 'Negative',
         }
     };
 
@@ -178,7 +195,6 @@
         currentLanguage = lang;
         const t = window.translations[lang];
 
-        // 1. ሁሉንም ID ያላቸውን ጽሁፎች ይቀይራል
         for (let key in t) {
             const el = document.getElementById(key);
             if (el) {

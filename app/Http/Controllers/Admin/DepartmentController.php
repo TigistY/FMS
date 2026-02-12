@@ -18,6 +18,8 @@ class DepartmentController extends Controller
     $this->middleware('permission:delete departments')->only('destroy');
 }
 */
+
+/*commint b/c use modal
     public function index()
     {
         $departments = Department::with('college')->orderBy('name_en')->paginate(15);
@@ -30,6 +32,18 @@ class DepartmentController extends Controller
         return view('departments.create', compact('colleges'));
     }
 
+     public function edit(Department $department)
+    {
+        $colleges = College::all();
+        return view('departments.edit', compact('department', 'colleges'));
+    }
+        public function show(Department $department)
+{
+    $department->load('college');
+    return view('departments.show', compact('department'));
+}
+    */
+
     public function store(Request $request)
     {
         $request->validate([
@@ -40,15 +54,9 @@ class DepartmentController extends Controller
         ]);
 
         Department::create($request->all());
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department registered successfully.');
+        return redirect()->back()->with('success', 'Department registered successfully.');
     }
 
-    public function edit(Department $department)
-    {
-        $colleges = College::all();
-        return view('departments.edit', compact('department', 'colleges'));
-    }
 
     public function update(Request $request, Department $department)
     {
@@ -60,19 +68,13 @@ class DepartmentController extends Controller
         ]);
 
         $department->update($request->all());
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department updated successfully.');
+        return redirect()->back()->with('success', 'Department updated successfully.');
     }
 
     public function destroy(Department $department)
     {
         $department->delete();
-        return redirect()->route('departments.index')
-                         ->with('success', 'Department deleted successfully.');
+        return redirect()->back()->with('success', 'Department deleted successfully.');
     }
-    public function show(Department $department)
-{
-    $department->load('college');
-    return view('departments.show', compact('department'));
-}
+    
 }

@@ -17,10 +17,7 @@ class Department extends Model
         'description'
     ];
 
-    /**
-     * Get the college that owns the department.
-     * (Many Departments belong to One College)
-     */
+    
     public function college()
     {
         return $this->belongsTo(College::class, 'college_id');

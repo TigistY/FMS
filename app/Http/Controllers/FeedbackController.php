@@ -47,6 +47,7 @@ class FeedbackController extends Controller
         ],
         'guest_name'     => 'nullable|string|max:255',
         'guest_type'     => 'nullable|in:Student,Teacher,Employee,Other',
+        'feedback_type' => ['required', Rule::in(['Positive', 'Negative', 'Neutral'])],
     ]);
 
     $modelClass = $typeMapping[$validatedData['recipient_type']];
@@ -78,6 +79,7 @@ class FeedbackController extends Controller
         'recipient_id'   => $validatedData['recipient_id'],
         'recipient_type' => $validatedData['recipient_type'], 
         'status'         => 'New',
+        'feedback_type' => $validatedData['feedback_type'],
     ]);
 
     return redirect()->back()->with('success', 'Your feedback has been successfully submitted.');
@@ -89,13 +91,19 @@ public function index(Request $request)
     $user = Auth::user();
     $query = Feedback::with(['recipient']);
 
+  
     if ($user->hasRole('System Administrator')) {
+        
         if ($request->filled('unit_type') && $request->filled('unit_id')) {
             $query->where('recipient_type', $request->unit_type)
                   ->where('recipient_id', $request->unit_id);
         }
 
-        // for search
+        
+        if ($request->filled('feedback_type')) {
+            $query->where('feedback_type', $request->feedback_type);
+        }
+
         if ($request->filled('search')) {
             $searchTerm = $request->search;
             $query->whereHasMorph('recipient', ['App\Models\College', 'App\Models\Directory', 'App\Models\Department'], function($q) use ($searchTerm) {
@@ -104,7 +112,7 @@ public function index(Request $request)
             });
         }
     } else {
-        // for individual unit responder
+      
         if ($user->college_id) {
             $query->where('recipient_type', 'College')->where('recipient_id', $user->college_id);
         } elseif ($user->directory_id) {
@@ -112,29 +120,51 @@ public function index(Request $request)
         } elseif ($user->department_id) {
             $query->where('recipient_type', 'Department')->where('recipient_id', $user->department_id);
         }
+        
+       
+        if ($request->filled('feedback_type')) {
+            $query->where('feedback_type', $request->feedback_type);
+        }
     }
 
+   
+    $statsData = (clone $query)->select('feedback_type', \DB::raw('count(*) as total'))
+        ->groupBy('feedback_type')
+        ->pluck('total', 'feedback_type')
+        ->toArray();
+
+    $stats = [
+        'Positive' => $statsData['Positive'] ?? 0,
+        'Negative' => $statsData['Negative'] ?? 0,
+        'Neutral'  => $statsData['Neutral'] ?? 0,
+    ];
+
     $feedbacks = $query->latest()->simplePaginate(10);
-    return view('fms.index', compact('feedbacks'));
+    
+    return view('fms.index', compact('feedbacks', 'stats'));
 }
 public function show(Feedback $feedback)
 {
     $user = Auth::user();
-    $feedback->load(['responses.responder', 'recipient']); 
 
+  if ($user->id === $feedback->user_id) {
+    \App\Models\Response::where('respondable_type', 'Feedback') // 'Feedback' የሚለውን String ተጠቀም
+        ->where('respondable_id', $feedback->id)
+        ->where('is_seen', false)
+        ->update(['is_seen' => true]);
+}
+
+    $feedback->load(['responses.responder', 'recipient']); 
     $isResponder = $this->isUserResponsibleForRecipient($user, $feedback->recipient_type, $feedback->recipient_id);
 
     if ($user->hasRole('System Administrator') || ($user->hasRole('Unit Responder') && $isResponder)) {
-        
         if ($user->hasRole('Unit Responder') && $isResponder) {
             if (in_array($feedback->status, ['New', 'Forwarded'])) {
                 $feedback->update(['status' => 'Viewed']);
             }
         }
-        
         return view('fms.show', compact('feedback'));
     }
-    
 
     if ($user->id === $feedback->user_id && !$feedback->is_anonymous) {
          return view('fms.show', compact('feedback'));
@@ -142,7 +172,6 @@ public function show(Feedback $feedback)
 
     abort(403, 'Unauthorized action.');
 }
- 
 public function destroy(Feedback $feedback) 
 {
     
@@ -187,19 +216,17 @@ public function processResponse(Request $request, Feedback $feedback)
     $feedback->responses()->save($response);
     $feedback->update(['status' => 'Responded']);
 
-    // 2. የኢሜይል መላኪያ ክፍል
-    // Feedback ስም በሌለው መልኩ (Anonymous) ሊላክ ስለሚችል መጀመሪያ ቼክ እናደርጋለን
+   
     if (!$feedback->is_anonymous) {
-        // የላኪውን ኢሜይል መፈለግ (ከሰርቲፊኬት ተጠቃሚ ወይም ከእንግዳ)
+        
         $recipientEmail = $feedback->user->email ?? $feedback->guest->email ?? null;
 
         if ($recipientEmail) {
             try {
-                // ለ Complaint የተጠቀምክበትን ResponseNotification Mailable ለ Feedbackም መጠቀም ትችላለህ
+        
                 \Illuminate\Support\Facades\Mail::to($recipientEmail)
                     ->send(new \App\Mail\ResponseNotification($feedback, $validated['response_body']));
             } catch (\Exception $e) {
-                // ኢሜይሉ ባይሳካ እንኳን ሲስተሙ እንዳይቆም በ Log መመዝገብ
                 \Illuminate\Support\Facades\Log::error("Feedback Email failed: " . $e->getMessage());
             }
         }
@@ -237,7 +264,7 @@ public function forward(Request $request, Feedback $feedback)
      */
     protected function isUserResponsibleForRecipient($user, $recipientType, $recipientId): bool
 {
-    // MorphMap ከተጠቀምክ $recipientType የሚመጣው 'College' በሚል አጭር ስም ነው
+    
     if ($recipientType === 'College' && $user->college_id === $recipientId) {
         return true;
     }

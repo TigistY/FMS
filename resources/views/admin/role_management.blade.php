@@ -45,18 +45,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Create one row for each role -->
+                        
                             @foreach ($roles as $role)
                                 <tr>
-                                    <!-- Role Name -->
+                                    
                                     <td class="fw-bold text-center">
                                         {{ $role->name }}
-                                        <!-- Store the Role ID in a Hidden input -->
                                         <input type="hidden" name="roles[{{ $role->id }}][id]" value="{{ $role->id }}">
                                     </td>
                                     
-                                    <!-- Create Checkbox for each Permission Group -->
-                                    {{-- Correction: The categorized variable is now used --}}
+                                    
                                     @foreach ($permissionsByGroup as $group => $permissionList) 
                                         <td class="p-2">
                                             <div class="d-flex flex-column gap-1">
@@ -118,17 +116,15 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-    // ስዊች (Checkbox) ሲቀየር
+
     $('.form-check-input').on('change', function() {
         let checkbox = $(this);
         
-        // ከ id="perm_{roleId}_{permissionId}" ላይ ቁጥሮቹን መለየት
         let idParts = checkbox.attr('id').split('_');
         let roleId = idParts[1];
         let permissionId = idParts[2];
         let isChecked = checkbox.is(':checked') ? 1 : 0;
 
-        // ሰርቨሩ ምላሽ እስኪሰጥ ስዊቹን ማቆየት (Double click ለመከላከል)
         checkbox.prop('disabled', true);
 
         $.ajax({
@@ -143,16 +139,15 @@ $(document).ready(function() {
             success: function(response) {
                 checkbox.prop('disabled', false);
                 
-                // 💥 እዚህ ጋር ነው መሆን ያለበት 💥
-                // ገጹን Refresh በማድረግ Sidebar እና ሌሎች ፈቃዶችን ወዲያው እንዲሰሩ ያደርጋል
+                
                 location.reload(); 
             },
             error: function(xhr) {
                 checkbox.prop('disabled', false);
-                checkbox.prop('checked', !isChecked); // ስህተት ካለ ስዊቹን ወደ ነበረበት ይመልሰዋል
+                checkbox.prop('checked', !isChecked); 
                 
-                let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'ስህተት ተከስቷል';
-                alert('ስህተት ተከስቷል፡ ' + errorMsg);
+                let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'error happne';
+                alert('error happen፡ ' + errorMsg);
             }
         });
     });

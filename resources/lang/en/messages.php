@@ -2,9 +2,9 @@
 
 return [
 	'University Name' => 'Injibara University',
-    'dashboard' => 'Dashboard',
+    'Home' => 'Home',
     'User Manage' => 'User Management',
-    'View' => 'View',
+    'Users List' => 'Users List',
     'view Complaint' => 'View Complaints',
     'View Feedback' => 'View Feedback',
     'Role Management' => 'Role Management',
@@ -20,6 +20,7 @@ return [
     'Departments' => 'Departments',
     'Directories' => 'Directories',
     'Submit Feedback' => 'Submit Feedback',
+    'Submit Complain' => 'Submit Complain',
     'Privacy Policy' => 'Privacy Policy',
     'Unit Reports' => 'Unit Reports',
     'Total Complaint' => 'Total Complaint ',

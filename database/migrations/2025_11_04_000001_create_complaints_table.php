@@ -29,7 +29,7 @@ return new class extends Migration
             $table->text('body');
             
            $table->string('status')->default('Pending')->change();
-            $table->enum('priority', ['Low', 'Medium', 'High', 'Urgent'])->default('Medium');
+           $table->enum('priority', ['Low', 'Medium', 'Neutral', 'High', 'Urgent'])->default('Neutral');
             $table->timestamps();
         });
     }

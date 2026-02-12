@@ -2,9 +2,9 @@
 
 return [
     'University Name' => 'እንጅባራ ዩኒቨርሲቲ',
-    'dashboard' => 'ዳሽቦርድ',
+   'Home' => 'ዋና ገጽ',
     'User Manage' => 'ተጠቃሚዎች',
-    'View' => 'ተመልከት',
+    'Users List' => 'የተጠቃሚዎች ዝርዝር',
     'view Complaint' => 'አቤቱታዎች',
     'View Feedback' => 'አስተያየቶች',
     'Role Management' => 'የሚና አስተዳደር',
@@ -20,6 +20,7 @@ return [
     'Departments' => 'ትምህርት ክፍሎች',
     'Directories' => 'ዳይሬክቶሬቶች',
     'Submit Feedback' => 'አስተያየት ስጥ',
+    'Submit Complain' => 'ቅሬታ አቅርብ',
     'Privacy Policy' => 'የግል መረጃ ጥበቃ',
     'Unit Reports' => 'የክፍል ሪፖርቶች',
     'Total Complaint' => 'ጠቅላላ ቅሬታዎች',

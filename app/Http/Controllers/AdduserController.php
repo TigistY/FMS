@@ -14,7 +14,7 @@ class AdduserController extends Controller
 {
     public function index()
     {
-        $users = User::with(['college', 'department', 'directory', 'roles'])->paginate(10);
+        $users = User::with(['college', 'department', 'directory', 'roles'])->get();
         return view('admin.index', compact('users'));
     }
 

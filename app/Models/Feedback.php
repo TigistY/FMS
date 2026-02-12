@@ -22,29 +22,24 @@ class Feedback extends Model
         'is_anonymous',
         'forwarded_from_user_id',
          'forward_note', 
-         'status'
+         'status',
+         'feedback_type',
 
     ];
 
-    /**
-     * Feedback ን የላከው የተመዘገበ ተጠቃሚ (User) ከሆነ
-     */
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * Feedback ን የላከው እንግዳ (Guest) ከሆነ
-     */
+    
     public function guest(): BelongsTo
     {
         return $this->belongsTo(Guest::class);
     }
 
-    /**
-     * Feedback የደረሰበትን አካል (College, Department, or Directory) መለየት
-     */
+    
     public function recipient(): MorphTo
     {
         return $this->morphTo();

@@ -29,7 +29,7 @@
                 <div class="mb-3">
                     <i class="fas fa-user-circle fa-4x text-primary"></i>
                 </div>
-                <h6 class="fw-bold mb-1">Alemnh</h6>
+                <h6 class="fw-bold mb-1">Alemnhe</h6>
                 <p class="small text-muted mb-3">Frontend Developer</p>
                 <div class="border-top pt-2">
                     <p class="small mb-1"><i class="fas fa-phone text-success me-2"></i> +251 934 355 501</p>

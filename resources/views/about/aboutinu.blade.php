@@ -93,7 +93,7 @@
 </div>
 
 <style>
-    /* ምስሎቹ ላይ ማውስ ሲያርፍ በትንሹ እንዲያድጉ (Zoom) */
+    
     .hover-zoom {
         transition: transform 0.3s ease;
     }

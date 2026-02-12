@@ -76,6 +76,7 @@
                                 <div class="col-md-4 mb-3">
                                     <label class="form-label fw-bold">Priority</label>
                                     <select name="priority" class="form-select">
+                                        <option value="Neutral" {{ $complaint->priority == 'Neutral' ? 'selected' : '' }}>Neutral</option>
                                         <option value="Low" {{ $complaint->priority == 'Low' ? 'selected' : '' }}>Low</option>
                                         <option value="Medium" {{ $complaint->priority == 'Medium' ? 'selected' : '' }}>Medium</option>
                                         <option value="High" {{ $complaint->priority == 'High' ? 'selected' : '' }}>High</option>
@@ -106,15 +107,17 @@
                     </div>
                     
                     <h6 class="text-muted small fw-bold text-uppercase border-bottom pb-2 mt-4 mb-3">Urgency</h6>
-                    <div class="mb-4">
-                        @if($complaint->priority == 'High')
-                            <span class="badge bg-danger px-3 py-2 w-100"><i class="fas fa-exclamation-triangle me-2"></i> High</span>
-                        @elseif($complaint->priority == 'Medium')
-                            <span class="badge bg-warning text-dark px-3 py-2 w-100"><i class="fas fa-clock me-2"></i> Medium</span>
-                        @else
-                            <span class="badge bg-info px-3 py-2 w-100"><i class="fas fa-info-circle me-2"></i> Low</span>
-                        @endif
-                    </div>
+                     <div class="mb-4">
+                         @if($complaint->priority == 'High')
+                             <span class="badge bg-danger px-3 py-2 w-100"><i class="fas fa-exclamation-triangle me-2">                     </i> High</span>
+                         @elseif($complaint->priority == 'Medium')
+                             <span class="badge bg-warning text-dark px-3 py-2 w-100"><i class="fas fa-clock me-2"></i> Medium</span>
+                         @elseif($complaint->priority == 'Neutral')
+                             <span class="badge bg-secondary px-3 py-2 w-100"><i class="fas fa-dot-circle me-2"></i> Neutral</span>
+                         @else
+                             <span class="badge bg-info px-3 py-2 w-100"><i class="fas fa-info-circle me-2"></i> Low</span>
+                         @endif
+                     </div>
 
                     <a href="{{ route('index') }}" class="btn btn-outline-secondary w-100">
                         <i class="fas fa-arrow-left me-2"></i> Back

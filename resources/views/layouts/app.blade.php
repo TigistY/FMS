@@ -5,20 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback Management</title>
 
-    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Font Awesome for Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-     <link rel="stylesheet" href="{{asset('css/layout.css')}}" type="text/css">
-    <!-- Custom CSS for Layout -->
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
+
+    <link rel="stylesheet" href="{{asset('css/layout.css')}}" type="text/css">
+    
     <style>
-        /* ለኖቲፊኬሽን ባጅ አኒሜሽን እንዲኖረው */
-.badge.rounded-pill.bg-danger {
+
+        .badge.rounded-pill.bg-danger {
     border: 2px solid #fff;
 }
 
-/* Dropdown መልክ ማስተካከያ */
 .dropdown-menu {
     border-radius: 12px;
     animation: fadeIn 0.3s ease;
@@ -111,7 +112,21 @@
         background-color: #6c757d;
         color: white;
     }
-    
+    .dt-info {
+        display: inline-block;
+        margin-left: 15px;
+        font-size: 0.9rem;
+        color: #6c757d; 
+    }
+    .dt-length {
+        display: inline-block;
+    }
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        .sidebar { width: 260px; min-height: 100vh; background-color: #212529; color: white; transition: 0.3s; }
+        .main-content { flex-grow: 1; transition: 0.3s; }
+        .content { padding: 2rem; }
+        .dt-buttons { margin-bottom: 15px; } 
+        @media (max-width: 768px) { .sidebar { margin-left: -260px; } .sidebar.active { margin-left: 0; } }
     </style>
 </head>
 <body>
@@ -124,23 +139,33 @@
             <div class="content">
                 @yield('content')
             </div>
-
         </div>
-        
     </div>
-@include('partial.fooo')
+    
+    @include('partial.fooo')
+{{-- for DataTable links--}}
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
-
-
-
-    <!-- Bootstrap JS Bundle -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- Custom JS for toggling sidebar -->
+    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.min.js"></script>
+
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
+
     <script>
-        document.getElementById('sidebar-toggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('active');
+        $(document).ready(function() {
+            $('#sidebar-toggle').on('click', function() {
+                $('.sidebar').toggleClass('active');
+            });
         });
     </script>
-</body>
+
+    @stack('scripts') </body>
 </html>
+
+

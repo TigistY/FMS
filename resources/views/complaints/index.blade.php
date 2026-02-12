@@ -1,6 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
+ <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
+<script>
+$(document).ready(function() {
+    let table = new DataTable('#complaints', {
+        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
+        pagingType: "full_numbers",
+        
+        layout: {   
+
+            topStart: {
+                buttons: [
+                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
+                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                ]
+            },
+            topEnd: 'search',
+
+            bottomStart: {
+                pageLength: {}, // for drowpdown to page
+                info: {}        // for Showing
+            },
+            bottomEnd: 'paging' 
+        }
+    });
+});
+</script>
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
             <h2><i class="fas fa-list-ul me-2 text-primary"></i> Complaints List</h2>
@@ -13,24 +44,6 @@
     @endif
         </div>
     </div>
-@if(Auth::user()->hasRole('System Administrator'))
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body bg-light">
-        <form action="{{ route('index') }}" method="GET" class="row g-2">
-            <div class="col-md-10">
-                <input type="text" name="search" class="form-control" 
-                       placeholder="Search by unit name or subject..." 
-                       value="{{ request('search') }}">
-            </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Search
-                </button>
-            </div>
-        </form>
-    </div>
-</div>
-@endif
 
     @if (session('success'))
         <div class="alert alert-success border-0 shadow-sm alert-dismissible fade show">
@@ -42,7 +55,7 @@
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+                <table class="table table-hover align-middle mb-0" id="complaints">
                     <thead class="bg-light">
                         <tr>
                             <th class="ps-4">No.</th>
@@ -96,7 +109,7 @@
                                 <td>{{ $complaint->created_at->format('M d, Y') }}</td>
                                 <td class="text-end pe-4">
                                     <div class="d-flex justify-content-end gap-2">
-                                        <a href="{{ route('show', $complaint->id) }}" class="btn btn-sm btn-primary">
+                                        <a href="{{ route('show', $complaint->id) }}" class="btn btn-sm btn-primary" target="_blank">
                                             <i class="fas fa-eye me-1"></i> View
                                         </a>
 
@@ -120,11 +133,7 @@
                 </table>
             </div>
         </div>
-        <div class="card-footer bg-white border-0 py-3">
-            <div class="d-flex justify-content-center">
-                {{ $complaints->links() }}
-            </div>
-        </div>
+        
     </div>
 </div>
 

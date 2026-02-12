@@ -1,6 +1,37 @@
 @extends('layouts.app')
 
 @section('content')
+ <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
+<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
+  
+<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
+
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
+<script>
+$(document).ready(function() {
+    let table = new DataTable('#feedbacks', {
+        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
+        pagingType: "full_numbers",
+        
+        layout: {    //for button,search,paging position
+
+            topStart: {
+                buttons: [
+                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
+                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                ]
+            },
+            topEnd: 'search',
+
+            bottomStart: {
+                pageLength: {}, // for drowpdown to page
+                info: {}        // for Showing
+            },
+            bottomEnd: 'paging' 
+        }
+    });
+});
+</script>
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold"><i class="fas fa-list-alt text-primary me-2"></i> Feedback List</h2>
@@ -14,29 +45,52 @@
     @endif
     </div>
 </div>
-
-@if(Auth::user()->hasRole('System Administrator'))
-<div class="card border-0 shadow-sm mb-4">
-    <div class="card-body bg-light">
-        <form action="{{ route('feedback.index') }}" method="GET" class="row g-2">
-            <div class="col-md-10">
-                <input type="text" name="search" class="form-control" 
-                       placeholder="Search by unit name..." 
-                       value="{{ request('search') }}">
+<div class="row mb-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm border-start border-success border-5 card-hover-effect">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-success fw-bold">Positive</h6>
+                        <h3 class="fw-bold mb-0">{{ $stats['Positive'] }}</h3>
+                    </div>
+                    <i class="fas fa-smile-beam fa-2x text-success opacity-50"></i>
+                </div>
             </div>
-            <div class="col-md-2">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="fas fa-search me-1"></i> Search
-                </button>
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-@endif
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm border-start border-info border-5 card-hover-effect">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-info fw-bold">Neutral</h6>
+                        <h3 class="fw-bold mb-0">{{ $stats['Neutral'] }}</h3>
+                    </div>
+                    <i class="fas fa-meh fa-2x text-info opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm border-start border-danger border-5 card-hover-effect">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="text-danger fw-bold">Negative</h6>
+                        <h3 class="fw-bold mb-0">{{ $stats['Negative'] }}</h3>
+                    </div>
+                    <i class="fas fa-frown fa-2x text-danger opacity-50"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 
+
     <div class="card shadow-sm border-0">
         <div class="card-body p-0">
             <div class="table-responsive">
-                <table class="table table-hover mb-0">
+                <table class="table table-hover mb-0" id="feedbacks">
                     <thead class="table-light">
                         <tr>
                             <th class="ps-4">#</th>
@@ -112,9 +166,6 @@
             </div>
         </div>
     </div>
-    <div class="mt-4 d-flex justify-content-center">
-    {{ $feedbacks->links() }}
-</div>
 </div>
 <style>
     

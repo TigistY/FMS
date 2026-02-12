@@ -4,14 +4,13 @@
 <div class="container-fluid py-4">
     <div class="row justify-content-center">
         <div class="col-lg-11">
-            {{-- Hover effect ያለው ካርድ --}}
             <div class="card shadow-lg border-0 complaint-card">
                 
                 {{-- Header Section --}}
                 <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
                     <div class="d-flex justify-content-between align-items-center px-3">
                         <h2 class="fw-bold text-danger mb-0" id="main-title" style="font-size: 1.5rem;">
-                            <i class="fas fa-exclamation-triangle me-2"></i> Complaint Submission
+                            <i class="fas fa-exclamation-triangle me-2"></i> Complain Submission
                         </h2>
                         <div style="width: 150px;">
                             <select id="language_selector" onchange="window.switchLanguage(this.value)" class="form-select form-select-sm bg-danger-subtle border-danger">
@@ -53,7 +52,7 @@
                                             <option value="" id="option-select-recipient-type">Select Type</option>
                                             <option value="College" id="option-college">College</option>
                                             <option value="Department" id="option-department">Department</option>
-                                            <option value="Directory" id="option-directory">Directory</option>
+                                            <option value="Directory" id="option-directory">Directorate</option>
                                         </select>
                                     </div>
                                     <div class="col-6 d-none" id="college_filter_container">
@@ -67,11 +66,11 @@
                                         <select id="recipient_id" name="recipient_id" required class="form-select form-select-sm">
                                             <option value="" id="option-select-recipient">Select Recipient Unit</option>
                                         </select>
-                                        <small id="loading-text" class="text-danger d-none fw-bold">Loading...</small>
+                                        <small id="loading-text" class="text-danger d-none fw-bold"></small>
                                     </div>
                                 </div>
 
-                                <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="label-description">Complaint Content</h6>
+                                <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="label-description">Complain Content</h6>
                                 <div class="mb-2">
                                     <label class="form-label small fw-bold" id="label-subject">Subject *</label>
                                     <input type="text" id="subject" name="subject" required class="form-control form-control-sm border-danger-subtle" placeholder="Short and clear subject">
@@ -85,30 +84,37 @@
                             {{-- Right Column: Identity & Contact --}}
                             <div class="col-md-6 ps-md-4">
                                 <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="title-contact">Identity & Contact</h6>
+                                
                                 <div class="form-check form-switch p-3 bg-danger-subtle rounded mb-2 border border-danger-subtle">
-                                    <input id="is_anonymous" name="is_anonymous" type="checkbox" role="switch" onchange="window.toggleGuestFields()" class="form-check-input" {{ old('is_anonymous') ? 'checked' : '' }}>
+                                    <input id="is_anonymous" name="is_anonymous" type="checkbox" role="switch" onchange="window.handleIdentityChange()" class="form-check-input" {{ old('is_anonymous') ? 'checked' : '' }}>
                                     <label for="is_anonymous" class="form-check-label fw-bold text-danger" id="label-anonymous">I wish to remain Anonymous.</label>
                                 </div>
-                                <p class="small text-muted mb-3" id="text-anonymous-warning" style="font-size: 0.8rem;">If you choose this, your identity will be hidden.</p>
 
-                                <div id="guest-fields" class="p-3 border rounded bg-light shadow-sm">
+                                @if(Auth::check())
+                                <div id="guest_mode_container" class="form-check mb-3">
+                                    <input id="use_guest_mode" name="use_guest_mode" type="checkbox" onchange="window.handleIdentityChange()" class="form-check-input" {{ old('use_guest_mode') ? 'checked' : '' }}>
+                                    <label for="use_guest_mode" class="form-check-label small fw-bold text-primary">Submit as Guest (Manually fill my info)</label>
+                                </div>
+                                @endif
+
+                                <div id="guest-fields" class="p-3 border rounded bg-light shadow-sm d-none">
+                                    <p class="small text-muted mb-2">Provide your contact details below:</p>
                                     <div class="row g-2">
                                         <div class="col-12">
                                             <label class="form-label small mb-1 fw-bold" id="label-email">Email *</label>
-                                            <input type="email" id="guest_email" name="guest_email" class="form-control form-control-sm">
+                                            <input type="email" id="guest_email" name="guest_email" class="form-control form-control-sm" value="{{ old('guest_email') }}">
                                         </div>
                                         <div class="col-12 mt-2">
                                             <label class="form-label small mb-1 fw-bold" id="label-name">Full Name (Optional)</label>
-                                            <input type="text" id="guest_name" name="guest_name" class="form-control form-control-sm">
+                                            <input type="text" id="guest_name" name="guest_name" class="form-control form-control-sm" value="{{ old('guest_name') }}">
                                         </div>
                                         <div class="col-12 mt-2">
                                             <label class="form-label small mb-1 fw-bold" id="label-type">Reporter Type *</label>
                                             <select id="guest_type" name="guest_type" class="form-select form-select-sm">
                                                 <option value="" id="option-select-type">Select Type</option>
                                                 <option value="Student">Student</option>
-                                                <option value="Teacher">Teacher</option>
-                                                <option value="Employee">Employee</option>
-                                                <option value="Other">Other</option>
+                                                 <option value="Employee">Employee</option>
+                                                <option value="Other">Guest</option>
                                             </select>
                                         </div>
                                     </div>
@@ -116,7 +122,7 @@
 
                                 <div class="mt-4">
                                     <button type="submit" id="button-submit" class="btn btn-danger w-100 py-2 fw-bold shadow-sm">
-                                        <i class="fas fa-file-signature me-2"></i> Submit Complaint
+                                        <i class="fas fa-file-signature me-2"></i> Submit Complain
                                     </button>
                                 </div>
                             </div>
@@ -129,18 +135,13 @@
 </div>
 
 <style>
-    .complaint-card { 
-        transition: transform 0.3s ease, box-shadow 0.3s ease; 
-        border-top: 5px solid #dc3545 !important; 
-    }
-    .complaint-card:hover { 
-        transform: translateY(-8px); 
-        box-shadow: 0 15px 30px rgba(220, 53, 69, 0.15) !important; 
-    }
+    .complaint-card { transition: transform 0.3s ease, box-shadow 0.3s ease; border-top: 5px solid #dc3545 !important; }
+    .complaint-card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(220, 53, 69, 0.15) !important; }
     .border-danger-subtle { border-color: #f5c2c7 !important; }
 </style>
 
 <script>
+    // ያንተ Translations (አልተለወጠም)
     window.translations = {
         'am': {
             'main-title': 'ቅሬታ ማስገቢያ',
@@ -175,7 +176,7 @@
             'option-select-recipient-type': 'Select Type',
             'option-college': 'College',
             'option-department': 'Department',
-            'option-directory': 'Directory',
+            'option-directory': 'Directorate',
             'label-filter-college': 'Select College first:',
             'option-select-filter-college': 'Choose College',
             'label-recipient-id': 'Select Recipient:',
@@ -203,16 +204,13 @@
             const el = document.getElementById(key);
             if (el) el.textContent = t[key];
         }
-        // Update placeholders
-        document.getElementById('subject').placeholder = lang === 'am' ? 'አጭር ርዕስ' : 'Short subject';
-        document.getElementById('body').placeholder = lang === 'am' ? 'ዝርዝር መረጃ እዚህ ይጻፉ...' : 'Describe your complaint...';
     };
 
+    // Recipient Fetching Logic (ያንተ ኮድ)
     window.handleTypeChange = async () => {
         const type = document.getElementById('recipient_type').value;
         const collegeFilter = document.getElementById('college_filter_container');
         const idSelect = document.getElementById('recipient_id');
-        
         idSelect.innerHTML = `<option value="">${window.translations[currentLanguage]['option-select-recipient']}</option>`;
         collegeFilter.classList.add('d-none');
 
@@ -235,10 +233,7 @@
             colleges.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.id;
-                const nameAm = c.name_am || c.name_en;
-                opt.textContent = currentLanguage === 'am' ? nameAm : c.name_en;
-                opt.setAttribute('data-am-name', nameAm);
-                opt.setAttribute('data-en-name', c.name_en);
+                opt.textContent = currentLanguage === 'am' ? (c.name_am || c.name_en) : c.name_en;
                 filterSelect.appendChild(opt);
             });
         } catch (e) { console.error(e); }
@@ -254,7 +249,6 @@
         const loading = document.getElementById('loading-text');
         loading.classList.remove('d-none');
         idSelect.disabled = true;
-
         try {
             const response = await fetch(url);
             const data = await response.json();
@@ -262,10 +256,7 @@
             data.forEach(item => {
                 const opt = document.createElement('option');
                 opt.value = item.id;
-                const nameAm = item.name_am || item.name_en;
-                opt.textContent = currentLanguage === 'am' ? nameAm : item.name_en;
-                opt.setAttribute('data-am-name', nameAm);
-                opt.setAttribute('data-en-name', item.name_en);
+                opt.textContent = currentLanguage === 'am' ? (item.name_am || item.name_en) : item.name_en;
                 idSelect.appendChild(opt);
             });
             idSelect.disabled = false;
@@ -273,14 +264,29 @@
         loading.classList.add('d-none');
     };
 
-    window.toggleGuestFields = () => {
+    // አዲሱ Identity Logic
+    window.handleIdentityChange = () => {
         const isAnon = document.getElementById('is_anonymous').checked;
-        document.getElementById('guest-fields').classList.toggle('d-none', isAnon);
+        const useGuestMode = document.getElementById('use_guest_mode') ? document.getElementById('use_guest_mode').checked : true;
+        const guestFields = document.getElementById('guest-fields');
+        const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
+
+        if (isAnon) {
+            // ስም-አልባ ከሆነ የGuest መረጃ መሙያውን ደብቅ
+            guestFields.classList.add('d-none');
+        } else {
+            // ስም-አልባ ካልሆነ እና (Login ካላደረገ ወይም Login አድርጎ Guest መሆን ከፈለገ) አሳይ
+            if (!isLoggedIn || useGuestMode) {
+                guestFields.classList.remove('d-none');
+            } else {
+                guestFields.classList.add('d-none');
+            }
+        }
     };
 
     document.addEventListener('DOMContentLoaded', () => {
         window.switchLanguage('en');
-        window.toggleGuestFields();
+        window.handleIdentityChange(); // የመጀመርያውን ሁኔታ ለማስተካከል
     });
 </script>
 @endsection

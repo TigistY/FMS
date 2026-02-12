@@ -1,19 +1,30 @@
 <header class="shadow-sm p-3 sticky-top z-10 d-flex align-items-center justify-content-end" style="background-color: #1e3a5f; border-bottom: 2px solid #ffc107;">
     
-    {{-- የኖቲፊኬሽን ክፍል --}}
+    {{-- notification part--}}
     <div class="me-3">
-        <a class="nav-link position-relative px-2 text-white" href="{{ route('index') }}">
-            <i class="fas fa-bell fa-lg"></i> 
-            @if(isset($globalNotificationCount) && $globalNotificationCount > 0)
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" 
-                      style="font-size: 0.65rem; padding: 0.35em 0.5em; border: 2px solid #1e3a5f;">
-                    {{ $globalNotificationCount }}
-                </span>
-            @endif
-        </a>
+      @php
+        $targetRoute = route('dashboard'); 
+        if(Auth::check()){
+            if(Auth::user()->hasRole('Unit Responder')){
+                $targetRoute = route('index');
+            }
+        }
+      @endphp
+
+      @if(Auth::check() && !Auth::user()->hasRole('System Administrator'))
+          @cannot('role-management')
+             <a class="nav-link position-relative px-2 text-white" href="{{ $targetRoute }}">
+                <i class="fas fa-bell fa-lg"></i> 
+                @if(isset($globalNotificationCount) && $globalNotificationCount > 0)
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{ $globalNotificationCount }}
+                    </span>
+                @endif
+            </a>
+          @endcannot
+      @endif
     </div>
 
-    {{-- የቋንቋ መቀየሪያ ክፍል --}}
     <div class="dropdown float-end me-2 py-1 mx-2">
         <button class="btn btn-outline-light dropdown-toggle border-0 shadow-sm fw-bold" type="button" data-bs-toggle="dropdown">
             <i class="fas fa-globe me-1 text-warning"></i> 
