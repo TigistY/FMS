@@ -28,6 +28,10 @@ Route::post('/logout-user',[LoginController::class,'logoutUser'])->name('logout'
 //for createaccount
 Route::get('/create-account',[UserController::class,'createaccount'])->name('create.link');
 Route::post('/createaccount',[UserController::class,'storeaccount'])->name('storeaccount.link');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/profile/edit', [UserController::class, 'editProfile'])->name('profile.edit');
+    Route::put('/profile/update', [UserController::class, 'updateProfile'])->name('profile.update');
+});
 //for user managemnt
 Route::middleware(['auth'])->group(function () {
       Route::resource('users', AdduserController::class); 

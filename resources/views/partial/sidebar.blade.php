@@ -104,7 +104,7 @@
             <strong class="small">{{ Auth::user()->name }}</strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li><a class="dropdown-item" href="{{ route('profile.edit') }}">My Profile</a></li>
+            <li><a class="dropdown-item" href="#">My Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form action="{{ route('logout') }}" method="POST">

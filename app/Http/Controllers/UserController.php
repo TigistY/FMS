@@ -50,4 +50,32 @@ class UserController extends Controller
         
         return redirect()->back()->with('error', 'Account creation failed. Please try again.');
     }
+
+    public function editProfile() 
+    {
+        $user = Auth::user(); 
+        return view('logins.edit_profile', compact('user'));
+    }
+
+    public function updateProfile(Request $req) 
+    {
+        $user = Auth::user(); 
+
+        $req->validate([ 
+            'name' => 'required|string|max:255', 
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:8|confirmed', 
+        ]);
+
+        $user->name = $req->name;
+        $user->email = $req->email; 
+
+        if ($req->filled('password')) {
+            $user->password = Hash::make($req->password); 
+        }
+
+        $user->save();
+
+        return redirect()->back()->with('success', 'Profile Updated Successfully!'); 
+    }
 }
