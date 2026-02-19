@@ -148,7 +148,7 @@ public function show(Feedback $feedback)
     $user = Auth::user();
 
   if ($user->id === $feedback->user_id) {
-    \App\Models\Response::where('respondable_type', 'Feedback') // 'Feedback' የሚለውን String ተጠቀም
+    \App\Models\Response::where('respondable_type', 'Feedback') 
         ->where('respondable_id', $feedback->id)
         ->where('is_seen', false)
         ->update(['is_seen' => true]);

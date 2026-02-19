@@ -141,20 +141,33 @@ $(document).ready(function() {
     </span>
 </td>
                             <td>{{ $feedback->created_at->format('M d, Y') }}</td>
-                            <td class="text-end pe-4">
-                                <a href="{{ route('feedback.show', $feedback->id) }}" class="btn btn-sm btn-outline-primary shadow-sm">
-                                    <i class="fas fa-eye me-1"></i> View
-                                </a>
-                                @if(Auth::user()->hasRole('System Administrator'))
-                                            <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this complaint?')">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i class="fas fa-trash-alt"></i>
-                                                </button>
-                                            </form>
-                                        @endif
-                            </td>
+                          <td class="text-end pe-4">
+    <div class="dropdown">
+        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="fas fa-cog me-1"></i> Action
+        </button>
+        <ul class="dropdown-menu shadow border-0">
+            <li>
+                <a class="dropdown-item text-primary" href="{{ route('feedback.show', $feedback->id) }}">
+                    <i class="fas fa-eye me-2"></i> View
+                </a>
+            </li>
+
+            @if(Auth::user()->hasRole('System Administrator'))
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this feedback?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-trash-alt me-2"></i> Delete
+                        </button>
+                    </form>
+                </li>
+            @endif
+        </ul>
+    </div>
+</td>
                         </tr>
                         @empty
                         <tr>

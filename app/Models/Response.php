@@ -29,33 +29,26 @@ class Response extends Model
         'is_seen' => 'boolean', 
     ];
 
-    // የ Response.php ፋይልህ ውስጥ ጨምረው
-
 public function getUnitNameAttribute()
 {
-    // ምላሽ የሰጠው ተጠቃሚ (User)
     $user = $this->responder;
 
     if (!$user) {
         return 'System';
     }
 
-    // በቅድሚያ ዲፓርትመንት ካለው እሱን ያምጣ
     if ($user->department_id && $user->department) {
         return $user->department->name_en;
     }
 
-    // ዲፓርትመንት ከሌለው ኮሌጅ ካለው ያምጣ
     if ($user->college_id && $user->college) {
         return $user->college->name_en;
     }
 
-    // ዳይሬክቶሬት ካለው ያምጣ
     if ($user->directory_id && $user->directory) {
         return $user->directory->name_en;
     }
-
-    // ምንም ከሌለው (ለምሳሌ Super Admin ከሆነ)
+    
     return 'University Administration';
 }
 

@@ -2,7 +2,6 @@
 
 @section('content')
 <div class="container-fluid">
-    {{-- Top Stats Section (Welcome & Badges) --}}
     <div class="row mb-4 align-items-center">
         <div class="col-md-8 text-center text-md-start">
             <h3 class="fw-bold text-dark mb-1">{{ __('messages.Welcome') }}, {{ Auth::user()->name }}!</h3>
@@ -21,7 +20,7 @@
     </div>
 
     
-    @include('partial.dashbord') {{-- Assuming you keep your logic here --}}
+    @include('partial.dashbord')
 
     <div class="row g-4 mb-5">
         <div class="col-md-6">
@@ -76,94 +75,14 @@
                             </td>
                             <td>{{ Str::limit($item->subject, 50) }}</td>
                             <td><span class="badge rounded-pill bg-info text-dark">{{ $item->status }}</span></td>
-                            <td class="text-center">
-                                @if($item->responses->count() > 0)
-                                    <button class="btn btn-sm btn-primary shadow-sm px-3" data-bs-toggle="modal" data-bs-target="#modal{{ $item->id }}">
-                                        <i class="fas fa-eye me-1"></i> View Details
-                                    </button>
-
-                                    <div class="modal fade" id="modal{{ $item->id }}" tabindex="-1" aria-hidden="true">
-                                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                                            <div class="modal-content border-0 shadow-lg text-start">
-                                                <div class="modal-header bg-dark text-white">
-                                                    <h5 class="modal-title">Submission Details</h5>
-                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                                </div>
-                                                <div class="modal-body p-4">
-                                                    <div class="row">
-                                                        <div class="col-md-6 border-end">
-                                                            <h6 class="fw-bold text-danger border-bottom pb-2">Your Original Report</h6>
-                                                            <div class="p-3 bg-light rounded" style="min-height: 120px;">
-                                                                <p class="small"><strong>Subject:</strong> {{ $item->subject }}</p>
-                                                                <p class="small text-muted">{{ $item->body }}</p>
-                                                            </div>
-                                                        </div>
-                                                        <div class="col-md-6">
-                                                            <h6 class="fw-bold text-primary border-bottom pb-2">Unit Response</h6>
-                                                            <div class="p-3 rounded" style="background-color: #f0f7ff; min-height: 120px;">
-                                                                @foreach($item->responses as $response)
-                                                                    <p class="small mb-1 font-italic">"{{ $response->response_text }}"</p>
-                                                                    <small class="text-muted d-block text-end fw-bold">
-                                                                     - by {{ $response->unit_name }}
-                                                                      </small>
-                                                                    <hr>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                            
-                                                    @if($item instanceof \App\Models\Complaint)
-                                                    <div class="mt-4 border-top pt-3">
-                                                        <button class="btn btn-outline-danger btn-sm" type="button" data-bs-toggle="collapse" data-bs-target="#forwardArea{{ $item->id }}">
-                                                            <i class="fas fa-share me-1"></i> Forward to higher/other unit
-                                                        </button>
-                                                        
-                                                        <div class="collapse mt-3" id="forwardArea{{ $item->id }}">
-                                                            <form action="{{ route('complaints.forward', $item->id) }}" method="POST" class="bg-light p-3 rounded border">
-                                                                @csrf
-                                                                <div class="row g-2">
-                                                                    <div class="col-md-6">
-                                                                        <label class="small fw-bold">Receiver Type</label>
-                                                                        <select name="recipient_type" class="form-select form-select-sm" onchange="handleTypeChange(this, {{ $item->id }})" required>
-                                                                            <option value="">Select...</option>
-                                                                            <option value="College">College</option>
-                                                                            <option value="Department">Department</option>
-                                                                            <option value="Directory">Directorate</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-md-6 d-none" id="div_college_{{ $item->id }}">
-                                                                        <label class="small fw-bold">College</label>
-                                                                        <select class="form-select form-select-sm" onchange="loadDepartments(this.value, {{ $item->id }})">
-                                                                            <option value="">Choose College</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="small fw-bold">Select Unit</label>
-                                                                        <select name="recipient_id" id="unit_select_{{ $item->id }}" class="form-select form-select-sm" required>
-                                                                            <option value="">Select Unit</option>
-                                                                        </select>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="small fw-bold">Reason</label>
-                                                                        <textarea name="forward_note" class="form-control form-control-sm" rows="2" placeholder="Tell them why you are forwarding this..." required></textarea>
-                                                                    </div>
-                                                                    <div class="col-12 mt-2 text-end">
-                                                                        <button type="submit" class="btn btn-danger btn-sm px-4">Forward Now</button>
-                                                                    </div>
-                                                                </div>
-                                                            </form>
-                                                        </div>
-                                                    </div>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                @else
-                                    <span class="text-muted small fst-italic">Awaiting Response...</span>
-                                @endif
-                            </td>
+                          <td class="text-center">
+    @php
+        $route = $item instanceof \App\Models\Complaint ? route('show', $item->id) : route('feedback.show', $item->id);
+    @endphp
+    <a href="{{ $route }}" class="btn btn-sm btn-primary shadow-sm px-3">
+        <i class="fas fa-eye me-1"></i> View Details
+    </a>
+</td>
                         </tr>
                         @empty
                         <tr><td colspan="4" class="text-center py-5 text-muted">No records found.</td></tr>

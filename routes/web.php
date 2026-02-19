@@ -41,6 +41,7 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/create', [ComplaintController::class, 'create'])->name('create');
 Route::post('/store', [ComplaintController::class, 'store'])->name('complaints.submit');
 
+
 // for Feedback Submission
 Route::get('/feedback', [FeedbackController::class, 'feedbackform'])->name('feedback.link');
 Route::post('/feedb_stor', [FeedbackController::class, 'feedback'])->name('feedback.submit');

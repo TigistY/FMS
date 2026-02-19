@@ -46,7 +46,7 @@
         @can('view-complaints')
         <li class="nav-item mt-2">
             <a href="{{route('index')}}" class="nav-link text-white {{ Request::routeIs('index') ? 'active bg-primary' : '' }}">
-                <i class="fas fa-exclamation-triangle me-2"></i> {{ __('messages.view Complaint') }}
+                <i class="fas fa-exclamation-triangle me-2"></i> {{ __('messages.view Complains') }}
             </a>
         </li>
         @endcan
@@ -104,7 +104,7 @@
             <strong class="small">{{ Auth::user()->name }}</strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li><a class="dropdown-item" href="#">My Profile</a></li>
+            <li><a class="dropdown-item" href="{{route('profile.edit')}}">My Profile</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form action="{{ route('logout') }}" method="POST">

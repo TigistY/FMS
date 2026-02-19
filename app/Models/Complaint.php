@@ -46,9 +46,8 @@ class Complaint extends Model
         return $this->belongsTo(Guest::class, 'guest_id');
     }
 
-    /**
-     * Complaint የደረሰበትን አካል (College, Department, or Directory) መለየት
-     */
+    
+    
     public function recipient(): MorphTo
     {
         return $this->morphTo();

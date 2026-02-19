@@ -2,6 +2,63 @@
 
 @section('content')
 <div class="container py-5">
+    @if(Auth::user()->hasRole('General User'))
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-lg mb-4">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i> Submission Details</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <h6 class="fw-bold text-danger border-bottom pb-2">Your Original Report</h6>
+                                <div class="p-3 bg-light rounded" style="min-height: 150px;">
+                                    <p class="small"><strong>Subject:</strong> {{ $complaint->subject }}</p>
+                                    <p class="small text-muted">{{ $complaint->body }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-primary border-bottom pb-2">Unit Response</h6>
+                                <div class="p-3 rounded" style="background-color: #f0f7ff; min-height: 150px;">
+                                    @forelse($complaint->responses as $response)
+                                        <div class="mb-3 border-bottom pb-2">
+                                            <p class="small mb-1 font-italic">"{{ $response->response_text }}"</p>
+                                            <small class="text-muted d-block text-end fw-bold">
+                                                - by {{ $response->responder->name }} ({{ $response->created_at->diffForHumans() }})
+                                            </small>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted small text-center mt-4">No response from the unit yet.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                @if($complaint->responses->count() > 0)
+                    <div class="alert alert-warning border-0 shadow-sm d-flex justify-content-between align-items-center">
+                        <div class="text-dark">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>Not satisfied?</strong> You can forward this to a higher office.
+                        </div>
+                        <button class="btn btn-warning btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#userForwardModal">
+                            <i class="fas fa-share-alt me-1"></i> Forward Case
+                        </button>
+                    </div>
+                @endif
+                
+                <div class="text-center mt-3">
+                    <a href="{{ route('dashboard') }}" class="btn btn-link text-secondary text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i> Back 
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    @else
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 mb-4">
@@ -124,56 +181,60 @@
                     </a>
                 </div>
             </div>
-        </div> </div> </div> <div class="modal fade" id="forwardModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content border-0">
-            <form action="{{ route('complaints.forward', $complaint->id) }}" method="POST">
-                @csrf
-                <div class="modal-header bg-warning text-dark">
-                    <h5 class="modal-title fw-bold">Forward Complaint</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Recipient Type</label>
-                        <select id="forward_recipient_type" name="recipient_type" class="form-select" onchange="handleForwardTypeChange()" required>
-                            <option value="">Select Type</option>
-                            <option value="College">College</option>
-                            <option value="Department">Department</option>
-                            <option value="Directory">Directory</option>
-                        </select>
-                    </div>
+        </div> 
+    </div> 
+    @endif
+</div> 
 
-                    <div id="forward_college_filter_container" class="mb-3 d-none">
-                        <label class="form-label fw-bold text-primary">Select College First</label>
-                        <select id="forward_filter_college_id" class="form-select border-primary" onchange="loadForwardDepartments(this.value)">
-                            <option value="">-- Choose College --</option>
-                        </select>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Target Unit</label>
-                        <select id="forward_recipient_id" name="recipient_id" class="form-select" required disabled>
-                            <option value="">Select Unit</option>
-                        </select>
-                        <small id="forward_loading" class="text-muted d-none">Loading...</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label class="form-label fw-bold">Forwarding Note</label>
-                        <textarea name="forward_note" class="form-control" rows="3" placeholder="Reason for forwarding...."></textarea>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-warning px-4 fw-bold">Confirm Forward</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+@if(Auth::user()->hasRole('General User'))
+    @include('partial.user_forward_modal') 
+@else
+    @include('partial.forward_modal') 
+@endif
 
 <script>
-// (Your JavaScript functions remain the same as they were correct)
+    //for user
+    async function handleUserTypeChange() {
+    const type = document.getElementById('user_recipient_type').value;
+    const collegeFilter = document.getElementById('user_college_filter');
+    const idSelect = document.getElementById('user_recipient_id');
+    const collegeSelect = document.getElementById('user_filter_college');
+
+    idSelect.innerHTML = '<option value="">Select Unit</option>';
+    idSelect.disabled = true;
+    collegeFilter.classList.add('d-none');
+
+    if (type === 'College') {
+        fillUserUnits('{{ route('api.colleges.list') }}');
+    } else if (type === 'Directory') {
+        fillUserUnits('{{ route('api.directories.list') }}');
+    } else if (type === 'Department') {
+        collegeFilter.classList.remove('d-none');
+        const resp = await fetch('{{ route('api.colleges.list') }}');
+        const colleges = await resp.json();
+        collegeSelect.innerHTML = '<option value=""> Choose College</option>';
+        colleges.forEach(c => collegeSelect.innerHTML += `<option value="${c.id}">${c.name_en}</option>`);
+    }
+}
+
+async function loadUserDepartments(collegeId) {
+    if (!collegeId) return;
+    fillUserUnits(`{{ url('/api/colleges') }}/${collegeId}/departments`);
+}
+
+async function fillUserUnits(url) {
+    const idSelect = document.getElementById('user_recipient_id');
+    idSelect.disabled = true;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        idSelect.innerHTML = '<option value="">Select Unit</option>';
+        data.forEach(item => idSelect.innerHTML += `<option value="${item.id}">${item.name_en}</option>`);
+        idSelect.disabled = false;
+    } catch (e) { console.error(e); }
+}
+
+// for admin and unit responder
 async function handleForwardTypeChange() {
     const type = document.getElementById('forward_recipient_type').value;
     const collegeFilter = document.getElementById('forward_college_filter_container');
@@ -192,7 +253,7 @@ async function handleForwardTypeChange() {
         collegeFilter.classList.remove('d-none');
         const resp = await fetch('{{ route('api.colleges.list') }}');
         const colleges = await resp.json();
-        collegeSelect.innerHTML = '<option value="">-- Choose College --</option>';
+        collegeSelect.innerHTML = '<option value=""> Choose College </option>';
         colleges.forEach(c => {
             collegeSelect.innerHTML += `<option value="${c.id}">${c.name_en}</option>`;
         });

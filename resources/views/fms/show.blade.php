@@ -2,6 +2,51 @@
 
 @section('content')
 <div class="container py-5">
+      @if(Auth::user()->hasRole('General User'))
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <div class="card border-0 shadow-lg mb-4">
+                    <div class="card-header bg-dark text-white py-3">
+                        <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i> Submission Details</h5>
+                    </div>
+                    <div class="card-body p-4">
+                        <div class="row">
+                            <div class="col-md-6 border-end">
+                                <h6 class="fw-bold text-danger border-bottom pb-2">Your Original Report</h6>
+                                <div class="p-3 bg-light rounded" style="min-height: 150px;">
+                                    <p class="small"><strong>Subject:</strong> {{ $feedback->subject }}</p>
+                                    <p class="small text-muted">{{ $feedback->body }}</p>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <h6 class="fw-bold text-primary border-bottom pb-2">Unit Response</h6>
+                                <div class="p-3 rounded" style="background-color: #f0f7ff; min-height: 150px;">
+                                    @forelse($feedback->responses as $response)
+                                        <div class="mb-3 border-bottom pb-2">
+                                            <p class="small mb-1 font-italic">"{{ $response->response_text }}"</p>
+                                            <small class="text-muted d-block text-end fw-bold">
+                                                - by {{ $response->responder->name }} ({{ $response->created_at->diffForHumans() }})
+                                            </small>
+                                        </div>
+                                    @empty
+                                        <p class="text-muted small text-center mt-4">No response from the unit yet.</p>
+                                    @endforelse
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="text-center mt-3">
+                    <a href="{{ route('dashboard') }}" class="btn btn-link text-secondary text-decoration-none">
+                        <i class="fas fa-arrow-left me-1"></i> Back
+                    </a>
+                </div>
+            </div>
+        </div>
+
+    @else
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 mb-4">
@@ -113,7 +158,7 @@
     </div>
 </div>
 
-{{-- Forward Modal --}}
+{{--for  Forward Modal --}}
 <div class="modal fade" id="forwardModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow">
@@ -161,8 +206,8 @@
             </form>
         </div>
     </div>
+    @endif
 </div>
-
 <script>
 async function handleForwardTypeChange() {
     const type = document.getElementById('forward_recipient_type').value;

@@ -5,7 +5,7 @@ return [
     'Home' => 'Home',
     'User Manage' => 'User Management',
     'Users List' => 'Users List',
-    'view Complaint' => 'View Complaints',
+    'view Complains' => 'View Complains',
     'View Feedback' => 'View Feedback',
     'Role Management' => 'Role Management',
     'College/Directorate' => 'College/Directorate',

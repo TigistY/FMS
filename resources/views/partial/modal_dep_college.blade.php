@@ -118,7 +118,7 @@
             $('#dept_name_en').val(nameEn);
             $('#dept_name_am').val(nameAm);
             $('#dept_college_id').val(collegeId);
-            $('#dept_head_name').val(headName); // Head Name እዚህ ይሞላል
+            $('#dept_head_name').val(headName); 
             
             $('#departmentModal').modal('show');
         }

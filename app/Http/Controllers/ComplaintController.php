@@ -47,7 +47,7 @@ class ComplaintController extends Controller
     $guestId = null;
 
     if ($isAnonymous) {
-    } elseif ($request->has('use_guest_mode') || !Auth::check()) {// as Guest
+    } elseif ($request->has('use_guest_mode') || !Auth::check()) {
         $guest = Guest::firstOrCreate(
             ['email' => $validatedData['guest_email']],
             [

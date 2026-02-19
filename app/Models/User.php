@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// በትክክል የሚያስፈልጉት use statements
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -14,7 +13,6 @@ use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    // ሁሉም ትሬቶች በአንድ ላይ
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
