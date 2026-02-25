@@ -89,30 +89,20 @@ class FeedbackController extends Controller
 public function index(Request $request)
 {
     $user = Auth::user();
-    $query = Feedback::with(['recipient']);
+    $query = Feedback::with(['recipient', 'user', 'guest']);
 
-  
     if ($user->hasRole('System Administrator')) {
-        
         if ($request->filled('unit_type') && $request->filled('unit_id')) {
             $query->where('recipient_type', $request->unit_type)
                   ->where('recipient_id', $request->unit_id);
-        }
-
-        
-        if ($request->filled('feedback_type')) {
-            $query->where('feedback_type', $request->feedback_type);
-        }
-
-        if ($request->filled('search')) {
-            $searchTerm = $request->search;
-            $query->whereHasMorph('recipient', ['App\Models\College', 'App\Models\Directory', 'App\Models\Department'], function($q) use ($searchTerm) {
-                $q->where('name_en', 'like', '%' . $searchTerm . '%')
-                  ->orWhere('name_am', 'like', '%' . $searchTerm . '%');
-            });
+            
+            if ($request->filled('feedback_type')) {
+                $query->where('feedback_type', $request->feedback_type);
+            }
+        } else {
+            $query->whereRaw('1 = 0'); 
         }
     } else {
-      
         if ($user->college_id) {
             $query->where('recipient_type', 'College')->where('recipient_id', $user->college_id);
         } elseif ($user->directory_id) {
@@ -120,14 +110,12 @@ public function index(Request $request)
         } elseif ($user->department_id) {
             $query->where('recipient_type', 'Department')->where('recipient_id', $user->department_id);
         }
-        
-       
+
         if ($request->filled('feedback_type')) {
             $query->where('feedback_type', $request->feedback_type);
         }
     }
 
-   
     $statsData = (clone $query)->select('feedback_type', \DB::raw('count(*) as total'))
         ->groupBy('feedback_type')
         ->pluck('total', 'feedback_type')
@@ -139,9 +127,10 @@ public function index(Request $request)
         'Neutral'  => $statsData['Neutral'] ?? 0,
     ];
 
-    $feedbacks = $query->latest()->simplePaginate(10);
+    $feedbacks = $query->latest()->get();
+    $colleges = \App\Models\College::all();
     
-    return view('fms.index', compact('feedbacks', 'stats'));
+    return view('fms.index', compact('feedbacks', 'stats', 'colleges'));
 }
 public function show(Feedback $feedback)
 {

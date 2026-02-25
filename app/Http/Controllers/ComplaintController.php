@@ -76,43 +76,38 @@ class ComplaintController extends Controller
 }
 
     public function index(Request $request)
-    {
-        $user = Auth::user();
-        $query = Complaint::query();
+{
+    $user = Auth::user();
+    $query = Complaint::query();
 
-        if ($user->hasRole('System Administrator')) {
-            if ($request->filled('unit_type') && $request->filled('unit_id')) {
-                $query->where('recipient_type', $request->unit_type)
-                      ->where('recipient_id', $request->unit_id);
-            }
-
-           if ($request->filled('search')) {
-    $searchTerm = $request->search;
-    $query->where(function($q) use ($searchTerm) { 
-        $q->where('subject', 'like', '%' . $searchTerm . '%')
-          ->orWhereHasMorph('recipient', 
-            ['College', 'Directory', 'Department'], 
-            function($mq) use ($searchTerm) { 
-                $mq->where('name_en', 'like', '%' . $searchTerm . '%');
-            });
-    });
-}
-        } 
-        elseif ($user->hasRole('Unit Responder')) {
-            $query->where(function ($q) use ($user) {
-                if ($user->college_id) $q->orWhere(fn($sq) => $sq->where('recipient_type', 'College')->where('recipient_id', $user->college_id));
-                if ($user->directory_id) $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Directory')->where('recipient_id', $user->directory_id));
-                if ($user->department_id) $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Department')->where('recipient_id', $user->department_id));
-            });
+    if ($user->hasRole('System Administrator')) {
+        if ($request->filled('unit_type') && $request->filled('unit_id')) {
+            $query->where('recipient_type', $request->unit_type)
+                  ->where('recipient_id', $request->unit_id);
         } else {
-            $query->where('user_id', $user->id);
+            
+            $query->whereRaw('1 = 0'); 
         }
 
-        $complaints = $query->with(['user', 'guest', 'recipient'])->latest()->simplePaginate(10);
 
-        return view('complaints.index', compact('complaints'));
+    } 
+    elseif ($user->hasRole('Unit Responder')) {
+        $query->where(function ($q) use ($user) {
+            if ($user->college_id) $q->orWhere(fn($sq) => $sq->where('recipient_type', 'College')->where('recipient_id', $user->college_id));
+            if ($user->directory_id) $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Directory')->where('recipient_id', $user->directory_id));
+            if ($user->department_id) $q->orWhere(fn($sq) => $sq->where('recipient_type', 'Department')->where('recipient_id', $user->department_id));
+        });
+    } else {
+        $query->where('user_id', $user->id);
     }
 
+   
+    $complaints = $query->with(['user', 'guest', 'recipient'])->latest()->simplePaginate(10);
+    $colleges = College::all(['id', 'name_en']);
+    $directories = Directory::all(['id', 'name_en']);
+
+    return view('complaints.index', compact('complaints', 'colleges', 'directories'));
+}
 public function show(Complaint $complaint)
 {
     $user = Auth::user();

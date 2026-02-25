@@ -1,159 +1,140 @@
 @extends('layouts.app')
 
 @section('content')
- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
-<link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.css" />
-  
-<script src="https://cdn.datatables.net/2.3.6/js/dataTables.js"></script>
-
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
-<script>
-$(document).ready(function() {
-    let table = new DataTable('#feedbacks', {
-        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
-        pagingType: "full_numbers",
-        
-        layout: {    //for button,search,paging position
-
-            topStart: {
-                buttons: [
-                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
-                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
-                ]
-            },
-            topEnd: 'search',
-
-            bottomStart: {
-                pageLength: {}, // for drowpdown to page
-                info: {}        // for Showing
-            },
-            bottomEnd: 'paging' 
-        }
-    });
-});
-</script>
-<div class="container py-5">
+<div class="container py-2">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold"><i class="fas fa-list-alt text-primary me-2"></i> Feedback List</h2>
+        <h2 class="fw-bold"><i class="fas fa-list-alt text-primary me-2"></i> Feedbacks Management</h2>
         
-@if(request()->has('unit_id') || request()->has('unit_type') || request()->has('search'))
-        <div>
-            <a href="{{ route('admin.reports.units') }}" class="btn btn-outline-primary shadow-sm fw-bold">
-                <i class="fas fa-arrow-left me-2"></i> Back 
-            </a>
-        </div>
-    @endif
-    </div>
+       <div class="text-center mt-3">
+    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-link text-secondary text-decoration-none">
+        <i class="fas fa-arrow-left me-1"></i> Back
+    </a>
 </div>
-<div class="row mb-4">
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm border-start border-success border-5 card-hover-effect">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-success fw-bold">Positive</h6>
-                        <h3 class="fw-bold mb-0">{{ $stats['Positive'] }}</h3>
-                    </div>
-                    <i class="fas fa-smile-beam fa-2x text-success opacity-50"></i>
-                </div>
-            </div>
-        </div>
     </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm border-start border-info border-5 card-hover-effect">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-info fw-bold">Neutral</h6>
-                        <h3 class="fw-bold mb-0">{{ $stats['Neutral'] }}</h3>
-                    </div>
-                    <i class="fas fa-meh fa-2x text-info opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-4">
-        <div class="card border-0 shadow-sm border-start border-danger border-5 card-hover-effect">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center">
-                    <div>
-                        <h6 class="text-danger fw-bold">Negative</h6>
-                        <h3 class="fw-bold mb-0">{{ $stats['Negative'] }}</h3>
-                    </div>
-                    <i class="fas fa-frown fa-2x text-danger opacity-50"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div> 
 
+    {{--for  Filter Form --}}
+    @if(Auth::user()->hasRole('System Administrator'))
+    <div class="card mb-4 border-0 shadow-sm bg-white p-4">
+        <form action="{{ route('feedback.index') }}" method="GET" class="row g-3 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label fw-bold small">Unit Type</label>
+                <select name="unit_type" id="filter_unit_type" class="form-select" onchange="handleTypeChange()">
+                    <option value="">Select Type </option>
+                    <option value="College" {{ request('unit_type') == 'College' ? 'selected' : '' }}>College</option>
+                    <option value="Department" {{ request('unit_type') == 'Department' ? 'selected' : '' }}>Department</option>
+                    <option value="Directory" {{ request('unit_type') == 'Directory' ? 'selected' : '' }}>Directorate</option>
+                </select>
+            </div>
+
+            <div class="col-md-3 d-none" id="college_filter_div">
+                <label class="form-label fw-bold small">Select College First</label>
+                <select id="filter_college_id" class="form-select" onchange="loadDepts(this.value)">
+                    <option value="">Choose College</option>
+                    @foreach($colleges as $college)
+                        <option value="{{ $college->id }}">{{ $college->name_en }}</option>
+                    @endforeach
+                </select>
+            </div>
+
+            <div class="col-md-3">
+                <label class="form-label fw-bold small">Specific Unit</label>
+                <select name="unit_id" id="filter_unit_id" class="form-select" required>
+                    <option value="">Select Unit</option>
+                    @if(request('unit_id'))
+                        <option value="{{ request('unit_id') }}" selected>Currently Selected</option>
+                    @endif
+                </select>
+            </div>
+
+            <div class="col-md-2">
+                <label class="form-label fw-bold small">Feedback Type</label>
+                <select name="feedback_type" class="form-select">
+                    <option value="">All Types</option>
+                    <option value="Positive" {{ request('feedback_type') == 'Positive' ? 'selected' : '' }}>Positive</option>
+                    <option value="Negative" {{ request('feedback_type') == 'Negative' ? 'selected' : '' }}>Negative</option>
+                    <option value="Neutral" {{ request('feedback_type') == 'Neutral' ? 'selected' : '' }}>Neutral</option>
+                </select>
+            </div>
+
+            <div class="col-md-1">
+                <button type="submit" class="btn btn-primary w-100 p-2">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+    @endif
+
+    {{-- Stats Cards --}}
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-success border-5">
+                <div class="card-body">
+                    <h6 class="text-success fw-bold small">Positive</h6>
+                    <h3 class="fw-bold mb-0 text-success">{{ $stats['Positive'] }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-info border-5">
+                <div class="card-body">
+                    <h6 class="text-info fw-bold small">Neutral</h6>
+                    <h3 class="fw-bold mb-0 text-info">{{ $stats['Neutral'] }}</h3>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm border-start border-danger border-5">
+                <div class="card-body">
+                    <h6 class="text-danger fw-bold small">Negative</h6>
+                    <h3 class="fw-bold mb-0 text-danger">{{ $stats['Negative'] }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @if(request('unit_id') || !Auth::user()->hasRole('System Administrator'))
     <div class="card shadow-sm border-0">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0" id="feedbacks">
-                    <thead class="table-light">
-                        <tr>
-                            <th class="ps-4">#</th>
-                            <th>Subject</th>
-                            <th>Recipient Unit</th>
-                            <th>Sender</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th class="text-end pe-4">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @forelse($feedbacks as $key => $feedback)
-                        <tr>
-                            <td class="ps-4 text-muted">{{ $feedbacks->firstItem() + $key }}</td>
-                            <td>
-                            <span class="fw-bold text-dark d-block">{{ $feedback->subject }}</span>
-                                @if($feedback->status == 'Forwarded' || $feedback->forward_note)
-                        <small class="badge bg-light text-warning border border-warning mt-1" style="font-size: 0.7rem;">
-                          <i class="fas fa-share"></i> Forwarded
-                          </small>
-                            @endif
-                         </td>
-                            <td>
-                                <small class="badge bg-secondary-subtle text-dark border">
-                                    {{ $feedback->recipient_type }}: {{ $feedback->recipient->name_en ?? 'N/A' }}
-                                </small>
-                            </td>
-                            <td>
-                                @if($feedback->is_anonymous)
-                                    <span class="text-muted italic"><i class="fas fa-user-secret me-1"></i> Anonymous</span>
-                                @else
-                                    <span class="text-primary">{{ $feedback->user->name ?? $feedback->guest->name ?? 'Unknown' }}</span>
-                                @endif
-                            </td>
-                            <td>
-    @php
-        $statusColor = match($feedback->status) {
-            'New'        => 'danger',             
-            'Forwarded'  => 'warning text-dark',  
-            'Viewed'     => 'info text-white',    
-            'Responded'  => 'success',          
-            default      => 'secondary'
-        };
-    @endphp
-    <span class="badge bg-{{ $statusColor }} shadow-sm px-2 py-1">
-        {{ $feedback->status }}
-    </span>
-</td>
-                            <td>{{ $feedback->created_at->format('M d, Y') }}</td>
-                          <td class="text-end pe-4">
+        <div class="card-body p-3">
+            <table class="table table-hover mb-0" id="feedbacks">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Subject</th>
+                        <th>Recipient</th>
+                        <th>Sender</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @forelse($feedbacks as $feedback)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>
+                            <span class="fw-bold d-block">{{ $feedback->subject }}</span>
+                            <small class="badge bg-light text-muted border" style="font-size: 0.7rem;">{{ $feedback->feedback_type }}</small>
+                        </td>
+                        <td>{{ $feedback->recipient->name_en ?? 'N/A' }}</td>
+                        <td>{{ $feedback->is_anonymous ? 'Anonymous' : ($feedback->user->name ?? 'Guest') }}</td>
+                        <td><span class="badge bg-primary">{{ $feedback->status }}</span></td>
+                        <td>{{ $feedback->created_at->format('M d, Y') }}</td>
+                        <td class="text-end">
     <div class="dropdown">
         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-cog me-1"></i> Action
+            <i class="fas fa-cog"></i> Action
         </button>
-        <ul class="dropdown-menu shadow border-0">
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+            {{-- ሁሉም ሰው ማየት ይችላል --}}
             <li>
                 <a class="dropdown-item text-primary" href="{{ route('feedback.show', $feedback->id) }}">
                     <i class="fas fa-eye me-2"></i> View
                 </a>
             </li>
 
-            @if(Auth::user()->hasRole('System Administrator'))
+            {{-- Admin ብቻ እንዲያየው - በፐርሚሽን ወይም በሮል --}}
+            @if(auth()->user()->hasRole('System Administrator') || auth()->user()->can('role-management'))
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this feedback?');">
@@ -168,27 +149,78 @@ $(document).ready(function() {
         </ul>
     </div>
 </td>
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">No feedback found for your unit.</td>
-                        </tr>
-                        @endforelse
-                    </tbody>
-                </table>
-            </div>
+                    </tr>
+                    @empty
+                    @endforelse
+                </tbody>
+            </table>
         </div>
     </div>
+    @endif
 </div>
-<style>
-    
-    .pagination .page-link {
-        padding: 6px 16px !important;
-        font-size: 14px !important;
-        color: #0d6efd;
-        border-radius: 4px !important;
-        margin: 0 4px;
-    }
-</style>
 
+@push('scripts')
+<script>
+    $(document).ready(function() {
+        if ($('#feedbacks').length > 0) {
+            let table = new DataTable('#feedbacks', {
+                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                pagingType: "full_numbers",
+                responsive: true,
+                language: {
+                    emptyTable: "No feedback found matching your search."
+                },
+                layout: {
+                    topStart: {
+                        buttons: [
+                            { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
+                            { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                        ]
+                    },
+                    topEnd: 'search',
+                    bottomStart: {
+                        pageLength: {}, 
+                        info: {}        
+                    },
+                    bottomEnd: 'paging' 
+                }
+            });
+        }
+    });
+
+    // Filtering Logic
+    async function handleTypeChange() {
+        const type = document.getElementById('filter_unit_type').value;
+        const collegeDiv = document.getElementById('college_filter_div');
+        const unitSelect = document.getElementById('filter_unit_id');
+        
+        //unitSelect.innerHTML = '<option value="">Loading...</option>';
+        if (type === 'Department') {
+            collegeDiv.classList.remove('d-none');
+            unitSelect.innerHTML = '<option value="">Select College First</option>';
+        } else {
+            collegeDiv.classList.add('d-none');
+            const url = type === 'College' ? '{{ route("api.colleges.list") }}' : '{{ route("api.directories.list") }}';
+            await fetchUnits(url);
+        }
+    }
+
+    async function fetchUnits(url) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            const unitSelect = document.getElementById('filter_unit_id');
+            unitSelect.innerHTML = '<option value="">Choose Unit</option>';
+            data.forEach(item => {
+                unitSelect.innerHTML += `<option value="${item.id}">${item.name_en}</option>`;
+            });
+        } catch (e) { console.error("Fetch Error:", e); }
+    }
+
+    async function loadDepts(collegeId) {
+        if(!collegeId) return;
+        await fetchUnits(`{{ url('/api/colleges') }}/${collegeId}/departments`);
+    }
+</script>
+@endpush
 @endsection

@@ -38,11 +38,11 @@
                     </div>
                 </div>
                 
-                <div class="text-center mt-3">
-                    <a href="{{ route('dashboard') }}" class="btn btn-link text-secondary text-decoration-none">
-                        <i class="fas fa-arrow-left me-1"></i> Back
-                    </a>
-                </div>
+               <div class="text-center mt-3">
+    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-link text-secondary text-decoration-none">
+        <i class="fas fa-arrow-left me-1"></i> Back
+    </a>
+</div>
             </div>
         </div>
 
@@ -149,9 +149,9 @@
                          <div class="small"><strong>Type:</strong> Feedback/Suggestion</div>
                     </div>
 
-                    <a href="{{ route('feedback.index') }}" class="btn btn-outline-secondary w-100">
-                        <i class="fas fa-arrow-left me-2"></i> Back to Feedback List
-                    </a>
+                    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-outline-secondary w-100">
+    <i class="fas fa-arrow-left me-2"></i> Back to Feedback List
+</a>
                 </div>
             </div>
         </div>
