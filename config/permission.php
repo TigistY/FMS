@@ -12,8 +12,9 @@ return [
          * The model you want to use as a Permission model needs to implement the
          * `Spatie\Permission\Contracts\Permission` contract.
          */
-
-        'permission' => Spatie\Permission\Models\Permission::class,
+          //by defualt spita permision
+        //'permission' => Spatie\Permission\Models\Permission::class,
+        'permission' => App\Models\Permission::class,
 
         /*
          * When using the "HasRoles" trait from this package, we need to know which
@@ -23,7 +24,7 @@ return [
          * The model you want to use as a Role model needs to implement the
          * `Spatie\Permission\Contracts\Role` contract.
          */
-
+    
         'role' => Spatie\Permission\Models\Role::class,
 
     ],

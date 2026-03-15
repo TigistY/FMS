@@ -5,16 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Feedback Management</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-
+   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.6/css/dataTables.dataTables.min.css">
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.0/css/buttons.dataTables.css">
+    
+    <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.4/css/select.dataTables.min.css">
 
     <link rel="stylesheet" href="{{asset('css/layout.css')}}" type="text/css">
     
     <style>
+        table.dataTable tbody tr.selected > * {
+        background-color: #e7f1ff !important;
+        color: #084298 !important; 
+        box-shadow: inset 0 0 0 9999px #e7f1ff !important;
+        border-bottom: 2px solid #0d6efd !important; 
+    }
+
+   
+    table.dataTable tbody tr:hover {
+        background-color: #f8f9fa !important;
+        cursor: pointer;
+    }
 
         .badge.rounded-pill.bg-danger {
     border: 2px solid #fff;
@@ -144,19 +157,19 @@
     
     @include('partial.fooo')
 {{-- for DataTable links--}}
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
+   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
-    <script src="https://cdn.datatables.net/2.3.6/js/dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/2.1.0/js/dataTables.min.js"></script>
 
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/dataTables.buttons.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.dataTables.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.0/js/dataTables.buttons.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.dataTables.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.html5.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/3.0.0/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.print.min.js"></script>
 
+    <script src="https://cdn.datatables.net/select/2.0.4/js/dataTables.select.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#sidebar-toggle').on('click', function() {

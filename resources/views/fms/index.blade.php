@@ -3,7 +3,16 @@
 @section('content')
 <div class="container py-2">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold"><i class="fas fa-list-alt text-primary me-2"></i> Feedbacks Management</h2>
+        <h2>
+        <i class="fas fa-list-ul me-2 text-primary"></i> 
+        Feedbacks Management For
+        @if(Auth::user()->hasRole('Unit Responder'))
+            <span class="text-secondary small ms-2"></span>
+            <span class="text-primary ms-2" style="font-size: 30px;">
+                {{ Auth::user()->department->name_en ?? Auth::user()->college->name_en ?? Auth::user()->directory->name_en ?? 'My Unit' }}
+            </span>
+        @endif
+    </h2>
         
        <div class="text-center mt-3">
     <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-link text-secondary text-decoration-none">
@@ -104,7 +113,7 @@
                         <th>Recipient</th>
                         <th>Sender</th>
                         <th>Status</th>
-                        <th>Date</th>
+                        <th>Submited</th>
                         <th class="text-end">Action</th>
                     </tr>
                 </thead>
@@ -114,26 +123,37 @@
                         <td>{{ $loop->iteration }}</td>
                         <td>
                             <span class="fw-bold d-block">{{ $feedback->subject }}</span>
-                            <small class="badge bg-light text-muted border" style="font-size: 0.7rem;">{{ $feedback->feedback_type }}</small>
+
+                           <small class="badge border 
+                              {{ $feedback->feedback_type == 'Positive' ? 'bg-success text-white' : 
+                                ($feedback->feedback_type == 'Neutral' ? 'bg-info text-white' : 
+                               ($feedback->feedback_type == 'Negative' ? 'bg-danger text-white' : 'bg-light  text-dark')) }}" 
+                                  style="font-size: 0.7rem;">
+                                      {{ $feedback->feedback_type }}
+                              </small>
+
+                            @if($feedback->status == 'Forwarded')
+                                    <small class="badge bg-light text-warning border border-warning" style="font-size: 0.65rem;">Forwarded</small>
+                                @endif
                         </td>
                         <td>{{ $feedback->recipient->name_en ?? 'N/A' }}</td>
                         <td>{{ $feedback->is_anonymous ? 'Anonymous' : ($feedback->user->name ?? 'Guest') }}</td>
                         <td><span class="badge bg-primary">{{ $feedback->status }}</span></td>
-                        <td>{{ $feedback->created_at->format('M d, Y') }}</td>
+                        <td>
+                            <div class="small fw-bold text-dark">{{ $feedback->created_at->format('M d, Y') }}</div>
+                            <div class="text-muted small" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>{{ $feedback->created_at->format('h:i A') }}</div>
+                         </td>
                         <td class="text-end">
     <div class="dropdown">
         <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
             <i class="fas fa-cog"></i> Action
         </button>
         <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-            {{-- ሁሉም ሰው ማየት ይችላል --}}
             <li>
                 <a class="dropdown-item text-primary" href="{{ route('feedback.show', $feedback->id) }}">
                     <i class="fas fa-eye me-2"></i> View
                 </a>
             </li>
-
-            {{-- Admin ብቻ እንዲያየው - በፐርሚሽን ወይም በሮል --}}
             @if(auth()->user()->hasRole('System Administrator') || auth()->user()->can('role-management'))
                 <li><hr class="dropdown-divider"></li>
                 <li>
@@ -164,7 +184,8 @@
     $(document).ready(function() {
         if ($('#feedbacks').length > 0) {
             let table = new DataTable('#feedbacks', {
-                lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
+                lengthMenu: [[5, 25, 50, -1], [5, 25, 50, "All"]],
+                select:true,
                 pagingType: "full_numbers",
                 responsive: true,
                 language: {
@@ -173,8 +194,18 @@
                 layout: {
                     topStart: {
                         buttons: [
-                            { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
-                            { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                            { 
+                                extend: 'pdf', 
+                                className: 'btn btn-danger btn-sm', 
+                                text: '<i class="fas fa-file-pdf"></i> PDF',
+                                exportOptions: { modifier: { selected: true } } 
+                            },
+                            { 
+                                extend: 'print', 
+                                className: 'btn btn-info btn-sm', 
+                                text: '<i class="fas fa-print"></i> Print',
+                                exportOptions: { modifier: { selected: true } } 
+                            }
                         ]
                     },
                     topEnd: 'search',

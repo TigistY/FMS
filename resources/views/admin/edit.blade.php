@@ -80,7 +80,7 @@
                         </div>
 
                         <div class="mb-3 border p-2 rounded bg-info bg-opacity-10">
-                            <label class="form-label">New Password (Leave blank to keep current)</label>
+                            <label class="form-label">Change Password (Leave blank to keep current)</label>
                             <input type="password" name="password" class="form-control" placeholder="Optional">
                         </div>
 

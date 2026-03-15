@@ -2,95 +2,96 @@
 
 @section('content')
 <div class="container-fluid">
-    <h1 class="text-center mb-5 fw-bold text-primary">Role and Permission Management</h1>
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="fw-bold text-primary">Role and Permission Management</h1>
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createRoleModal">Create New Role</button>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createPermissionModal">
+            <i class="fas fa-key"></i> Create New Permission
+        </button>
+    </div>
 
-    @if (session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    @if (session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    <div class="card shadow-lg border-0">
-        <!-- Form: To send changes to RolesController@updatePermissions -->
-        <form action="{{ route('roles.update-permissions') }}" method="POST">
-            @csrf
-            @method('PUT') <!-- Use PUT method for updates -->
-
-            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                <span class="fw-bold">Link Roles with Permissions</span>
-                <button type="submit" class="btn btn-warning fw-bold">
-                    <i class="fas fa-save me-1"></i> Save Permissions
+    <div class="card shadow-lg">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Role Name</th>
+                        <th>Actions</th>
+                        <th>Permissions Management</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($roles as $role)
+                        <tr>
+                            <td class="fw-bold">{{ $role->name }}</td>
+                            <td class="text-center">
+    <div class="dropdown">
+        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+            <i class="fas fa-cog"></i> Action
+        </button>
+        <ul class="dropdown-menu">
+            <li>
+                <button class="dropdown-item text-primary" data-bs-toggle="modal" data-bs-target="#editModal{{ $role->id }}">
+                    <i class="fas fa-edit me-2"></i> Edit
                 </button>
-            </div>
+            </li>
             
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-bordered table-hover align-middle mb-0">
-                        <thead class="table-dark sticky-top">
-                            <tr>
-                                <th style="width: 15%;" class="text-center">Role</th>
-                                <!-- Display permissions in the TableHeader based on Groups -->
-                                {{-- Correction: The categorized variable is now used --}}
-                                @foreach ($permissionsByGroup as $group => $permissionList) 
-                                    <th class="text-center text-capitalize">{{ str_replace(['-', '_'], ' ', $group) }}</th>
-                                @endforeach
-                            </tr>
-                        </thead>
-                        <tbody>
-                        
-                            @foreach ($roles as $role)
-                                <tr>
-                                    
-                                    <td class="fw-bold text-center">
-                                        {{ $role->name }}
-                                        <input type="hidden" name="roles[{{ $role->id }}][id]" value="{{ $role->id }}">
-                                    </td>
-                                    
-                                    
-                                    @foreach ($permissionsByGroup as $group => $permissionList) 
-                                        <td class="p-2">
-                                            <div class="d-flex flex-column gap-1">
-                                                @foreach ($permissionList as $permission)
-                                                    <div class="form-check form-switch mb-0">
-                                                        <input 
-                                                            class="form-check-input" 
-                                                            type="checkbox" 
-                                                            role="switch" 
-                                                            id="perm_{{ $role->id }}_{{ $permission->id }}" 
-                                                            name="permissions[{{ $role->id }}][{{ $permission->id }}]" 
-                                                            {{ in_array($permission->id, $role->current_permission_ids) ? 'checked' : '' }}
-                                                            value="1" 
-                                                            >
-                                                        <label class="form-check-label small" for="perm_{{ $role->id }}_{{ $permission->id }}">
-                                                            <!-- Display only the permission name part after the group name -->
-                                                            {{ str_replace($group . '-', '', $permission->name) }}
-                                                        </label>
+            <li>
+                <form action="{{ route('roles.destroy', $role->id) }}" method="POST" onsubmit="return confirm('are you shur?');">
+                    @csrf 
+                    @method('DELETE')
+                    <button type="submit" class="dropdown-item text-danger">
+                        <i class="fas fa-trash me-2"></i> Delete
+                    </button>
+                </form>
+            </li>
+        </ul>
+    </div>
+</td>
+                            <td>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="collapse" data-bs-target="#perms_{{ $role->id }}">Manage Permissions</button>
+                                <div class="collapse mt-2" id="perms_{{ $role->id }}">
+                                    <div class="row">
+                                        @foreach ($permissionsByGroup as $group => $list)
+                                            <div class="col-md-4 mb-2">
+                                                <h6 class="text-capitalize border-bottom fw-bold">{{ $group }}</h6>
+                                                <input type="checkbox" class="select-all-group" data-role-id="{{ $role->id }}" data-group="{{ $group }}"> <small>All {{ $group }}</small>
+                                                @foreach ($list as $perm)
+                                                    <div class="form-check">
+                                                        <input class="form-check-input perm-check" type="checkbox" 
+                                                            data-role-id="{{ $role->id }}" 
+                                                            data-perm-id="{{ $perm->id }}" 
+                                                            data-group="{{ $group }}"
+                                                            {{ in_array($perm->id, $role->current_permission_ids) ? 'checked' : '' }}>
+                                                        <label class="form-check-label">{{ str_replace($group . '-', '', $perm->name) }}</label>
                                                     </div>
                                                 @endforeach
                                             </div>
-                                        </td>
-                                    @endforeach
-                                </tr>
-                            @endforeach
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <div class="card-footer text-end">
-                <button type="submit" class="btn btn-primary fw-bold">
-                    <i class="fas fa-check-circle me-1"></i> Save Changes
-                </button>
-            </div>
-        </form>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                     @include('partial.modal_addrole')
+                     @include('partial.modal_addpermission')
+                        <div class="modal fade" id="editModal{{ $role->id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <form action="{{ route('roles.update', $role->id) }}" method="POST">
+                                    @csrf @method('PUT')
+                                    <div class="modal-content">
+                                        <div class="modal-header"><h5 class="modal-title">Edit Role: {{ $role->name }}</h5></div>
+                                        <div class="modal-body">
+                                            <input type="text" name="name" class="form-control" value="{{ $role->name }}" required>
+                                        </div>
+                                        <div class="modal-footer"><button type="submit" class="btn btn-primary">Update</button></div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -116,41 +117,42 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 $(document).ready(function() {
-
-    $('.form-check-input').on('change', function() {
+    $('.perm-check').on('change', function() {
         let checkbox = $(this);
-        
-        let idParts = checkbox.attr('id').split('_');
-        let roleId = idParts[1];
-        let permissionId = idParts[2];
-        let isChecked = checkbox.is(':checked') ? 1 : 0;
-
-        checkbox.prop('disabled', true);
+        let isChecked = checkbox.is(':checked'); 
 
         $.ajax({
             url: "{{ route('roles.update-single-permission') }}",
             method: "POST",
             data: {
                 _token: "{{ csrf_token() }}",
-                role_id: roleId,
-                permission_id: permissionId,
-                status: isChecked
+                role_id: checkbox.data('role-id'),
+                permission_id: checkbox.data('perm-id'),
+                status: isChecked ? 1 : 0
             },
+           
             success: function(response) {
-                checkbox.prop('disabled', false);
-                
-                
-                location.reload(); 
-            },
+    checkbox.prop('disabled', false);
+    $('.sidebar').load(location.href + ' .sidebar'); 
+},
             error: function(xhr) {
-                checkbox.prop('disabled', false);
-                checkbox.prop('checked', !isChecked); 
-                
-                let errorMsg = xhr.responseJSON ? xhr.responseJSON.message : 'error happne';
-                alert('error happen፡ ' + errorMsg);
+                checkbox.prop('checked', !isChecked);
+                alert('error');
             }
         });
+    });
+
+    // Select All
+    $('.select-all-group').on('change', function() {
+        let isChecked = $(this).is(':checked');
+        let rId = $(this).data('role-id');
+        let grp = $(this).data('group');
+        
+        $(`.perm-check[data-role-id="${rId}"][data-group="${grp}"]`)
+            .prop('checked', isChecked)
+            .trigger('change'); 
     });
 });
 </script>
 @endsection
+

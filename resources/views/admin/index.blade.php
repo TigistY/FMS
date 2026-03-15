@@ -9,28 +9,36 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
 <script>
 $(document).ready(function() {
-    let table = new DataTable('#users', {
-        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
-        pagingType: "full_numbers",
-        
-        layout: {    //for button,search,paging position
-
-            topStart: {
-                buttons: [
-                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
-                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
-                ]
-            },
-            topEnd: 'search',
-
-            bottomStart: {
-                pageLength: {}, // for drowpdown to page
-                info: {}        // for Showing
-            },
-            bottomEnd: 'paging' 
+     if ($('#users').length > 0) {
+            new DataTable('#users', {
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                select:true,
+                ordering:true,
+                pagingType: "full_numbers",
+                layout: {
+                    topStart: {
+                        buttons: [
+                            { 
+                                extend: 'pdf', 
+                                className: 'btn btn-danger btn-sm', 
+                                text: '<i class="fas fa-file-pdf"></i> PDF',
+                                exportOptions: { modifier: { selected: true } } 
+                            },
+                            { 
+                                extend: 'print', 
+                                className: 'btn btn-info btn-sm', 
+                                text: '<i class="fas fa-print"></i> Print',
+                                exportOptions: { modifier: { selected: true } } 
+                            }
+                        ]
+                    },
+                    topEnd: 'search',
+                    bottomStart: { pageLength: {}, info: {} },
+                    bottomEnd: 'paging'
+                }
+            });
         }
     });
-});
 </script>
 <div class="container-fluid">
     <div class="card">
@@ -88,7 +96,7 @@ $(document).ready(function() {
                             Action
                         </button>
                         <ul class="dropdown-menu shadow border-0">
-                            <li><a class="dropdown-item" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit text-warning me-2"></i> Edit</a></li>
+                            <li><a class="dropdown-item text-info" href="{{ route('users.edit', $user->id) }}"><i class="fas fa-edit text-warning me-2"></i>change</a></li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('users.destroy', $user->id) }}" method="POST" class="d-inline">

@@ -34,9 +34,9 @@ $(document).ready(function() {
 </script>
 <div class="container my-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2><i class="fas fa-folder-open me-2"></i> Directory Management</h2>
+    <h2><i class="fas fa-folder-open me-2"></i> Directorate Management</h2>
     <button type="button" class="btn btn-success" onclick="openAddDirectoryModal()">
-        <i class="fas fa-plus"></i> Add New Directory
+        <i class="fas fa-plus"></i> Add New Directorate
     </button>
 </div>
 
@@ -99,7 +99,7 @@ $(document).ready(function() {
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center py-4 text-muted">No directories found.</td>
+                            <td colspan="4" class="text-center py-4 text-muted">No directorate found.</td>
                         </tr>
                     @endforelse
                 </tbody>

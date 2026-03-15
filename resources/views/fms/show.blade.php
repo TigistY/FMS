@@ -26,8 +26,24 @@
                                         <div class="mb-3 border-bottom pb-2">
                                             <p class="small mb-1 font-italic">"{{ $response->response_text }}"</p>
                                             <small class="text-muted d-block text-end fw-bold">
-                                                - by {{ $response->responder->name }} ({{ $response->created_at->diffForHumans() }})
-                                            </small>
+                                         - by
+                                           @php
+                                               $responder = $response->responder;
+                                               $unitName = '';
+
+                                               if ($responder->department) {
+                                                   $unitName = $responder->department->name_en;
+                                               } elseif ($responder->college) {
+                                                   $unitName = $responder->college->name_en;
+                                               } elseif ($responder->directory) {
+                                                   $unitName = $responder->directory->name_en;
+                                               } else {
+                                                   $unitName = $responder->name; 
+                                                                                      }
+                                                 @endphp
+    
+                                           {{ $unitName }} ({{ $response->created_at->diffForHumans() }})
+                                       </small>
                                         </div>
                                     @empty
                                         <p class="text-muted small text-center mt-4">No response from the unit yet.</p>
@@ -53,12 +69,12 @@
                 <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
                     <h5 class="mb-0 fw-bold text-dark">Feedback Details</h5>
                     <span class="badge 
-    {{ $feedback->status == 'Forwarded' ? 'bg-warning text-dark' : 
-       ($feedback->status == 'Viewed' ? 'bg-info' : 
-       ($feedback->status == 'New' ? 'bg-success' : 'bg-primary')) }} 
-    px-3">
-    {{ $feedback->status }}
-</span>
+                       {{ $feedback->status == 'Forwarded' ? 'bg-warning text-dark' : 
+                        ($feedback->status == 'Viewed' ? 'bg-info' : 
+                        ($feedback->status == 'New' ? 'bg-success' : 'bg-primary')) }} 
+                           px-3">
+                           {{ $feedback->status }}
+                               </span>
                 </div>
                 <div class="card-body">
                     <h3 class="fw-bold mb-3">{{ $feedback->subject }}</h3>
@@ -88,7 +104,23 @@
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="fw-bold text-primary">{{ $response->responder->name }}</span>
+                            <span class="fw-bold text-primary">
+                    @php
+                        $responder = $response->responder;
+                        $unitName = '';
+
+                        if ($responder->department) {
+                            $unitName = $responder->department->name_en;
+                        } elseif ($responder->college) {
+                            $unitName = $responder->college->name_en;
+                        } elseif ($responder->directory) {
+                            $unitName = $responder->directory->name_en;
+                        } else {
+                            $unitName = $responder->name; // ምንም ክፍል ካልተመደበ ስሙን ያሳያል
+                        }
+                    @endphp
+                    <i class="fas fa-reply me-1 small"></i> {{ $unitName }}
+                </span>
                             <small class="text-muted">{{ $response->created_at->diffForHumans() }}</small>
                         </div>
                         <p class="mb-1 text-dark">{{ $response->response_text }}</p>
@@ -98,7 +130,6 @@
                 <div class="alert alert-light border text-center text-muted">No responses given yet.</div>
             @endforelse
 
-            {{-- Response & Forward Form: ለ Admin ወይም ለሚመለከተው Unit Responder ብቻ --}}
             @if(Auth::user()->hasRole('System Administrator') || Auth::user()->hasRole('Unit Responder'))
                 <div class="card shadow-sm border-0 mt-5 border-top border-info border-4">
                     <div class="card-header bg-white py-3">

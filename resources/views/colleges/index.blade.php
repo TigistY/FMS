@@ -9,28 +9,36 @@
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.0.0/css/buttons.dataTables.css">
 <script>
 $(document).ready(function() {
-    let table = new DataTable('#colleges', {
-        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
-        pagingType: "full_numbers",
-        
-        layout: {    
-
-            topStart: {
-                buttons: [
-                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
-                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
-                ]
-            },
-            topEnd: 'search',
-
-            bottomStart: {
-                pageLength: {}, 
-                info: {}        
-            },
-            bottomEnd: 'paging' 
+     if ($('#colleges').length > 0) {
+            new DataTable('#colleges', {
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                select:true,
+                ordering:true,
+                pagingType: "full_numbers",
+                layout: {
+                    topStart: {
+                        buttons: [
+                            { 
+                                extend: 'pdf', 
+                                className: 'btn btn-danger btn-sm', 
+                                text: '<i class="fas fa-file-pdf"></i> PDF',
+                                exportOptions: { modifier: { selected: true } } 
+                            },
+                            { 
+                                extend: 'print', 
+                                className: 'btn btn-info btn-sm', 
+                                text: '<i class="fas fa-print"></i> Print',
+                                exportOptions: { modifier: { selected: true } } 
+                            }
+                        ]
+                    },
+                    topEnd: 'search',
+                    bottomStart: { pageLength: {}, info: {} },
+                    bottomEnd: 'paging'
+                }
+            });
         }
     });
-});
 </script>
     <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
         <h1 class="h2"><i class="fas fa-building me-2"></i> College And Departemnt Management</h1>

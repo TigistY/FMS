@@ -3,7 +3,16 @@
 @section('content')
 <div class="container py-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2><i class="fas fa-list-ul me-2 text-primary"></i> Complaints Management</h2>
+       <h2>
+        <i class="fas fa-list-ul me-2 text-primary"></i> 
+        Complaints Management For
+        @if(Auth::user()->hasRole('Unit Responder'))
+            <span class="text-secondary small ms-2"></span>
+            <span class="text-primary ms-2" style="font-size: 30px;">
+                {{ Auth::user()->department->name_en ?? Auth::user()->college->name_en ?? Auth::user()->directory->name_en ?? 'My Unit' }}
+            </span>
+        @endif
+    </h2>
        <div class="text-center mt-3">
     <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-link text-secondary text-decoration-none">
         <i class="fas fa-arrow-left me-1"></i> Back
@@ -67,6 +76,7 @@
                             <th>Recipient Unit</th>
                             <th>Sender</th>
                             <th>Status</th>
+                            <th>Submited</th>
                             <th class="text-end">Action</th>
                         </tr>
                     </thead>
@@ -74,10 +84,20 @@
                         @foreach ($complaints as $complaint)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td><strong>{{ $complaint->subject }}</strong></td>
+                                <td>
+                                    <span class="fw-bold text-dark d-block">{{ $complaint->subject }}</span>
+                                    @if($complaint->status == 'Forwarded')
+                                    <small class="badge bg-light text-warning border border-warning" style="font-size: 0.65rem;">Forwarded</small>
+                                @endif
+                                </td>
+
                                 <td>{{ $complaint->recipient->name_en ?? 'N/A' }}</td>
                                 <td>{{ $complaint->is_anonymous ? 'Anonymous' : ($complaint->user->name ?? 'Guest') }}</td>
                                 <td><span class="badge bg-primary">{{ $complaint->status }}</span></td>
+                                <td>
+                                  <div class="small fw-bold text-dark">{{ $complaint->created_at->format('M d, Y') }}</div>
+                                   <div class="text-muted small" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>{{ $complaint->created_at->format('h:i A') }}</div>
+                                     </td>
                                 <td class="text-end">
                                <div class="dropdown">
                              <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -125,13 +145,25 @@
     $(document).ready(function() {
         if ($('#complaints').length > 0) {
             new DataTable('#complaints', {
-                lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
+                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                select:true,
+                ordering:true,
                 pagingType: "full_numbers",
                 layout: {
                     topStart: {
                         buttons: [
-                            { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
-                            { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                            { 
+                                extend: 'pdf', 
+                                className: 'btn btn-danger btn-sm', 
+                                text: '<i class="fas fa-file-pdf"></i> PDF',
+                                exportOptions: { modifier: { selected: true } } 
+                            },
+                            { 
+                                extend: 'print', 
+                                className: 'btn btn-info btn-sm', 
+                                text: '<i class="fas fa-print"></i> Print',
+                                exportOptions: { modifier: { selected: true } } 
+                            }
                         ]
                     },
                     topEnd: 'search',

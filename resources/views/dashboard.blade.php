@@ -57,15 +57,18 @@
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
+                            <th>#</th>
                             <th class="ps-4">Type</th>
                             <th>Subject</th>
                             <th>Status</th>
+                            <th>Date</th>
                             <th class="text-center">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($allSubmissions as $item)
                         <tr>
+                            <td>{{ $loop->iteration }}</td>
                             <td class="ps-4">
                                 @if($item instanceof \App\Models\Complaint)
                                     <span class="badge bg-danger-soft text-danger border border-danger">Complaint</span>
@@ -75,14 +78,18 @@
                             </td>
                             <td>{{ Str::limit($item->subject, 50) }}</td>
                             <td><span class="badge rounded-pill bg-info text-dark">{{ $item->status }}</span></td>
+                                                <td>
+                             <div class="small fw-bold text-dark">{{ $item->created_at->format('M d, Y') }}</div>
+                              <div class="text-muted small" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>{{ $item->created_at->format('h:i A') }}</div>
+                              </td>
                           <td class="text-center">
-    @php
-        $route = $item instanceof \App\Models\Complaint ? route('show', $item->id) : route('feedback.show', $item->id);
-    @endphp
-    <a href="{{ $route }}" class="btn btn-sm btn-primary shadow-sm px-3">
-        <i class="fas fa-eye me-1"></i> View Details
-    </a>
-</td>
+                                  @php
+                                   $route = $item instanceof \App\Models\Complaint ? route('show', $item->id) : route('feedback.show', $item->id);
+                                      @endphp
+                                 <a href="{{ $route }}" class="btn btn-sm btn-primary shadow-sm px-3">
+                                    <i class="fas fa-eye me-1"></i> View Details
+                                    </a>
+                                        </td>
                         </tr>
                         @empty
                         <tr><td colspan="4" class="text-center py-5 text-muted">No records found.</td></tr>

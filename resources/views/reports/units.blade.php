@@ -2,14 +2,19 @@
 
 @section('content')
 <div class="container-fluid py-3">
-    {{-- Header - Smaller Font --}}
     <h5 class="mb-3 fw-bold text-dark"><i class="fas fa-chart-line me-2 text-primary small"></i>Unit-based Overview</h5>
 
     <div class="row g-3">
       
         <div class="col-md-8">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white py-2 px-3 fw-bold small">Colleges and Departments Detail Analysis</div>
+                <div class="card-header bg-primary text-white py-2 px-3 d-flex justify-content-between align-items-center">
+            <span class="fw-bold small">Colleges and Departments Detail Analysis</span>
+            <div class="d-flex gap-4 small fw-bold">
+                <span title="Sentiment Feedback Analysis"><i class="fas fa-comments me-1"></i> Feedback</span>
+                <span title="Total Complaints"><i class="fas fa-exclamation-circle me-1"></i> Complaints</span>
+            </div>
+        </div>
                 <div class="card-body p-2">
                     <div class="accordion" id="collegeAccordion">
                         @foreach($collegeData as $college)
@@ -81,10 +86,10 @@
             </div>
         </div>
 
-        {{-- ዳይሬክቶሬቶች --}}
+    
         <div class="col-md-4">
             <div class="card shadow-sm border-0">
-                <div class="card-header bg-dark text-white py-2 px-3 fw-bold small">Directories Overview</div>
+                <div class="card-header bg-dark text-white py-2 px-3 fw-bold small">Directorate Overview</div>
                 <div class="list-group list-group-flush shadow-xs">
                     @foreach($directoryData as $dir)
                     <div class="list-group-item py-2 px-3">

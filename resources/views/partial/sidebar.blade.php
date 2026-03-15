@@ -32,6 +32,11 @@
                     </li>
                     @endcan
                     @can('role-management')
+                     <li class="nav-item">
+                        <a href="{{route('permissions.index')}}" class="nav-link text-white-50 small {{ Request::routeIs('users.index') ? 'text-white fw-bold' : '' }}">
+                            <i class="fa-solid fa-user me-2"></i> {{ __('messages.permission') }}
+                        </a>
+                    </li>
                     <li class="nav-item">
                         <a href="{{route('roles.index')}}" class="nav-link text-white-50 small {{ Request::routeIs('roles.index') ? 'text-white fw-bold' : '' }}">
                             <i class="fas fa-user-tag me-2"></i> {{ __('messages.Role Management') }}

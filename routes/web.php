@@ -14,8 +14,10 @@ use App\Http\Controllers\Admin\CollegeController;
 use App\Http\Controllers\Admin\DirectoryController;
 use App\Http\Controllers\Admin\DepartmentController;
 use App\Http\Controllers\Admin\ReportController;
+use App\Http\Controllers\Admin\PermissionController;
 use App\Http\Controllers\UnitApiController;
 use App\Http\Controllers\AboutController;
+
 
 
 Route::get('/',[HomeController::class,'welcomepage'])->name('wel.link');
@@ -69,9 +71,20 @@ Route::post('/complaints/{complaint}/forward', [ComplaintController::class, 'for
 //for rolemanagement
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::post('/roles-management/store', [RolesController::class, 'store'])->name('roles.store');
     Route::get('/roles-managements', [RolesController::class, 'index'])->name('roles.index');
+    Route::put('/roles/{id}', [RolesController::class, 'update'])->name('roles.update');
+
+Route::delete('/roles/{id}', [RolesController::class, 'destroy'])->name('roles.destroy');
     Route::post('/roles-management/update-single', [RolesController::class, 'updateSinglePermission'])->name('roles.update-single-permission');
     Route::put('/roles-management', [RolesController::class, 'updatePermissions'])->name('roles.update-permissions');
+});
+//for permission
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::get('/permissions', [PermissionController::class, 'index'])->name('permissions.index');
+    Route::post('/permissions', [PermissionController::class, 'store'])->name('permissions.store');
+    Route::put('/permissions/{id}', [PermissionController::class, 'update'])->name('permissions.update');
+    Route::delete('/permissions/{id}', [PermissionController::class, 'destroy'])->name('permissions.destroy');
 });
 
 Route::prefix('api')->group(function () {

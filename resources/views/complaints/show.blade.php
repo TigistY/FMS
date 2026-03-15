@@ -25,9 +25,25 @@
                                     @forelse($complaint->responses as $response)
                                         <div class="mb-3 border-bottom pb-2">
                                             <p class="small mb-1 font-italic">"{{ $response->response_text }}"</p>
-                                            <small class="text-muted d-block text-end fw-bold">
-                                                - by {{ $response->responder->name }} ({{ $response->created_at->diffForHumans() }})
-                                            </small>
+                                           <small class="text-muted d-block text-end fw-bold">
+                                              - by
+                                              @php
+                                                  $responder = $response->responder;
+                                                  $unitName = '';
+
+                                                  if ($responder->department) {
+                                                      $unitName = $responder->department->name_en;
+                                                  } elseif ($responder->college) {
+                                                      $unitName = $responder->college->name_en;
+                                                  } elseif ($responder->directory) {
+                                                      $unitName = $responder->directory->name_en;
+                                                  } else {
+                                                      $unitName = $responder->name;
+                                                  }
+                                              @endphp
+    
+                                              {{ $unitName }} ({{ $response->created_at->diffForHumans() }})
+                                          </small>
                                         </div>
                                     @empty
                                         <p class="text-muted small text-center mt-4">No response from the unit yet.</p>
@@ -100,7 +116,23 @@
                 <div class="card border-0 shadow-sm mb-3">
                     <div class="card-body">
                         <div class="d-flex justify-content-between mb-2">
-                            <span class="fw-bold text-primary">{{ $response->responder->name }}</span>
+                            <span class="fw-bold text-primary">
+                    @php
+                        $responder = $response->responder;
+                        $unitName = '';
+
+                        if ($responder->department) {
+                            $unitName = $responder->department->name_en;
+                        } elseif ($responder->college) {
+                            $unitName = $responder->college->name_en;
+                        } elseif ($responder->directory) {
+                            $unitName = $responder->directory->name_en;
+                        } else {
+                            $unitName = $responder->name;
+                        }
+                    @endphp
+                    <i class="fas fa-reply me-1 small"></i> {{ $unitName }}
+                </span>
                             <small class="text-muted">{{ $response->created_at->diffForHumans() }}</small>
                         </div>
                         <p class="mb-1 text-dark">{{ $response->response_text }}</p>

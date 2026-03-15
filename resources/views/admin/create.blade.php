@@ -27,7 +27,7 @@
                         </div>
 
                         <hr>
-                        <h6>Assign Unit (Choose One)</h6>
+                        <h6>Assign Unit</h6>
                         
                         <div class="row">
                             <div class="col-md-4 mb-3">

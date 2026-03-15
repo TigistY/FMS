@@ -5,6 +5,7 @@ return [
    'Home' => 'ዋና ገጽ',
     'User Manage' => 'ተጠቃሚዎች',
     'Users List' => 'የተጠቃሚዎች ዝርዝር',
+    'permission' => 'ፈካድ',
     'view Complains' => 'አቤቱታዎች',
     'View Feedback' => 'አስተያየቶች',
     'Role Management' => 'የሚና አስተዳደር',
