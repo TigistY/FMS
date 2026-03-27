@@ -73,8 +73,8 @@
             </a>
             <div class="collapse {{ Request::routeIs(['colleges.*', 'departments.*', 'directories.*']) ? 'show' : '' }}" id="collegeMenu">
                 <ul class="nav flex-column ms-3 mt-1 submenu">
-                    <li><a class="nav-link text-white-50 small" href="{{route('colleges.index')}}"><i class="fas fa-university me-2"></i>Colleges</a></li>
-                    <li><a class="nav-link text-white-50 small" href="{{route('directories.index')}}"><i class="fas fa-sitemap me-2"></i>Directories</a></li>
+                    <li><a class="nav-link text-white-50 small" href="{{route('colleges.index')}}"><i class="fas fa-university me-2"></i>{{ __('messages.Colleges') }}</a></li>
+                    <li><a class="nav-link text-white-50 small" href="{{route('directories.index')}}"><i class="fas fa-sitemap me-2"></i>{{ __('messages.Directories') }}</a></li>
                 </ul>
             </div>
         </li>
@@ -89,7 +89,7 @@
         </li>
         @endcan
 
-        {{-- Logout --}}
+        
         <li class="nav-item mt-auto pt-5">
             <form method="post" action="{{ route('logout') }}" class="w-100">
                 @csrf
@@ -109,12 +109,12 @@
             <strong class="small">{{ Auth::user()->name }}</strong>
         </a>
         <ul class="dropdown-menu dropdown-menu-dark text-small shadow">
-            <li><a class="dropdown-item" href="{{route('profile.edit')}}">My Profile</a></li>
+            <li><a class="dropdown-item" href="{{route('profile.edit')}}">{{ __('messages.My Profile') }}</a></li>
             <li><hr class="dropdown-divider"></li>
             <li>
                 <form action="{{ route('logout') }}" method="POST">
                     @csrf
-                    <button type="submit" class="dropdown-item">Logout</button>
+                    <button type="submit" class="dropdown-item">{{ __('messages.Logout') }}</button>
                 </form>
             </li>
         </ul>

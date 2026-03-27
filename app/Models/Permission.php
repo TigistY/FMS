@@ -9,5 +9,5 @@ class Permission extends SpatiePermission
   
     protected $fillable = ['name', 'guard_name', 'display_name', 'group'];
 
-    // display name is in amhariç name 
+    
 }

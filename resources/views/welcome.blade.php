@@ -127,79 +127,14 @@
                 <div class="overlay">Campus View</div>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu3.jfif') }}" class="rounded img-fluid" alt="ICT Center">
-                <div class="overlay">Campus View</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu13.jfif') }}" class="rounded img-fluid" alt="Students Area">
-                <div class="overlay">Administration Office</div>
-            </div>
-        </div>
-    </div><br>
-     <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu18.jfif') }}" class="rounded img-fluid" alt="Main Campus">
-                <div class="overlay">Presdent</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu2.jfif') }}" class="rounded img-fluid" alt="ICT Center">
-                <div class="overlay">Prospective Graduates</div>
-            </div>
-        </div>
+
+      
         <div class="col-md-4">
             <div class="card border-0 shadow-sm gallery-card">
                 <img src="{{ asset('image/inu1.jfif') }}" class="rounded img-fluid" alt="Students Area">
                 <div class="overlay">campus view</div>
             </div>
         </div>
-    </div><br>
-     <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu17.jfif') }}" class="rounded img-fluid" alt="Main Campus">
-                <div class="overlay">Vice President</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu4.jfif') }}" class="rounded img-fluid" alt="ICT Center">
-                <div class="overlay">Campus view</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu12.jfif') }}" class="rounded img-fluid" alt="Students Area">
-                <div class="overlay">Plaza</div>
-            </div>
-        </div>
-    </div><br>
-     <div class="row g-3">
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu8.jfif') }}" class="rounded img-fluid" alt="Main Campus">
-                <div class="overlay">Caffe View</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu20.jfif') }}" class="rounded img-fluid" alt="ICT Center">
-                <div class="overlay">Campus view</div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card border-0 shadow-sm gallery-card">
-                <img src="{{ asset('image/inu14.jfif') }}" class="rounded img-fluid" alt="Students Area">
-                <div class="overlay">campus view</div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <style>

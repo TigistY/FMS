@@ -21,7 +21,6 @@
 </div>
     </div>
 
-    {{--for  Filter Form --}}
     @if(Auth::user()->hasRole('System Administrator'))
     <div class="card mb-4 border-0 shadow-sm bg-white p-4">
         <form action="{{ route('feedback.index') }}" method="GET" class="row g-3 align-items-end">
@@ -74,7 +73,7 @@
     </div>
     @endif
 
-    {{-- Stats Cards --}}
+    
     <div class="row mb-4">
         <div class="col-md-4">
             <div class="card border-0 shadow-sm border-start border-success border-5">

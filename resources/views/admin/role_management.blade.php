@@ -96,14 +96,13 @@
 </div>
 
 <style>
-/* Give width to role and permission columns to create uniformity */
+
 .table-bordered > :not(caption) > * > * {
     border-width: 1px 1px 0 0;
 }
 .table-bordered > :not(caption) > :last-child > * {
     border-bottom-width: 1px;
 }
-/* Make the TableHeader sticky and give it clarity */
 .table-dark {
     background-color: #212529 !important;
 }

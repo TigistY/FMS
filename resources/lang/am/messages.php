@@ -33,9 +33,20 @@ return [
     'Expected Tasks' => 'የሚጠበቁ ተግባራት',
     'Admin' => 'አድሚን',
     'Unit Responder' => 'ክፍል ምላሽ ሰጪ',
-    'Registering new users and assigning permissions (Roles).' => 'አዳዲስ ተጠቃሚዎችን መመዝገብ እና ፐርሚሽን (Roles) መስጠት።',
-    'Organizing college, department, and directorate information.' => 'የኮሌጅ፣ የዲፓርትመንት እና የዳይሬክቶሬት መረጃዎችን ማደራጀት።',
-    'Monitoring overall system activity and security.' => 'አጠቃላይ የሲስተሙን እንቅስቃሴ እና ደህንነት መከታተል።',
-    'Providing timely responses to incoming complaints.' => 'ለሚመጡ ቅሬታዎች ፈጣን ምላሽ መስጠት።', // እዚህ ጋር ኮማ ተጨምሯል
-    'Reviewing and evaluating feedback provided.' => 'የተሰጡ ግብረ-መልሶችን መገምገም።',
+    'select the unit and enter your details' => 'እባክዎን የሚመለከተውን ክፍል ይምረጡና ዝርዝር መረጃዎን ያስገቡ።',
+    'share your thoughts about oure service' => 'ስለ አገልግሎታችን ያለዎትን አስተያየት ያካፍሉን።',
+    'Feedback Sentiment Analysis' => 'የአስተያየቶች ስሜት ትንተና',
+    'My Submissions & Responses' => 'የላኳቸው መረጃዎች እና ምላሾች',
+    'Neutral' => 'ገለልተኛ',
+    'Positive' => 'አዎንታዊ',
+    'Negative' => 'አሉታዊኛ',
+    'Type' => 'አይነት',
+    'Subject' => 'ርዕስ',
+    'Status' => 'ሁኔታ',
+    'Date' => 'ቀን',
+    'Action' => 'ተግባር',
+    'My Profile' => 'የግል መገለጫዬ',
+
+
+
 ];

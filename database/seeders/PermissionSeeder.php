@@ -19,7 +19,6 @@ class PermissionSeeder extends Seeder
         DB::table('permissions')->truncate();
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
-        // መሰረታዊ ፐርሚሽኖች በግሩፕ ተከፋፍለዋል
         $permissions = [
             ['name' => 'view-feedback', 'display_name' => 'ግብረመልስ መመልከት', 'group' => 'Feedback', 'guard_name' => 'web'],
             ['name' => 'respond-feedback', 'display_name' => 'ግብረመልስ ምላሽ መስጠት', 'group' => 'Feedback', 'guard_name' => 'web'],
@@ -43,7 +42,7 @@ class PermissionSeeder extends Seeder
                 $permissions[] = [
                     'name' => $action_en . '-' . $unit_en,
                     'display_name' => $unit_am . ' ' . $action_am,
-                    'group' => ucfirst($unit_en), // የግሩፕ ስሙን እንደ ዩኒቱ ስም ሰጠነው
+                    'group' => ucfirst($unit_en), 
                     'guard_name' => 'web'
                 ];
             }

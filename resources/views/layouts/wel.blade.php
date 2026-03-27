@@ -16,7 +16,7 @@
     
         body { font-family: 'Noto Sans Ethiopic', sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }
 
-        /* 2. Dropdown Logic*/
+        
         @media (min-width: 992px) {
             .hover-dropdown:hover .dropdown-menu { display: block; margin-top: 0; animation: fadeIn 0.3s; }
         }
@@ -42,14 +42,14 @@
         .feedback-button { background-color: #0d6efd; border-color: #0d6efd; color: white; }
         .feedback-button:hover { background-color: #0b5ed7; }
 
-        /* 5. Login Container Style */
+        
         .login-container { 
             margin: 40px auto; max-width: 450px; padding: 40px; 
             background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
         }
         .login-container h2 { text-align: center; margin-left: 0; color: #007bff; margin-bottom: 30px; font-weight: 600; }
 
-        /* 6. University Specific Styles */
+        
         .header-main-bar { background-color: #1e3a5f; color: white;}
         .iu-logo { width: 70px; height: 70px; }
         .iu-main-title { font-size: 1.5rem; font-weight: 700; line-height: 1.1;}
@@ -57,7 +57,7 @@
         .system-title-text { font-size: 1.5rem; font-weight: 300; }
         .navbar-custom { background-color: #004d40 !important; }
 
-        /* Page wrapper to keep footer at bottom */
+        
         .site-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
         .content-area { flex: 1; }
     </style>

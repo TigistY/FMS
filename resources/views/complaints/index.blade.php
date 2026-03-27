@@ -21,7 +21,6 @@
 
     </div>
 
-    {{-- this for Filter Form  --}}
     @if(Auth::user()->hasRole('System Administrator'))
     <div class="card mb-4 border-0 shadow-sm bg-white p-4">
         <form action="{{ route('index') }}" method="GET" class="row g-3 align-items-end">

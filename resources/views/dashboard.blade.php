@@ -22,26 +22,35 @@
     
     @include('partial.dashbord')
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <a href="{{ route('create') }}" class="text-decoration-none h-100">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
-                    <i class="fas fa-edit text-danger fa-3x mb-3"></i>
-                    <h5 class="fw-bold text-dark">{{ __('messages.Submit Complain') }}</h5>
-                    <p class="text-muted small mb-0">Report any issues or concerns here.</p>
-                </div>
-            </a>
-        </div>
-        <div class="col-md-6">
-            <a href="{{ route('feedback.link') }}" class="text-decoration-none h-100">
-                <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
-                    <i class="fas fa-comment-dots text-success fa-3x mb-3"></i>
-                    <h5 class="fw-bold text-dark">{{ __('messages.Submit Feedback') }}</h5>
-                    <p class="text-muted small mb-0">Share your thoughts about our services.</p>
-                </div>
-            </a>
-        </div>
+ <div class="row g-4 mb-5">
+    
+    <div class="col-md-6">
+        <button type="button" class="btn p-0 w-100 text-start" data-bs-toggle="modal" data-bs-target="#complaintModal" style="border: none; background: none;">
+            <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
+                <i class="fas fa-exclamation-triangle text-danger fa-3x mb-3"></i>
+                <h5 class="fw-bold text-dark">{{ __('messages.Submit Complain') }}</h5>
+                <p class="text-muted small mb-0">{{ __('messages.select the unit and enter your details') }}</p>
+            </div>
+        </button>
     </div>
+
+    
+<div class="col-md-6">
+    <button type="button" class="btn p-0 w-100 text-start" data-bs-toggle="modal" data-bs-target="#feedbackModal" style="border: none; background: none;">
+        <div class="card h-100 border-0 shadow-sm p-4 text-center card-hover">
+            <i class="fas fa-comment-dots text-success fa-3x mb-3"></i>
+            <h5 class="fw-bold text-dark">{{ __('messages.Submit Feedback') }}</h5>
+            <p class="text-muted small mb-0">{{ __('messages.share your thoughts about oure service') }}</p>
+        </div>
+    </button>
+</div>
+
+
+</div>
+
+
+@include('partial.complaint_dashbord')
+ @include('partial.feedback_dashbord') 
 
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show border-0 shadow-sm mb-4" role="alert">
@@ -51,18 +60,18 @@
     @endif
     @if(Auth::user()->hasRole('General User'))
     <div class="card border-0 shadow-sm mb-5">
-        <div class="card-header bg-white py-3"><h5 class="fw-bold mb-0">My Submissions & Responses</h5></div>
+        <div class="card-header bg-white py-3"><h5 class="fw-bold mb-0">{{ __('messages.My Submissions & Responses') }}</h5></div>
         <div class="card-body p-0">
             <div class="table-responsive">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light">
                         <tr>
                             <th>#</th>
-                            <th class="ps-4">Type</th>
-                            <th>Subject</th>
-                            <th>Status</th>
-                            <th>Date</th>
-                            <th class="text-center">Action</th>
+                            <th class="ps-4">{{ __('messages.Type') }}</th>
+                            <th>{{ __('messages.Subject') }}</th>
+                            <th>{{ __('messages.Status') }}</th>
+                            <th>{{ __('messages.Date') }}</th>
+                            <th class="text-center">{{ __('messages.Action') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -103,46 +112,237 @@
 </div>
 
 <script>
-    //  Type Selection
-    function handleTypeChange(select, itemId) {
-        const type = select.value;
-        const colDiv = document.getElementById(`div_college_${itemId}`);
-        const unitSelect = document.getElementById(`unit_select_${itemId}`);
+   
+
+
+window.translations = {
+    'am': {
+        //for Complaint
+        'main-title': 'ቅሬታ ማስገቢያ',
+        'subtitle': 'ቅሬታዎን የሚመለከተውን ክፍል በመምረጥ ዝርዝር ሁኔታውን ያስገቡ።',
+        'title-recipient-info': 'ቅሬታው የሚቀርብበት አካል መረጃ',
+        'label-recipient-type': 'የመቀበያ አይነት:',
+        'option-select-recipient-type': 'አይነት ይምረጡ',
+        'option-college': 'ኮሌጅ',
+        'option-department': 'ዲፓርትመንት',
+        'option-directory': 'ዳይሬክቶሬት',
+        'label-filter-college': 'ቅድሚያ ኮሌጅ ይምረጡ:',
+        'option-select-filter-college': 'ኮሌጅ ይምረጡ',
+        'label-recipient-id': 'ይምረጡ:',
+        'option-select-recipient': 'ክፍል ይምረጡ',
+        'label-subject': 'ርዕስ:',
+        'label-description': 'የአቤቱታ ዝርዝር',
+        'label-body-text': 'ዝርዝር መግለጫ:',
+        'label-anonymous': 'ስም-አልባ መሆን እፈልጋለሁ።',
+        'text-anonymous-warning': 'ማንነትዎ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
+        'titles-contact': 'ማንነትና እውቂያ',
+        'label-email': 'ኢሜይል:',
+        'label-name': 'ሙሉ ስም (አማራጭ):',
+        'label-type': 'የአመልካች አይነት:',
+        'opt-select-type': 'ይምረጡ',
+        'label-submit-guest': 'እንደ እንግዳ አስገባ',
+        'opt-student': 'ተማሪ',
+        'opt-Employee': 'ሰራተኛ',
+        'opt-Guest': 'እግዳ',
+        'button-submit': 'ቅሬታ አስገባ',
         
-        unitSelect.innerHTML = '<option value="">Select Unit</option>';
-        colDiv.classList.add('d-none');
+        //for Feedback
+        'fb-main-title': 'አስተያየት ማስገቢያ',
+        'fb-subtitle': 'እባክዎን የሚመለከተውን ክፍል በመምረጥ አስተያየትዎን ያስገቡ።',
+        'fb-title-recipient-info': 'መረጃ መቀበያ አካል',
+        'fb-label-recipient-type': 'የመቀበያ አይነት:',
+        'fb-option-select-recipient-type': 'አይነት ይምረጡ',
+        'fb-option-college': 'ኮሌጅ',
+        'fb-option-department': 'ዲፓርትመንት',
+        'fb-option-directory': 'ዳይሬክቶሬት',
+        'fb-label-filter-college': 'ቅድሚያ ኮሌጅ ይምረጡ:',
+        'fb-label-recipient-id': 'ክፍሉን ይምረጡ:',
+        'fb-option-select-recipient': 'ክፍል ይምረጡ',
+        'fb-title-feedback-details': 'የአስተያየቱ ይዘት',
+        'fb-label-feedback-type': 'የአስተያየቱ ባህሪ ',
+        'fb-opt-neutral': 'ገለልተኛ',
+        'fb-opt-positive': 'አዎንታዊ',
+        'fb-opt-negative': 'አሉታዊ',
+        'fb-label-subject': 'ርዕስ:',
+        'fb-label-description': 'መግለጫ:',
+        'fb-label-anonymous': 'የማንነት አማራጮች',
+        'fb-label-anon-text': 'ስም-አልባ መሆን እፈልጋለሁ።',
+        'fb-text-anonymous-warning': 'ማንነትዎ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
+        'fb-title-contact': 'የእውቂያ መረጃ',
+        'fb-label-email': 'ኢሜይል:',
+        'fb-label-name': 'ሙሉ ስም:',
+        'fb-label-type': 'የአስተያየት ሰጪው አይነት:',
+        'fb-option-select-type': 'ይምረጡ',
+        'fb-label-submit-guest': 'እንደ እንግዳ አስገባ',
+        'fb-opt-student': 'ተማሪ',
+        'fb-opt-employee': 'ሰራተኛ',
+        'fb-opt-guest': 'እግዳ',
+        'fb-button-submit': 'አስተያየት አስገባ'
+
+    },
+    'en': {
+        // Complaint
+        'main-title': 'Complaint Submission',
+        'subtitle': 'Please select the relevant unit and enter your complaint details.',
+        'title-recipient-info': 'Recipient Information',
+        'label-recipient-type': 'Recipient Type:',
+        'option-select-recipient-type': 'Select Type',
+        'option-college': 'College',
+        'option-department': 'Department',
+        'option-directory': 'Directorate',
+        'label-filter-college': 'Select College first:',
+        'option-select-filter-college': 'Choose College',
+        'label-recipient-id': 'Recipient Unit:',
+        'option-select-recipient': 'Select Recipient Unit',
+        'label-subject': 'Subject:',
+        'label-description': 'Complaint Content',
+        'label-body-text': 'Detailed Description:',
+        'label-anonymous': 'I wish to remain Anonymous.',
+        'text-anonymous-warning': 'Hides identity, but may limit responses.',
+        'titles-contact': 'Contact Information',
+        'label-email': 'Email:',
+        'label-name': 'Full Name (Optional):',
+        'label-type': 'Reporter Type:',
+        'opt-select-type': 'Select Type',
+        'label-submit-guest': 'Submit as guest',
+        'option-select-type': '',
+        'opt-student': 'Student',
+        'opt-employee': 'Employee',
+        'opt-guest': 'Guest',
+        'button-submit': 'Submit Complaint',
+
+
+        //Feedback 
+        'fb-main-title': 'Feedback Submission',
+        'fb-subtitle': 'Please select the relevant unit and enter details.',
+        'fb-title-recipient-info': 'Recipient Information',
+        'fb-label-recipient-type': 'Type ',
+        'fb-option-select-recipient-type': 'Select Type',
+        'fb-option-college': 'College',
+        'fb-option-department': 'Department',
+        'fb-option-directory': 'Directorate',
+        'fb-label-filter-college': 'College ',
+        'fb-label-recipient-id': 'Select Recipient Unit ',
+        'fb-option-select-recipient': 'Select Recipient',
+        'fb-title-feedback-details': 'Feedback Content',
+        'fb-label-feedback-type': 'Feedback Nature ',
+        'fb-opt-neutral': 'Neutral',
+        'fb-opt-positive': 'Positive',
+        'fb-opt-negative': 'Negative',
+        'fb-label-subject': 'Subject ',
+        'fb-label-description': 'Description ',
+        'fb-label-anonymous': 'Identity Options',
+        'fb-label-anon-text': 'Remain Anonymous',
+        'fb-text-anonymous-warning': 'Hides identity, but may limit responses.',
+        'fb-title-contact': 'Contact Information',
+        'fb-label-email': 'Email ',
+        'fb-label-name': 'Full Name',
+        'fb-label-type': 'Reporter Type ',
+        'fb-option-select-type': 'Select Type',
+        'fb-label-submit-guest': 'Submit as guest',
+        'fb-opt-student': 'student',
+        'fb-opt-employee': 'Employee',
+        'fb-opt-guest': 'Guest',
+        'fb-button-submit': 'Submit Feedback'
+    }
+};
+
+
+    let currentLangs = { 'complaint': 'en', 'fb': 'en' };
+
+    // for languge
+    window.switchLanguage = (lang, prefix = '') => {
+        const type = prefix === 'fb' ? 'fb' : 'complaint';
+        currentLangs[type] = lang;
+        const t = window.translations[lang];
+        for (let key in t) {
+            const el = document.getElementById(key);
+            if (el) el.textContent = t[key];
+        }
+        window.handleTypeChange(prefix);
+    };
+
+    //for Recipient Type(College/Dept/Dir)
+    window.handleTypeChange = async (prefix = '') => {
+        const pfx = prefix ? prefix + '_' : '';
+        const lang = prefix === 'fb' ? currentLangs['fb'] : currentLangs['complaint'];
+        
+        const type = document.getElementById(pfx + 'recipient_type').value;
+        const collegeFilter = document.getElementById(pfx + 'college_filter_container');
+        const idSelect = document.getElementById(pfx + 'recipient_id');
+
+        //idSelect.innerHTML = `<option value="">Loading...</option>`;
+        collegeFilter.classList.add('d-none');
 
         if (type === 'College') {
-            fillData('{{ route("api.colleges.list") }}', unitSelect);
+            await window.fetchAndFill('{{ route("api.colleges.list") }}', idSelect, lang);
         } else if (type === 'Directory') {
-            fillData('{{ route("api.directories.list") }}', unitSelect);
+            await window.fetchAndFill('{{ route("api.directories.list") }}', idSelect, lang);
         } else if (type === 'Department') {
-            colDiv.classList.remove('d-none');
-            fillColleges(colDiv.querySelector('select'));
+            collegeFilter.classList.remove('d-none');
+            await window.fillColleges(pfx, lang);
         }
-    }
+    };
 
-    // Load Colleges for filtering departments
-    async function fillColleges(target) {
-        const res = await fetch('{{ route("api.colleges.list") }}');
-        const data = await res.json();
-        target.innerHTML = '<option value="">Choose College</option>';
-        data.forEach(c => target.innerHTML += `<option value="${c.id}">${c.name_en}</option>`);
-    }
+    // for college
+    window.fillColleges = async (pfx, lang) => {
+        const filterSelect = document.getElementById(pfx + 'filter_college_id');
+        const response = await fetch('{{ route("api.colleges.list") }}');
+        const data = await response.json();
+        //filterSelect.innerHTML = `<option value="">Select College</option>`;
+        data.forEach(c => {
+            filterSelect.innerHTML += `<option value="${c.id}">${lang === 'am' ? (c.name_am || c.name_en) : c.name_en}</option>`;
+        });
+    };
 
-    // Load Departments based on college
-    function loadDepartments(colId, itemId) {
-        const unitSelect = document.getElementById(`unit_select_${itemId}`);
-        fillData(`{{ url('/api/colleges') }}/${colId}/departments`, unitSelect);
-    }
+    //for departemnt load by college
+    window.loadDepartmentsByCollege = async (collegeId, prefix = '') => {
+        if (!collegeId) return;
+        const pfx = prefix ? prefix + '_' : '';
+        const lang = prefix === 'fb' ? currentLangs['fb'] : currentLangs['complaint'];
+        const idSelect = document.getElementById(pfx + 'recipient_id');
+        await window.fetchAndFill(`{{ url('/api/colleges') }}/${collegeId}/departments`, idSelect, lang);
+    };
 
-    // Helper to fetch and fill select
-    async function fillData(url, target) {
-        const res = await fetch(url);
-        const data = await res.json();
-        target.innerHTML = '<option value="">Select Unit</option>';
-        data.forEach(d => target.innerHTML += `<option value="${d.id}">${d.name_en || d.name}</option>`);
-    }
+    // Generic Fetch function
+    window.fetchAndFill = async (url, selectEl, lang) => {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+            //selectEl.innerHTML = `<option value="">Select Unit</option>`;
+            data.forEach(item => {
+                selectEl.innerHTML += `<option value="${item.id}">${lang === 'am' ? (item.name_am || item.name_en) : item.name_en}</option>`;
+            });
+        } catch (e) { selectEl.innerHTML = `<option value="">Error</option>`; }
+    };
+
+    // for guest & ANONYMOUS 
+    window.handleIdentityChange = (prefix = '') => {
+        const pfx = prefix ? prefix + '_' : '';
+        const isAnon = document.getElementById(pfx + 'is_anonymous').checked;
+        const guestCheck = document.getElementById(pfx + 'use_guest_mode');
+        const guestFields = document.getElementById(pfx + 'guest_fields');
+
+        if (isAnon) {
+            guestFields.classList.add('d-none');
+            if(guestCheck) guestCheck.parentElement.classList.add('d-none');
+        } else {
+            if(guestCheck) guestCheck.parentElement.classList.remove('d-none');
+            
+            if (guestCheck && guestCheck.checked) {
+                guestFields.classList.remove('d-none');
+            } else {
+                guestFields.classList.add('d-none');
+            }
+        }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        window.switchLanguage('en');
+        window.switchLanguage('en', 'fb');
+    });
+
+
 </script>
 
 <style>

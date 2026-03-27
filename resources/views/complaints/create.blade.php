@@ -5,8 +5,6 @@
     <div class="row justify-content-center">
         <div class="col-lg-11">
             <div class="card shadow-lg border-0 complaint-card">
-                
-                {{-- Header Section --}}
                 <div class="card-header bg-white border-0 pt-4 pb-0 text-center">
                     <div class="d-flex justify-content-between align-items-center px-3">
                         <h2 class="fw-bold text-danger mb-0" id="main-title" style="font-size: 1.5rem;">
@@ -21,8 +19,6 @@
                     </div>
                     <p class="text-muted mt-2 mb-0" id="subtitle" style="font-size: 0.9rem;">Please select the relevant unit and enter your complaint details.</p>
                 </div>
-
-                {{-- Alert Messages --}}
                 <div class="px-4 mt-3">
                     @if ($errors->any())
                         <div class="alert alert-danger p-2 small">
@@ -80,8 +76,6 @@
                                     <textarea id="body" name="body" rows="4" required class="form-control form-control-sm border-danger-subtle" placeholder="Describe your complaint..."></textarea>
                                 </div>
                             </div>
-
-                            {{-- Right Column: Identity & Contact --}}
                             <div class="col-md-6 ps-md-4">
                                 <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="title-contact">Identity & Contact</h6>
                                 
@@ -98,7 +92,7 @@
                                 @endif
 
                                 <div id="guest-fields" class="p-3 border rounded bg-light shadow-sm d-none">
-                                    <p class="small text-muted mb-2">Provide your contact details below:</p>
+                                    <p class="small text-muted mb-2" id="title-contact">Identity & Contact</p>
                                     <div class="row g-2">
                                         <div class="col-12">
                                             <label class="form-label small mb-1 fw-bold" id="label-email">Email *</label>
@@ -141,7 +135,6 @@
 </style>
 
 <script>
-    // ያንተ Translations (አልተለወጠም)
     window.translations = {
         'am': {
             'main-title': 'ቅሬታ ማስገቢያ',
@@ -195,6 +188,7 @@
         }
     };
 
+
     let currentLanguage = 'en';
 
     window.switchLanguage = (lang) => {
@@ -206,7 +200,7 @@
         }
     };
 
-    // Recipient Fetching Logic (ያንተ ኮድ)
+    
     window.handleTypeChange = async () => {
         const type = document.getElementById('recipient_type').value;
         const collegeFilter = document.getElementById('college_filter_container');
@@ -264,7 +258,7 @@
         loading.classList.add('d-none');
     };
 
-    // አዲሱ Identity Logic
+    //  Identity Logic
     window.handleIdentityChange = () => {
         const isAnon = document.getElementById('is_anonymous').checked;
         const useGuestMode = document.getElementById('use_guest_mode') ? document.getElementById('use_guest_mode').checked : true;
@@ -272,10 +266,10 @@
         const isLoggedIn = {{ Auth::check() ? 'true' : 'false' }};
 
         if (isAnon) {
-            // ስም-አልባ ከሆነ የGuest መረጃ መሙያውን ደብቅ
+          
             guestFields.classList.add('d-none');
         } else {
-            // ስም-አልባ ካልሆነ እና (Login ካላደረገ ወይም Login አድርጎ Guest መሆን ከፈለገ) አሳይ
+            
             if (!isLoggedIn || useGuestMode) {
                 guestFields.classList.remove('d-none');
             } else {
@@ -286,7 +280,50 @@
 
     document.addEventListener('DOMContentLoaded', () => {
         window.switchLanguage('en');
-        window.handleIdentityChange(); // የመጀመርያውን ሁኔታ ለማስተካከል
+        window.handleIdentityChange(); 
     });
+
+    /*
+    //  Type Selection
+    function handleTypeChange(select, itemId) {
+        const type = select.value;
+        const colDiv = document.getElementById(`div_college_${itemId}`);
+        const unitSelect = document.getElementById(`unit_select_${itemId}`);
+        
+        unitSelect.innerHTML = '<option value="">Select Unit</option>';
+        colDiv.classList.add('d-none');
+
+        if (type === 'College') {
+            fillData('{{ route("api.colleges.list") }}', unitSelect);
+        } else if (type === 'Directory') {
+            fillData('{{ route("api.directories.list") }}', unitSelect);
+        } else if (type === 'Department') {
+            colDiv.classList.remove('d-none');
+            fillColleges(colDiv.querySelector('select'));
+        }
+    }
+
+    // Load Colleges for filtering departments
+    async function fillColleges(target) {
+        const res = await fetch('{{ route("api.colleges.list") }}');
+        const data = await res.json();
+        target.innerHTML = '<option value="">Choose College</option>';
+        data.forEach(c => target.innerHTML += `<option value="${c.id}">${c.name_en}</option>`);
+    }
+
+    // Load Departments based on college
+    function loadDepartments(colId, itemId) {
+        const unitSelect = document.getElementById(`unit_select_${itemId}`);
+        fillData(`{{ url('/api/colleges') }}/${colId}/departments`, unitSelect);
+    }
+
+    // Helper to fetch and fill select
+    async function fillData(url, target) {
+        const res = await fetch(url);
+        const data = await res.json();
+        target.innerHTML = '<option value="">Select Unit</option>';
+        data.forEach(d => target.innerHTML += `<option value="${d.id}">${d.name_en || d.name}</option>`);
+    }
+    */
 </script>
 @endsection

@@ -36,7 +36,7 @@ class PermissionController extends Controller {
     public function update(Request $request, $id) {
     $permission = Permission::findOrFail($id);
     
-    // name ለውጥ ስለሚኖር፣ ሌላ ፐርሚሽን ጋር እንዳይጋጭ (unique) ማረጋገጥ አስፈላጊ ነው
+
     $request->validate([
         'name' => 'required|unique:permissions,name,'.$id, 
         'display_name' => 'required',
@@ -51,5 +51,17 @@ class PermissionController extends Controller {
 
     app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
     return redirect()->back()->with('success', 'Permission updated successfully!');
+}
+public function destroy($id) {
+ 
+    $permission = Permission::findOrFail($id);
+    
+    
+    $permission->delete();
+
+ 
+    app(PermissionRegistrar::class)->forgetCachedPermissions();
+
+    return redirect()->back()->with('success', 'Permission deleted successfully!');
 }
 }

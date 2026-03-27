@@ -47,12 +47,12 @@
     font-size: 0.75rem;
 }
         body {
-            font-family: 'Inter', sans-serif; /* A nice, clean font */
+            font-family: 'Inter', sans-serif; 
         }
         .sidebar {
             width: 260px;
             min-height: 100vh;
-            background-color: #212529; /* Dark background for sidebar */
+            background-color: #212529; 
             color: white;
             transition: margin-left 0.3s;
         }
@@ -95,18 +95,18 @@
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
     }
 
-    /* Scale the card up slightly and add a larger shadow on hover */
+   
     .card-hover-effect:hover {
         transform: translateY(-5px);
         box-shadow: 0 1rem 3rem rgba(0,0,0,.175) !important;
     }
 
-    /* Create a subtle zoom effect for the image on hover */
+    
     .card-hover-effect:hover .card-img-top {
         transform: scale(1.05);
     }
     
-    /* Ensure image transition is smooth and doesn't overflow */
+    
     .image-container {
         overflow: hidden;
     }
@@ -115,7 +115,7 @@
         transition: transform 0.3s ease-in-out;
     }
 
-    /* Optional: Style for the button hover effects */
+    
     .btn-primary:hover {
         background-color: #0d6efd;
         border-color: #0d6efd;

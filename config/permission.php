@@ -12,7 +12,7 @@ return [
          * The model you want to use as a Permission model needs to implement the
          * `Spatie\Permission\Contracts\Permission` contract.
          */
-          //by defualt spita permision
+          /* ehen comment yaderkut yerasen permission model mfetr selfelghu nw ehe by defualt spita permision ymefterew nw*/ 
         //'permission' => Spatie\Permission\Models\Permission::class,
         'permission' => App\Models\Permission::class,
 
