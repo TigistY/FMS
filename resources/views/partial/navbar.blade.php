@@ -1,4 +1,10 @@
 <header class="shadow-sm p-3 sticky-top z-10 d-flex align-items-center justify-content-end" style="background-color: #1e3a5f; border-bottom: 2px solid #ffc107;">
+    <button class="btn btn-outline-light d-md-none border-0" id="sidebar-toggle">
+        <i class="fas fa-bars fa-lg text-warning"></i>
+    </button>
+
+    <div class="ms-auto d-flex align-items-center">
+        </div>
     
     {{-- notification part--}}
     <div class="me-3">

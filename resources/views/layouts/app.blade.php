@@ -79,17 +79,19 @@
         }
         
         /* For mobile view */
-        @media (max-width: 768px) {
-            .sidebar {
-                margin-left: -260px; /* Hide sidebar by default */
-            }
-            .sidebar.active {
-                margin-left: 0;
-            }
-            .main-content {
-                width: 100%;
-            }
+       @media (max-width: 768px) {
+        .sidebar {
+            margin-left: -260px;
+            position: fixed;
+            z-index: 1050;   
+            height: 100vh;
+            transition: 0.3s;
         }
+        .sidebar.active {
+            margin-left: 0 !important;
+            box-shadow: 5px 0 15px rgba(0,0,0,0.5); 
+        }
+    }
 
     .card {
         transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
@@ -139,7 +141,6 @@
         .main-content { flex-grow: 1; transition: 0.3s; }
         .content { padding: 2rem; }
         .dt-buttons { margin-bottom: 15px; } 
-        @media (max-width: 768px) { .sidebar { margin-left: -260px; } .sidebar.active { margin-left: 0; } }
     </style>
 </head>
 <body>
@@ -170,15 +171,25 @@
     <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.print.min.js"></script>
 
     <script src="https://cdn.datatables.net/select/2.0.4/js/dataTables.select.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#sidebar-toggle').on('click', function() {
-                $('.sidebar').toggleClass('active');
-            });
+<script>
+    //for sidebar
+    $(document).ready(function() {
+        $('#sidebar-toggle').on('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            $('.sidebar').toggleClass('active');
         });
-    </script>
 
-    @stack('scripts') </body>
+        $(document).on('click', function (e) {
+            if (!$(e.target).closest('.sidebar').length && !$(e.target).closest('#sidebar-toggle').length) {
+                $('.sidebar').removeClass('active');
+            }
+        });
+    });
+</script>
+
+    @stack('scripts') 
+</body>
 </html>
 
 
