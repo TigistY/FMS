@@ -76,10 +76,18 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label">Password</label>
-                            <input type="password" name="password" class="form-control @error('password') is-invalid @enderror" required>
-                            @error('password') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                        </div>
+    <label class="form-label">Password</label>
+    <div class="input-group"> <input type="password" name="password" id="password_reg" class="form-control @error('password') is-invalid @enderror" required>
+        
+        <span class="input-group-text" id="togglePassword_reg" style="cursor: pointer; background: white;">
+            <i class="fas fa-eye" id="eyeIcon_reg"></i>
+        </span>
+
+        @error('password') 
+            <div class="invalid-feedback">{{ $message }}</div> 
+        @enderror
+    </div>
+</div>
 
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-success">Create User Account</button>
@@ -90,4 +98,15 @@
         </div>
     </div>
 </div>
+<script>
+    const togglePasswordReg = document.querySelector('#togglePassword_reg');
+    const passwordReg = document.querySelector('#password_reg');
+    const eyeIconReg = document.querySelector('#eyeIcon_reg');
+
+    togglePasswordReg.addEventListener('click', function () {
+        const type = passwordReg.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordReg.setAttribute('type', type);
+        eyeIconReg.classList.toggle('fa-eye-slash');
+    });
+</script>
 @endsection

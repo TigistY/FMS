@@ -34,7 +34,7 @@
                         <div class="row">
                             <div class="col-md-4 mb-3">
                                 <select name="college_id" class="form-select">
-                                    <option value="">-- None --</option>
+                                    <option value="">None </option>
                                     @foreach($colleges as $college)
                                         <option value="{{ $college->id }}" {{ $user->college_id == $college->id ? 'selected' : '' }}>
                                             {{ $college->name_en }}
@@ -44,7 +44,7 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <select name="department_id" class="form-select">
-                                    <option value="">-- None --</option>
+                                    <option value=""> None </option>
                                     @foreach($departments as $dept)
                                         <option value="{{ $dept->id }}" {{ $user->department_id == $dept->id ? 'selected' : '' }}>
                                             {{ $dept->name_en }}
@@ -54,7 +54,7 @@
                             </div>
                             <div class="col-md-4 mb-3">
                                 <select name="directory_id" class="form-select">
-                                    <option value="">-- None --</option>
+                                    <option value=""> None </option>
                                     @foreach($directories as $dir)
                                         <option value="{{ $dir->id }}" {{ $user->directory_id == $dir->id ? 'selected' : '' }}>
                                             {{ $dir->name_en }}
@@ -79,10 +79,23 @@
                             </div>
                         </div>
 
-                        <div class="mb-3 border p-2 rounded bg-info bg-opacity-10">
-                            <label class="form-label">Change Password (Leave blank to keep current)</label>
-                            <input type="password" name="password" class="form-control" placeholder="Optional">
-                        </div>
+
+ <div class="mb-3 border p-2 rounded bg-info bg-opacity-10">
+    <label class="form-label">Change Password (Leave blank to keep current)</label>
+    <div class="input-group"> <input type="password" name="password" id="password_reg" class="form-control @error('password') is-invalid @enderror" >
+        
+        <span class="input-group-text" id="togglePassword_reg" style="cursor: pointer; background: white;">
+            <i class="fas fa-eye" id="eyeIcon_reg"></i>
+        </span>
+
+        @error('password') 
+            <div class="invalid-feedback">{{ $message }}</div> 
+        @enderror
+    </div>
+</div>
+
+
+                        
 
                         <div class="d-grid mt-4">
                             <button type="submit" class="btn btn-primary">Update User Information</button>
@@ -93,4 +106,15 @@
         </div>
     </div>
 </div>
+<script>
+    const togglePasswordReg = document.querySelector('#togglePassword_reg');
+    const passwordReg = document.querySelector('#password_reg');
+    const eyeIconReg = document.querySelector('#eyeIcon_reg');
+
+    togglePasswordReg.addEventListener('click', function () {
+        const type = passwordReg.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordReg.setAttribute('type', type);
+        eyeIconReg.classList.toggle('fa-eye-slash');
+    });
+</script>
 @endsection

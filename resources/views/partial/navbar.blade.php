@@ -5,8 +5,7 @@
 
     <div class="ms-auto d-flex align-items-center">
         </div>
-    
-    {{-- notification part--}}
+
     <div class="me-3">
       @php
         $targetRoute = route('dashboard'); 

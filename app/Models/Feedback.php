@@ -35,9 +35,9 @@ class Feedback extends Model
 
     
     public function guest(): BelongsTo
-    {
-        return $this->belongsTo(Guest::class);
-    }
+{
+    return $this->belongsTo(Guest::class, 'guest_id');
+}
 
     
     public function recipient(): MorphTo

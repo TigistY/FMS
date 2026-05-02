@@ -91,7 +91,19 @@
                                 </td>
 
                                 <td>{{ $complaint->recipient->name_en ?? 'N/A' }}</td>
-                                <td>{{ $complaint->is_anonymous ? 'Anonymous' : ($complaint->user->name ?? 'Guest') }}</td>
+                                <td>
+    @if($complaint->is_anonymous)
+        <span class="text-info">Anonymous</span>
+    @elseif($complaint->user)
+        <span class="fw-bold">{{ $complaint->user->name }}</span> 
+        <small class="text-muted">(Registerd)</small>
+    @elseif($complaint->guest)
+        <span class="fw-bold">{{ $complaint->guest->name }}</span> 
+        <small class="text-muted">({{ ucfirst($complaint->guest->guest_type) }})</small>
+    @else
+        <span >Unknown</span>
+    @endif
+</td>
                                 <td><span class="badge bg-primary">{{ $complaint->status }}</span></td>
                                 <td>
                                   <div class="small fw-bold text-dark">{{ $complaint->created_at->format('M d, Y') }}</div>
@@ -155,13 +167,17 @@
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             }
                         ]
                     },

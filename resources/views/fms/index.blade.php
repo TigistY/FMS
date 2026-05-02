@@ -136,7 +136,19 @@
                                 @endif
                         </td>
                         <td>{{ $feedback->recipient->name_en ?? 'N/A' }}</td>
-                        <td>{{ $feedback->is_anonymous ? 'Anonymous' : ($feedback->user->name ?? 'Guest') }}</td>
+                        <td>
+    @if($feedback->is_anonymous)
+        <span class="text-info">Anonymous</span>
+    @elseif($feedback->user)
+
+        {{ $feedback->user->name }} (User)
+    @elseif($feedback->guest)
+        {{ $feedback->guest->name }} 
+        <small class="text-muted">({{ ucfirst($feedback->guest->guest_type) }})</small>
+    @else
+        Unknown
+    @endif
+</td>
                         <td><span class="badge bg-primary">{{ $feedback->status }}</span></td>
                         <td>
                             <div class="small fw-bold text-dark">{{ $feedback->created_at->format('M d, Y') }}</div>
@@ -197,13 +209,17 @@
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             }
                         ]
                     },

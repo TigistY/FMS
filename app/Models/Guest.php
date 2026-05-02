@@ -38,10 +38,11 @@ class Guest extends Model
     
     public function feedbacks()
     {
-        return $this->hasMany(Feedback::class, 'guest_email_id');
+        return $this->hasMany(Feedback::class, 'guest_id');
     }
     public function complaints()
     {
-        return $this->hasMany(Complaint::class, 'guest_email_id');
+    //return $this->hasMany(Complaint::class, 'guest_email_id');
+        return $this->hasMany(Complaint::class, 'guest_id');
     }
 }

@@ -64,7 +64,7 @@
 
                         
                         <div class="col-md-6 ps-md-4">
-                            <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="title-contact">Identity & Contact</h6>
+                            <h6 class="text-danger fw-bold mb-3 border-bottom pb-2" id="title-cont">Identity & Contact</h6>
                       <div class="form-check form-switch p-3 bg-danger-subtle rounded mb-2">
                       <input id="is_anonymous" name="is_anonymous" type="checkbox" onchange="window.handleIdentityChange()" class="form-check-input">
                       <label for="is_anonymous" id="label-anonymous" class="form-check-label fw-bold text-danger">Anonymous</label>
@@ -76,7 +76,7 @@
                 </div>       
                             
                              <div id="guest_fields" class="p-3 border rounded bg-light d-none">                  
-                               <h6 class="small fw-bold mb-3 text-dark" id="titles-contact">Contact Information</h6>
+                               <h6 class="small fw-bold mb-3 text-dark" id="title-contact">Contact Information</h6>
                                 <div class="row g-2">
                                     <div class="col-12">
                                         <label class="form-label small mb-1 fw-bold" id="label-email">Email</label>

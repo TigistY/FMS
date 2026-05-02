@@ -15,6 +15,28 @@
             </p>
         </div>
 
+    <div class="section-card" onclick="window.location.href='{{ route('feedback.link') }}'">
+    <p class="section-title">General Feedback & Suggestions</p>
+    <p class="mb-0">
+        Share your thoughts, appreciation, or suggestions to help us improve our services. Use this for non-urgent ideas related to university operations.
+    </p>
+</div>
+
+<div class="section-card" onclick="window.location.href='{{ route('create') }}'">
+    <p class="section-title">Formal Complaint Submission</p>
+    <p class="mb-0">
+        Submit a formal complaint regarding service failures, misconduct, or facility issues. This track ensures your case is officially reviewed and resolved.
+    </p>
+</div>
+
+<div class="section-card">
+    <p class="section-title">Anonymous Complaint And Feedback Submission</p>
+    <p class="mb-0">
+        To submit your feedback or complaint without revealing your identity, you can choose the Anonymous option provided in this form.
+    </p>
+</div>
+
+
         <h5 class="fw-bold text-primary mb-3">Key Objectives | ዋና ዓላማዎች፦</h5>
         <ul class="list-group list-group-flush">
             <li class="list-group-item border-0 ps-0">

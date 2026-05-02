@@ -13,8 +13,32 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
-    
-        body { font-family: 'Noto Sans Ethiopic', sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }
+        /* for dropdown */
+@media (max-width: 991.98px) {
+    .navbar-nav .dropdown-menu {
+        position: static !important;
+        float: none;
+        background-color: rgba(255, 255, 255, 0.05);
+        border: none;
+        margin-top: 0;
+        box-shadow: none;
+    }
+
+    .dropdown-item {
+        color: #adb5bd !important;
+        padding-left: 2rem !important; 
+    }
+
+    .dropdown-item:hover {
+        color: #ffffff !important;
+        background-color: transparent !important;
+    }
+    .dropdown-menu.show {
+        display: block !important;
+    }
+}
+
+ body { font-family: 'Noto Sans Ethiopic', sans-serif; background-color: #f8f9fa; margin: 0; padding: 0; }
 
         
         @media (min-width: 992px) {
@@ -44,10 +68,20 @@
 
         
         .login-container { 
-            margin: 40px auto; max-width: 450px; padding: 40px; 
-            background: white; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
+            margin: 40px auto; 
+            max-width: 450px; 
+            padding: 40px; 
+            background: white;
+             border-radius: 12px;
+              box-shadow: 0 10px 25px rgba(0,0,0,0.1); 
         }
-        .login-container h2 { text-align: center; margin-left: 0; color: #007bff; margin-bottom: 30px; font-weight: 600; }
+        .login-container h2 { 
+            text-align: center;
+         margin-left: 0; 
+         color: #007bff; 
+         margin-bottom: 30px; 
+         font-weight: 600; 
+     }
 
         
         .header-main-bar { background-color: #1e3a5f; color: white;}
@@ -60,6 +94,10 @@
         
         .site-wrapper { display: flex; flex-direction: column; min-height: 100vh; }
         .content-area { flex: 1; }
+        .lo{
+            
+            background-color: #1e3a5f;
+        }
     </style>
 </head>
 <body>
@@ -74,7 +112,16 @@
         @include('partial.footer2')
     </div>
 
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            //for mobile toogle
+            var dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'))
+            var dropdownList = dropdownElementList.map(function (dropdownToggleEl) {
+                return new bootstrap.Dropdown(dropdownToggleEl)
+            });
+        });
+    </script>
 </body>
 </html>

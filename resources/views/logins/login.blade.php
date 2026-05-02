@@ -26,21 +26,39 @@
         </div>
 
         <div class="form-group mb-4">
-            <label for="password" class="form-label">Password:</label>
-            <input type="password" id="password" name="password" 
-                   class="form-control @error('password') is-invalid @enderror" 
-                   required placeholder="Enter your password">
-            @error('password')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
+    <label for="password" class="form-label">Password:</label>
+    <div class="input-group"> <input type="password" id="password" name="password" 
+               class="form-control @error('password') is-invalid @enderror" 
+               required placeholder="Enter your password">
+        
+        <span class="input-group-text" id="togglePassword" style="cursor: pointer; background: white;">
+            <i class="fas fa-eye" id="eyeIcon"></i>
+        </span>
 
-        <button type="submit" class="btn btn-primary btn-outline-danger w-100 py-2 fw-bold">Log In</button>
+        @error('password')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
+</div>
+
+        <button type="submit" class="lo btn btn-outline-danger w-100 py-2 fw-bold">Log In</button>
         
         <div class="text-center mt-3">
             <a href="{{ route('create.link') }}" class="text-decoration-none">Don't have an account? Register here.</a>
         </div>
     </form>
 </div>
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const password = document.querySelector('#password');
+    const eyeIcon = document.querySelector('#eyeIcon');
+
+    togglePassword.addEventListener('click', function (e) {
+
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        eyeIcon.classList.toggle('fa-eye-slash');
+    });
+</script>
 
 @endsection

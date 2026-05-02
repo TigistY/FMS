@@ -14,7 +14,7 @@
                     <div class="mb-3" id="collegeSelectContainer">
     <label class="form-label fw-bold">Select College</label>
     <select name="college_id" id="dept_college_id" class="form-select">
-        <option value="">-- Choose College --</option>
+        <option value=""> Choose College</option>
         @foreach($colleges as $col)
             <option value="{{ $col->id }}">{{ $col->name_en }}</option>
         @endforeach

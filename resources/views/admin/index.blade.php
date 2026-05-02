@@ -11,7 +11,7 @@
 $(document).ready(function() {
      if ($('#users').length > 0) {
             new DataTable('#users', {
-                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                lengthMenu: [[7, 10, 25, 50, -1], [7, 10, 25, 50, "All"]],
                 select:true,
                 ordering:true,
                 pagingType: "full_numbers",
@@ -22,13 +22,17 @@ $(document).ready(function() {
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             }
                         ]
                     },

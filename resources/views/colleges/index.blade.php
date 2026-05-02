@@ -11,7 +11,7 @@
 $(document).ready(function() {
      if ($('#colleges').length > 0) {
             new DataTable('#colleges', {
-                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                lengthMenu: [[7, 10, 25, 50, -1], [7, 10, 25, 50, "All"]],
                 select:true,
                 ordering:true,
                 pagingType: "full_numbers",
@@ -22,13 +22,17 @@ $(document).ready(function() {
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true } } 
+                                exportOptions: { modifier: { selected: true },
+                                columns: ':not(:last-child)'
+                                 } 
                             }
                         ]
                     },
@@ -57,9 +61,24 @@ $(document).ready(function() {
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
-    @if (session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ session('error') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+                <li><i class="fas fa-times-circle me-2"></i> {{ $error }}</li>
+            @endforeach
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+@endif
 
     <div class="table-responsive">
         <table class="table table-striped table-hover" id="colleges">

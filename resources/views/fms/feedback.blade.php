@@ -99,9 +99,8 @@
                                             <select id="guest_type" name="guest_type" class="form-select form-select-sm">
                                                 <option value="" id="option-select-type">Select Type</option>
                                                 <option value="Student">Student</option>
-                                                <option value="Teacher">Teacher</option>
                                                 <option value="Employee">Employee</option>
-                                                <option value="Other">Other</option>
+                                                <option value="Other">Guest</option>
                                             </select>
                                         </div>
                                     </div>

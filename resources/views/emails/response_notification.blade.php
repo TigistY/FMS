@@ -18,10 +18,15 @@
                 <div style="white-space: pre-line;">{{ $responseText }}</div>
             </div>
         </div>
-
-        <div style="text-align: center; margin-top: 30px;">
-            <a href="{{ url('/login') }}" style="background-color: #1e3a5f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Login to System / ሲስተሙ ውስጥ ይግቡ</a>
-        </div>
+@if(!$content->is_anonymous && $content->user_id)
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{{ url('/login') }}" style="background-color: #1e3a5f; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">Login to System</a>
+    </div>
+@else
+    <p style="text-align: center; color: #777; font-size: 0.9em; margin-top: 20px;">
+        Thank you for using our system. / ሲስተማችንን ስለተጠቀሙ እናመሰግናለን።
+    </p>
+@endif
     </div>
 
     <div style="background-color: #f4f4f4; padding: 15px; text-align: center; font-size: 0.85em; color: #777;">
