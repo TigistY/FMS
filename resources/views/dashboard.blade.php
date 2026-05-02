@@ -69,6 +69,7 @@
                             <th>#</th>
                             <th class="ps-4">{{ __('messages.Type') }}</th>
                             <th>{{ __('messages.Subject') }}</th>
+                            <th>{{ __('messages.Reciver') }}</th>
                             <th>{{ __('messages.Status') }}</th>
                             <th>{{ __('messages.Date') }}</th>
                             <th class="text-center">{{ __('messages.Action') }}</th>
@@ -86,6 +87,22 @@
                                 @endif
                             </td>
                             <td>{{ Str::limit($item->subject, 50) }}</td>
+                            <td>
+    @if($item->recipient)
+        <div class="d-flex align-items-center">
+            <div>
+                <div class="fw-bold text-dark" style="font-size: 0.85rem;">
+                    {{ $item->recipient->name_en }}
+                </div>
+                <div class="text-muted" style="font-size: 0.7rem;">
+                    {{ class_basename($item->recipient_type) }}
+                </div>
+            </div>
+        </div>
+    @else
+        <span class="text-muted small">Not Specified</span>
+    @endif
+</td>
                             <td><span class="badge rounded-pill bg-info text-dark">{{ $item->status }}</span></td>
                                                 <td>
                              <div class="small fw-bold text-dark">{{ $item->created_at->format('M d, Y') }}</div>

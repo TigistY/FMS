@@ -46,7 +46,7 @@ return [
     'Date' => 'ቀን',
     'Action' => 'ተግባር',
     'My Profile' => 'የግል መገለጫዬ',
-
+    'Reciver' => 'ተቀባይ',
 
 
 ];

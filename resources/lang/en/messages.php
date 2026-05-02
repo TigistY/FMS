@@ -46,6 +46,7 @@ return [
     'Date' => 'Date',
     'Action' => 'Action',
     'My Profile' => 'My Profile',
+    'Reciver' => 'Reciver',
     
 
 ];
