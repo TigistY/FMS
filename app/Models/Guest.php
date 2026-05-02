@@ -31,7 +31,7 @@ class Guest extends Model
      * * @var array
      */
     protected $casts = [
-       
+       //'name' => 'encrypted',
     ];
 
 

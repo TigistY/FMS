@@ -26,9 +26,17 @@ class Complaint extends Model
     ];
     
    
-
+/**
+     * dataw wde db segeba encrypt ,sewota dgmo dencrypt yadergal
+     example name encrypt maderg
+      protected $casts = [
+        'name' => 'encrypted',
+        'is_anonymous' => 'boolean',
+    ];
+     */
     
     protected $casts = [
+
         'is_anonymous' => 'boolean',
     ];
 

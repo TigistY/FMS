@@ -3,15 +3,12 @@
 @section('content')
 <div class="container py-5">
     <div class="card shadow-lg p-5 border-0 rounded-4">
-        <h2 class="text-primary fw-bold mb-4"><i class="fas fa-info-circle me-2"></i> System Information | ስለ ሲስተሙ መረጃ</h2>
+        <h2 class="text-primary fw-bold mb-4"><i class="fas fa-info-circle me-2"></i> System Information</h2>
         <hr>
         
         <div class="mb-5">
             <p class="lead fw-bold text-dark">
                 This Feedback and Complaint Management System is designed to ensure transparency and accountability within Injibara University's service delivery.
-            </p>
-            <p class="lead text-muted">
-                ይህ የቅሬታ እና ግብረ-መልስ ማስተዳደሪያ ሲስተም በእንጅባራ ዩኒቨርሲቲ የአገልግሎት አሰጣጥ ላይ ግልጽነትን እና ተጠያቂነትን ለማስፈን ታስቦ የተዘጋጀ ነው።
             </p>
         </div>
 
@@ -37,7 +34,7 @@
 </div>
 
 
-        <h5 class="fw-bold text-primary mb-3">Key Objectives | ዋና ዓላማዎች፦</h5>
+        <h5 class="fw-bold text-primary mb-3">Key Objectives</h5>
         <ul class="list-group list-group-flush">
             <li class="list-group-item border-0 ps-0">
                 <i class="fas fa-check-circle text-success me-2"></i>

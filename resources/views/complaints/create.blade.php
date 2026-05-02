@@ -92,7 +92,7 @@
                                 @endif
 
                                 <div id="guest-fields" class="p-3 border rounded bg-light shadow-sm d-none">
-                                    <p class="small text-muted mb-2" id="title-contact">Identity & Contact</p>
+                                    <p class="small text-muted mb-2" id="title-Information">Contact Information</p>
                                     <div class="row g-2">
                                         <div class="col-12">
                                             <label class="form-label small mb-1 fw-bold" id="label-email">Email *</label>
@@ -155,6 +155,7 @@
             'label-anonymous': 'ስም-አልባ መሆን እፈልጋለሁ።',
             'text-anonymous-warning': 'ማንነትዎ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
             'title-contact': 'ማንነትና እውቂያ',
+            'title-Information': 'የእውቂያ መረጃ',
             'label-email': 'ኢሜይል:',
             'label-name': 'ሙሉ ስም (አማራጭ):',
             'label-type': 'የአመልካች አይነት:',
@@ -180,6 +181,7 @@
             'label-anonymous': 'I wish to remain Anonymous.',
             'text-anonymous-warning': 'If you choose this, your identity will be hidden.',
             'title-contact': 'Identity & Contact',
+            'title-Information': 'Contact Information',
             'label-email': 'Email:',
             'label-name': 'Full Name (Optional):',
             'label-type': 'Reporter Type:',

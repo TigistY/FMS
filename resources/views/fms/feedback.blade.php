@@ -76,10 +76,10 @@
 
                           
                             <div class="col-md-6 ps-md-4">
-                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="label-anonymous">Identity Options</h6>
+                                <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="label-Identity">Identity Options</h6>
                                 <div class="form-check form-switch p-3 bg-light rounded mb-2">
                                     <input id="is_anonymous" name="is_anonymous" type="checkbox" role="switch" onchange="window.toggleGuestFields()" class="form-check-input" {{ old('is_anonymous') ? 'checked' : '' }}>
-                                    <label for="is_anonymous" class="form-check-label fw-bold">Remain Anonymous</label>
+                                    <label for="is_anonymous" class="form-check-label fw-bold" id="label-anonymous">Remain Anonymous</label>
                                 </div>
                                 <p class="small text-muted mb-3" id="text-anonymous-warning">Hides identity, but may limit responses.</p>
 
@@ -141,6 +141,7 @@
             'placeholder-subject': 'አጭርና ግልጽ ርዕስ',
             'label-description': 'ዝርዝር መግለጫ:',
             'placeholder-description': 'አስተያየትዎን በዝርዝር ያስቀምጡ...',
+            'label-Identity': 'የማንነት አማራጮች',
             'label-anonymous': 'ስም-አልባ መሆን እፈልጋለሁ።',
             'text-anonymous-warning': 'ይህን ከመረጡ ማንነትዎ ይደበቃል፣ ነገር ግን ምላሽ ላይደርስዎት ይችላል።',
             'title-contact': 'የእውቂያ መረጃ',
@@ -173,8 +174,9 @@
             'placeholder-subject': 'Short and clear subject',
             'label-description': 'Detailed Description:',
             'placeholder-description': 'Describe your feedback in detail...',
-            'label-anonymous': 'I wish to remain Anonymous.',
-            'text-anonymous-warning': 'If you choose this, your identity will be hidden, but you may not receive a response.',
+            'label-Identity': 'Identity Options',
+            'label-anonymous': 'Remain Anonymous',
+            'text-anonymous-warning': 'Hides identity, but may limit responses.',
             'title-contact': 'Contact Information',
             'label-email': 'Email:',
             'label-name': 'Name (Optional):',

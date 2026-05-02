@@ -5,7 +5,7 @@
     <div class="container mt-4 mx-2">
 <div class="row align-items-center">
         <div class="col-md-7 pe-md-5">
-            <h2 class="display-6 fw-bold text-dark mb-3">Welcome to the Feedback and Complaint System</h2>
+            <h2 class="display-6 fw-bold text-dark mb-3">Welcome to the Feedback and Complaint Management System</h2>
             <p class="lead text-muted mb-4" style="font-size: 1.1rem;">
                 This system is designed to provide students, staff, and the community with a structured way to submit feedback or formal complaints. Your input is vital for continuous improvement.
             </p>
