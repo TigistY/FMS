@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-5">
-      @if(Auth::user()->hasRole('General User'))
+@if($feedback->user_id == Auth::id())
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card border-0 shadow-lg mb-4">
@@ -53,16 +53,27 @@
                         </div>
                     </div>
                 </div>
-                
-               <div class="text-center mt-3">
-    <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-link text-secondary text-decoration-none">
-        <i class="fas fa-arrow-left me-1"></i> Back
-    </a>
-</div>
-            </div>
-        </div>
+                @if($feedback->responses->count() > 0)
+                    <div class="alert alert-warning border-0 shadow-sm d-flex justify-content-between align-items-center">
+                        <div class="text-dark">
+                            <i class="fas fa-exclamation-circle me-2"></i>
+                            <strong>Not satisfied?</strong> You can forward this to a higher office.
+                        </div>
+                        <button class="btn btn-warning btn-sm fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#userFeedbackForwardModal">
+                            <i class="fas fa-share-alt me-1"></i> Forward Case
+                        </button>
+                    </div>
+                @endif
 
-    @else
+               <div class="text-center mt-3">
+                 <a href="javascript:void(0)" onclick="window.history.back();" class="btn btn-link text-secondary text-decoration-none">
+                 <i class="fas fa-arrow-left me-1"></i> Back
+                   </a>
+                </div>
+            </div>
+           </div>
+
+@elseif(Auth::user()->hasAnyRole(['System Administrator', 'Unit Responder']))
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 mb-4">
@@ -116,7 +127,7 @@
                         } elseif ($responder->directory) {
                             $unitName = $responder->directory->name_en;
                         } else {
-                            $unitName = $responder->name; // ምንም ክፍል ካልተመደበ ስሙን ያሳያል
+                            $unitName = $responder->name; 
                         }
                     @endphp
                     <i class="fas fa-reply me-1 small"></i> {{ $unitName }}
@@ -189,7 +200,7 @@
     </div>
 </div>
 
-{{--for  Forward Modal --}}
+{{--for unit feedback Forward Modal --}}
 <div class="modal fade" id="forwardModal" tabindex="-1">
     <div class="modal-dialog">
         <div class="modal-content border-0 shadow">
@@ -239,6 +250,9 @@
     </div>
     @endif
 </div>
+@if($feedback->user_id == Auth::id())
+@include('partial.user_feedback_forward_modal')
+@endif
 <script>
 async function handleForwardTypeChange() {
     const type = document.getElementById('forward_recipient_type').value;

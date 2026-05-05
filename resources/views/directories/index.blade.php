@@ -10,15 +10,30 @@
 <script>
 $(document).ready(function() {
     let table = new DataTable('#directories', {
-        lengthMenu: [[3, 5, 10, 25, 50, -1], [3, 5, 10, 25, 50, "All"]],
+        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
         pagingType: "full_numbers",
         
         layout: {    
 
             topStart: {
                 buttons: [
-                    { extend: 'pdf', className: 'btn btn-danger btn-sm', text: '<i class="fas fa-file-pdf"></i> PDF' },
-                    { extend: 'print', className: 'btn btn-info btn-sm', text: '<i class="fas fa-print"></i> Print' }
+                    {
+                                         extend: 'colvis',
+                                         className: 'btn btn-secondary btn-sm',
+                                         text: '<i class="fas fa-columns"></i> Columns'
+                                     },
+                            { 
+                                extend: 'pdf', 
+                                className: 'btn btn-danger btn-sm', 
+                                text: '<i class="fas fa-file-pdf"></i> PDF',
+                               exportOptions: { columns: ':visible' }
+                            },
+                            { 
+                                extend: 'print', 
+                                className: 'btn btn-info btn-sm', 
+                                text: '<i class="fas fa-print"></i> Print',
+                                exportOptions: { columns: ':visible' }
+                            }
                 ]
             },
             topEnd: 'search',

@@ -6,7 +6,7 @@
         <div class="col-md-8">
             <div class="card shadow-sm">
                 <div class="card-header bg-info text-white d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Directory Information</h5>
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i> Directorate Information</h5>
                     <span class="badge bg-light text-dark">CODE: {{ $directory->code }}</span>
                 </div>
                 <div class="card-body">

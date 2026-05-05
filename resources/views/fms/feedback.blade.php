@@ -27,7 +27,7 @@
                     <form action="{{ route('feedback.submit') }}" method="POST" class="needs-validation" novalidate>
                         @csrf
                         <div class="row">
-                            {{-- Left Column: Recipient & Details --}}
+                            
                             <div class="col-md-6 border-end">
                                 <h6 class="text-primary fw-bold mb-3 border-bottom pb-2" id="title-recipient-info"> Recipient Information</h6>
                                 <div class="row g-2 mb-3">
@@ -37,7 +37,7 @@
                                             <option value="" id="option-select-recipient-type">Select Type</option>
                                             <option value="College">College</option>
                                             <option value="Department">Department</option>
-                                            <option value="Directory">Directory</option>
+                                            <option value="Directory">Directorate</option>
                                         </select>
                                     </div>
                                     <div class="col-6 d-none" id="college_filter_container">

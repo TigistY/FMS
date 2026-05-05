@@ -27,10 +27,7 @@ class LoginController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // leyandandu uniqe (Email + IP) mefeter
         $throttleKey = Str::lower($request->input('email')) . '|' . $request->ip();
-
-        // mukeraw ke 3 gezi belay mehonun lemaregaget
         if (RateLimiter::tooManyAttempts($throttleKey, 3)) {
             $seconds = RateLimiter::availableIn($throttleKey);
             return redirect()->route('login')->with('error', "Too many attempts! Please wait $seconds seconds before trying again.");
@@ -38,7 +35,7 @@ class LoginController extends Controller
 
       
         if (Auth::attempt($credentials)) {
-            // betekekel kegeba yetkoterwn error yatefaltal (Reset)
+            //  error yatefaltal (Reset)
             RateLimiter::clear($throttleKey);
             return redirect()->route('dashboard');
         }

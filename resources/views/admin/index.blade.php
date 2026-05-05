@@ -18,21 +18,22 @@ $(document).ready(function() {
                 layout: {
                     topStart: {
                         buttons: [
+                            {
+                                         extend: 'colvis',
+                                         className: 'btn btn-secondary btn-sm',
+                                         text: '<i class="fas fa-columns"></i> Columns'
+                                     },
                             { 
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true },
-                                columns: ':not(:last-child)'
-                                 } 
+                               exportOptions: { columns: ':visible' }
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true },
-                                columns: ':not(:last-child)'
-                                 } 
+                                exportOptions: { columns: ':visible' }
                             }
                         ]
                     },

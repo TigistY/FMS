@@ -11,3 +11,4 @@ class Permission extends SpatiePermission
 
     
 }
+//BelongToMany(many to many)-->role to permission,then one role many permission and one permission many role,using pivot table

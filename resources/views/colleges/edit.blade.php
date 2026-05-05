@@ -17,13 +17,11 @@
 
     <div class="card shadow-sm">
         <div class="card-body">
-            {{-- PATCH method is used for updates in Laravel RESTful resources --}}
             <form action="{{ route('colleges.update', $college) }}" method="POST">
                 @csrf
                 @method('PATCH')
                 
                 <div class="row">
-                    {{-- College Name in English --}}
                     <div class="col-md-6 mb-3">
                         <label for="name_en" class="form-label">College Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name_en" name="name_en" 

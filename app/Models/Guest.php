@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+//use Illuminate\Support\Facades\Crypt;
 
 class Guest extends Model
 {
@@ -34,8 +35,6 @@ class Guest extends Model
        //'name' => 'encrypted',
     ];
 
-
-    
     public function feedbacks()
     {
         return $this->hasMany(Feedback::class, 'guest_id');

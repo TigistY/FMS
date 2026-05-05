@@ -12,10 +12,37 @@
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.0/css/buttons.dataTables.css">
     
     <link rel="stylesheet" href="https://cdn.datatables.net/select/2.0.4/css/select.dataTables.min.css">
+    <link rel="stylesheet"  href="https://cdn.datatables.net/colvis/1.1.2/css/dataTables.colVis.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/3.1.0/css/buttons.dataTables.min.css">
 
     <link rel="stylesheet" href="{{asset('css/layout.css')}}" type="text/css">
     
     <style>
+        .btn-secondary.btn-sm {
+            background-color: #6f42c1 !important; /* Columns */
+            border-color: #6f42c1 !important;
+            color: white !important;
+        }
+
+        .btn-danger.btn-sm {
+            background-color: #e83e8c !important; /* PDF */
+            border-color: #e83e8c !important;
+        }
+
+        .btn-info.btn-sm {
+            background-color: #20c997 !important; /* Print  */
+            border-color: #20c997 !important;
+            color: white !important;
+        }
+
+       
+        .dt-buttons .btn {
+            border-radius: 6px !important;
+            margin-right: 5px;
+            padding: 5px 12px;
+            font-size: 13px;
+        }
+        
         table.dataTable tbody tr.selected > * {
         background-color: #e7f1ff !important;
         color: #084298 !important; 
@@ -169,8 +196,28 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/3.1.0/js/buttons.colVis.min.js"></script>
 
     <script src="https://cdn.datatables.net/select/2.0.4/js/dataTables.select.min.js"></script>
+    
+
+
+
+
+
+
+
+
+
+
+
+<!--  -->
+
+
+
+
+
+
 <script>
     $(document).ready(function() {
         $('#sidebar-toggle').on('click', function(e) {

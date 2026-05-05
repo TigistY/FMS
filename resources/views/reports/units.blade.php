@@ -12,7 +12,7 @@
             <span class="fw-bold small">Colleges and Departments Detail Analysis</span>
             <div class="d-flex gap-4 small fw-bold">
                 <span title="Sentiment Feedback Analysis"><i class="fas fa-comments me-1"></i> Feedback</span>
-                <span title="Total Complaints"><i class="fas fa-exclamation-circle me-1"></i> Complaints</span>
+                <span title="Total Complaints"><i class="fas fa-exclamation-circle me-1"></i> Complains</span>
             </div>
         </div>
                 <div class="card-body p-2">

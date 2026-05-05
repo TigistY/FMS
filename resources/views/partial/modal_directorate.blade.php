@@ -3,7 +3,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow-lg">
             <div class="modal-header bg-dark text-white">
-                <h5 class="modal-title" id="directoryModalTitle">Directory Details</h5>
+                <h5 class="modal-title" id="directoryModalTitle">Directorate Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="directoryForm" method="POST">

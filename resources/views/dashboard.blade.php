@@ -44,8 +44,6 @@
         </div>
     </button>
 </div>
-
-
 </div>
 
 
@@ -58,7 +56,7 @@
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
     @endif
-    @if(Auth::user()->hasRole('General User'))
+     {{-- @if(Auth::user()->hasRole('General User')) --}}
     <div class="card border-0 shadow-sm mb-5">
         <div class="card-header bg-white py-3"><h5 class="fw-bold mb-0">{{ __('messages.My Submissions & Responses') }}</h5></div>
         <div class="card-body p-0">
@@ -88,21 +86,21 @@
                             </td>
                             <td>{{ Str::limit($item->subject, 50) }}</td>
                             <td>
-    @if($item->recipient)
-        <div class="d-flex align-items-center">
-            <div>
-                <div class="fw-bold text-dark" style="font-size: 0.85rem;">
-                    {{ $item->recipient->name_en }}
-                </div>
-                <div class="text-muted" style="font-size: 0.7rem;">
-                    {{ class_basename($item->recipient_type) }}
-                </div>
-            </div>
-        </div>
-    @else
-        <span class="text-muted small">Not Specified</span>
-    @endif
-</td>
+                               @if($item->recipient)
+                                   <div class="d-flex align-items-center">
+                                       <div>
+                                           <div class="fw-bold text-dark" style="font-size: 0.85rem;">
+                                   {{ $item->recipient->name_en }}
+                                           </div>
+                                           <div class="text-muted" style="font-size: 0.7rem;">
+                                      {{ class_basename($item->recipient_type) }}
+                                           </div>
+                                       </div>
+                                   </div>
+                               @else
+                                   <span class="text-muted small">Not Specified</span>
+                               @endif
+                           </td>
                             <td><span class="badge rounded-pill bg-info text-dark">{{ $item->status }}</span></td>
                                                 <td>
                              <div class="small fw-bold text-dark">{{ $item->created_at->format('M d, Y') }}</div>
@@ -125,7 +123,7 @@
             </div>
         </div>
     </div>
-    @endif
+    
 </div>
 
 <script>

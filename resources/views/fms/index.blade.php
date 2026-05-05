@@ -155,17 +155,17 @@
                             <div class="text-muted small" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>{{ $feedback->created_at->format('h:i A') }}</div>
                          </td>
                         <td class="text-end">
-    <div class="dropdown">
-        <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fas fa-cog"></i> Action
-        </button>
-        <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-            <li>
-                <a class="dropdown-item text-primary" href="{{ route('feedback.show', $feedback->id) }}">
-                    <i class="fas fa-eye me-2"></i> View
-                </a>
-            </li>
-            @if(auth()->user()->hasRole('System Administrator') || auth()->user()->can('role-management'))
+    @if(auth()->user()->hasRole('System Administrator') || auth()->user()->can('role-management'))
+        <div class="dropdown">
+            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-cog"></i> Action
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li>
+                    <a class="dropdown-item text-primary" href="{{ route('feedback.show', $feedback->id) }}">
+                        <i class="fas fa-eye me-2"></i> View
+                    </a>
+                </li>
                 <li><hr class="dropdown-divider"></li>
                 <li>
                     <form action="{{ route('feedback.destroy', $feedback->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this feedback?');">
@@ -176,9 +176,13 @@
                         </button>
                     </form>
                 </li>
-            @endif
-        </ul>
-    </div>
+            </ul>
+        </div>
+    @else
+        <a class="btn btn-sm btn-outline-primary" href="{{ route('feedback.show', $feedback->id) }}" title="View Details">
+            <i class="fas fa-eye"></i> View
+        </a>
+    @endif
 </td>
                     </tr>
                     @empty
@@ -205,21 +209,22 @@
                 layout: {
                     topStart: {
                         buttons: [
+                               {
+                                         extend: 'colvis',
+                                         className: 'btn btn-secondary btn-sm',
+                                         text: '<i class="fas fa-columns"></i> Columns'
+                                     },
                             { 
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true },
-                                columns: ':not(:last-child)'
-                                 } 
+                               exportOptions: { columns: ':visible' }
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true },
-                                columns: ':not(:last-child)'
-                                 } 
+                                exportOptions: { columns: ':visible' }
                             }
                         ]
                     },

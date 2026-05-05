@@ -45,10 +45,11 @@ class UserController extends Controller
         ]);
         
         if ($user) {
-             return redirect()->route('login')->with('success', 'Account created successfully! Please log in'); 
-        }
-        
-        return redirect()->back()->with('error', 'Account creation failed. Please try again.');
+        $user->assignRole('General User'); 
+        return redirect()->route('login')->with('success', 'Account created successfully!'); 
+    }
+
+    return redirect()->back()->with('error', 'Failed to create account.');
     }
 
     public function editProfile() 

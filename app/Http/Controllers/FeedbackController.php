@@ -20,7 +20,6 @@ class FeedbackController extends Controller
 {
     public function feedbackform()
     {
-        
         $colleges = College::all(['id', 'name_en']); 
         
         return view('fms.feedback', compact('colleges')); 
@@ -240,6 +239,10 @@ public function forward(Request $request, Feedback $feedback)
         'status'                 => 'Forwarded',
         
     ]);
+    
+    if (Auth::user()->hasRole('General User')) {
+        return redirect()->route('dashboard')->with('success', 'Complaint forwarded successfully!');
+    }
 
     return redirect()->route('feedback.index')->with('success', 'Feedback forwarded successfully!');
 }

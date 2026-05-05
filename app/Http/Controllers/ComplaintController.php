@@ -78,7 +78,6 @@ class ComplaintController extends Controller
     public function index(Request $request)
 {
     $user = Auth::user();
-    //$query =Complaint::with(['recipient', 'user', 'guest']);
     $query = Complaint::query();
 
     if ($user->hasRole('System Administrator')) {

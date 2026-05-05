@@ -48,6 +48,22 @@
         </li>
         @endcanany
 
+          
+        @canany(['view-colleges', 'view-departments', 'view-directories'])
+        <li class="nav-item mt-2">
+            <a class="nav-link text-white dropdown-btn {{ Request::routeIs(['colleges.*', 'departments.*', 'directories.*']) ? 'active bg-primary' : '' }}" 
+               data-bs-toggle="collapse" href="#collegeMenu" role="button">
+                <i class="fas fa-building-columns me-2"></i> {{ __('messages.College/Directorate') }}
+                <i class="fas fa-chevron-down float-end mt-1 small"></i>
+            </a>
+            <div class="collapse {{ Request::routeIs(['colleges.*', 'departments.*', 'directories.*']) ? 'show' : '' }}" id="collegeMenu">
+                <ul class="nav flex-column ms-3 mt-1 submenu">
+                    <li><a class="nav-link text-white-50 small" href="{{route('colleges.index')}}"><i class="fas fa-university me-2"></i>{{ __('messages.Colleges') }}</a></li>
+                    <li><a class="nav-link text-white-50 small" href="{{route('directories.index')}}"><i class="fas fa-sitemap me-2"></i>{{ __('messages.Directories') }}</a></li>
+                </ul>
+            </div>
+        </li>
+        @endcanany
         @can('view-complaints')
         <li class="nav-item mt-2">
             <a href="{{route('index')}}" class="nav-link text-white {{ Request::routeIs('index') ? 'active bg-primary' : '' }}">
@@ -64,21 +80,6 @@
         </li>
         @endcan
 
-        @canany(['view-colleges', 'view-departments', 'view-directories'])
-        <li class="nav-item mt-2">
-            <a class="nav-link text-white dropdown-btn {{ Request::routeIs(['colleges.*', 'departments.*', 'directories.*']) ? 'active bg-primary' : '' }}" 
-               data-bs-toggle="collapse" href="#collegeMenu" role="button">
-                <i class="fas fa-building-columns me-2"></i> {{ __('messages.College/Directorate') }}
-                <i class="fas fa-chevron-down float-end mt-1 small"></i>
-            </a>
-            <div class="collapse {{ Request::routeIs(['colleges.*', 'departments.*', 'directories.*']) ? 'show' : '' }}" id="collegeMenu">
-                <ul class="nav flex-column ms-3 mt-1 submenu">
-                    <li><a class="nav-link text-white-50 small" href="{{route('colleges.index')}}"><i class="fas fa-university me-2"></i>{{ __('messages.Colleges') }}</a></li>
-                    <li><a class="nav-link text-white-50 small" href="{{route('directories.index')}}"><i class="fas fa-sitemap me-2"></i>{{ __('messages.Directories') }}</a></li>
-                </ul>
-            </div>
-        </li>
-        @endcanany
 
 
         @can('view-unit-reports')

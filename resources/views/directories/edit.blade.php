@@ -1,19 +1,20 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="container my-4">
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="card shadow">
                 <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i> Edit Directory: {{ $directory->name_en }}</h5>
+                    <h5 class="mb-0"><i class="fas fa-edit me-2"></i> Edit Directorate: {{ $directory->name_en }}</h5>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('directories.update', $directory) }}" method="POST">
                         @csrf @method('PUT')
                         
                         <div class="mb-3">
-                            <label class="form-label">Directory Code</label>
+                            <label class="form-label">Directorate Code</label>
                             <input type="text" name="code" class="form-control" value="{{ $directory->code }}" required>
                         </div>
 

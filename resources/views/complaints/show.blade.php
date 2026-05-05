@@ -2,7 +2,7 @@
 
 @section('content')
 <div class="container py-5">
-    @if(Auth::user()->hasRole('General User'))
+   @if($complaint->user_id == Auth::id())
         <div class="row justify-content-center">
             <div class="col-lg-10">
                 <div class="card border-0 shadow-lg mb-4">
@@ -54,7 +54,7 @@
                     </div>
                 </div>
 
-                @if($complaint->responses->count() > 0)
+                @if($complaint->responses->count() > 0) 
                     <div class="alert alert-warning border-0 shadow-sm d-flex justify-content-between align-items-center">
                         <div class="text-dark">
                             <i class="fas fa-exclamation-circle me-2"></i>
@@ -74,7 +74,7 @@
             </div>
         </div>
 
-    @else
+    @elseif(Auth::user()->hasAnyRole(['System Administrator', 'Unit Responder']))
     <div class="row">
         <div class="col-lg-8">
             <div class="card shadow-sm border-0 mb-4">
@@ -218,10 +218,13 @@
     @endif
 </div> 
 
-@if(Auth::user()->hasRole('General User'))
-    @include('partial.user_forward_modal') 
-@else
-    @include('partial.forward_modal') 
+@if($complaint->user_id == Auth::id())
+    @include('partial.user_forward_modal')
+@endif
+
+
+@if(Auth::user()->hasAnyRole(['System Administrator', 'Unit Responder']))
+    @include('partial.forward_modal')
 @endif
 
 <script>

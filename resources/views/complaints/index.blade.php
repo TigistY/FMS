@@ -5,7 +5,7 @@
     <div class="d-flex justify-content-between align-items-center mb-4">
        <h2>
         <i class="fas fa-list-ul me-2 text-primary"></i> 
-        Complaints Management For
+        Complains Management For
         @if(Auth::user()->hasRole('Unit Responder'))
             <span class="text-secondary small ms-2"></span>
             <span class="text-primary ms-2" style="font-size: 30px;">
@@ -109,32 +109,36 @@
                                   <div class="small fw-bold text-dark">{{ $complaint->created_at->format('M d, Y') }}</div>
                                    <div class="text-muted small" style="font-size: 0.75rem;"><i class="far fa-clock me-1"></i>{{ $complaint->created_at->format('h:i A') }}</div>
                                      </td>
-                                <td class="text-end">
-                               <div class="dropdown">
-                             <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                 <i class="fas fa-cog"></i> Action
-                             </button>
-                             <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                 <li>
-                                     <a class="dropdown-item text-primary" href="{{ route('show', $complaint->id) }}">
-                                           <i class="fas fa-eye me-2"></i> View
-                                     </a>
-                                 </li>
-                                 @if(auth()->user()->hasRole('System Administrator') || auth()->user()->can('role-management'))
-                               <li><hr class="dropdown-divider"></li>
-                                <li>
-                                <form action="{{ route('destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this complaint?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="dropdown-item text-danger">
-                                        <i class="fas fa-trash-alt me-2"></i> Delete
-                                    </button>
-                                </form>
-                            </li>
-                        @endif
-                           </ul>
-                       </div>
-                   </td>
+                            <td class="text-end">
+    @if(auth()->user()->hasRole('System Administrator') || auth()->user()->can('role-management'))
+        <div class="dropdown">
+            <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fas fa-cog"></i> Action
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
+                <li>
+                    <a class="dropdown-item text-primary" href="{{ route('show', $complaint->id) }}">
+                        <i class="fas fa-eye me-2"></i> View
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <form action="{{ route('destroy', $complaint->id) }}" method="POST" onsubmit="return confirm('Are you sure?');">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="fas fa-trash-alt me-2"></i> Delete
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    @else
+        <a class="btn btn-sm btn-outline-primary" href="{{ route('show', $complaint->id) }}" title="View Details">
+            <i class="fas fa-eye"></i> View
+        </a>
+    @endif
+</td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -145,7 +149,7 @@
     @else
     <div class="text-center py-5 bg-white shadow-sm rounded border">
         <i class="fas fa-filter fa-3x text-muted mb-3"></i>
-        <h4 class="text-muted">Please filter by unit to see complaints.</h4>
+        <h4 class="text-muted">Please filter by unit to see complains.</h4>
     </div>
     @endif
 </div>
@@ -156,30 +160,36 @@
     $(document).ready(function() {
         if ($('#complaints').length > 0) {
             new DataTable('#complaints', {
-                lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+                lengthMenu: [[7, 10, 25, 50, -1], [7, 10, 25, 50, "All"]],
                 select:true,
                 ordering:true,
                 pagingType: "full_numbers",
                 layout: {
                     topStart: {
                         buttons: [
+                                   {
+                                         extend: 'colvis',
+                                         className: 'btn btn-secondary btn-sm',
+                                         text: '<i class="fas fa-columns"></i> Columns'
+                                     },
+
                             { 
                                 extend: 'pdf', 
                                 className: 'btn btn-danger btn-sm', 
                                 text: '<i class="fas fa-file-pdf"></i> PDF',
-                                exportOptions: { modifier: { selected: true },
-                                columns: ':not(:last-child)'
-                                 } 
+                                exportOptions: { columns: ':visible' }
                             },
                             { 
                                 extend: 'print', 
                                 className: 'btn btn-info btn-sm', 
                                 text: '<i class="fas fa-print"></i> Print',
-                                exportOptions: { modifier: { selected: true },
-                                columns: ':not(:last-child)'
-                                 } 
-                            }
+                                exportOptions: { columns: ':visible' }
+                            },
+            
+
+
                         ]
+
                     },
                     topEnd: 'search',
                     bottomStart: { pageLength: {}, info: {} },

@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
-        // MorphMap - የሞዴል ትስስር ስሞች
+        // MorphMap - 
         Relation::morphMap([
             'College'    => \App\Models\College::class,
             'Department' => \App\Models\Department::class,
@@ -35,12 +35,12 @@ class AppServiceProvider extends ServiceProvider
                 $newFeedCount = 0;
                 $userResponseCount = 0;
 
-                // 1. ለSystem Administrator
+                
                 if ($user->hasRole('System Administrator')) {
                     $pendingCount = 0; 
                     $newFeedCount = 0;
                 } 
-                // 2. ለክፍል ተወካዮች (Unit Responders)
+                
                 elseif ($user->hasRole('Unit Responder')) {
                     $unitType = null;
                     $unitId = null;
@@ -59,12 +59,12 @@ class AppServiceProvider extends ServiceProvider
                             ->whereIn('status', ['New', 'Forwarded'])->count();
                     }
                 } 
-                // 3. ለተራ ተጠቃሚ (Normal User)
+              
                 else {
                     $userResponseCount = Response::where('is_seen', false)
                         ->where('responder_id', '!=', $user->id)
                         ->where(function ($query) use ($user) {
-                            // እዚህ ጋር በክላስ ፋንታ በ MorphMap ስማቸው ተክተናል
+                  
                             $query->whereHasMorph('respondable', ['Complaint'], function ($q) use ($user) {
                                 $q->where('user_id', $user->id);
                             })

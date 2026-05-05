@@ -9,7 +9,7 @@
             </div>
         </div>
         <span class="system-title-text d-none d-md-block ms-auto text-end pe-3">
-            Feedback And Complaint System
+            Feedback And Complain System
         </span>
     </div>
 </div>
@@ -34,7 +34,7 @@
                 </li>
                 <li class="nav-item">
                     <a class="nav-link text-white hover-link me-2" href="{{route('create')}}">
-                        <i class="fas fa-file-alt me-1"></i> Send Complaint
+                        <i class="fas fa-file-alt me-1"></i> Send Complain
                     </a>
                 </li>
 

@@ -9,7 +9,7 @@
         <div class="row align-items-center">
             <div class="col-md-8">
                 <h1 class="display-5 fw-bold mb-3">Welcome to INU-FMS</h1>
-                <h3 class="fw-light mb-4">Injibara University Feedback & Complaint Management System</h3>
+                <h3 class="fw-light mb-4">Injibara University Feedback & Complain Management System</h3>
                 <p class="lead mb-4">
                     Your voice matters! Use this platform to help us improve our university services by sharing your honest feedback or reporting concerns.
                 </p>

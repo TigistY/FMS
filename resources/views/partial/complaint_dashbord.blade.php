@@ -6,7 +6,7 @@
                 <div class="modal-header bg-danger text-white">
                     <div class="w-100 d-flex justify-content-between align-items-center">
                         <h5 class="modal-title fw-bold" id="main-title">
-                            <i class="fas fa-exclamation-triangle me-2"></i> Complaint Submission
+                            <i class="fas fa-exclamation-triangle me-2"></i> Complain Submission
                         </h5>
                         <div style="width: 140px;">
                             <select id="language_selector" onchange="window.switchLanguage(this.value)" class="form-select form-select-sm border-0 shadow-sm">
@@ -101,7 +101,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="button-submit" class="btn btn-danger w-100 py-2 fw-bold">Submit Complaint</button>
+                    <button type="submit" id="button-submit" class="btn btn-danger w-100 py-2 fw-bold">Submit Complain</button>
                 </div>
             </div>
         </form>

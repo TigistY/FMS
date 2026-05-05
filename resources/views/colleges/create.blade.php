@@ -21,13 +21,12 @@
                 @csrf
                 
                 <div class="row">
-                    {{-- College Name in English --}}
                     <div class="col-md-6 mb-3">
                         <label for="name_en" class="form-label">College Name <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name_en" name="name_en" value="{{ old('name_en') }}" required>
                     </div>
                     
-                    {{-- College Name in Amharic --}}
+                    
                     <div class="col-md-6 mb-3">
                         <label for="name_am" class="form-label">የኮሌጁ ስም <span class="text-danger">*</span></label>
                         <input type="text" class="form-control" id="name_am" name="name_am" value="{{ old('name_am') }}" required>
@@ -50,7 +49,7 @@
                 </div>
 
                 <div class="d-flex justify-content-end mt-4">
-                    <a href="{{ route('colleges.index') }}" class="btn btn-secondary me-2">Cancel</a>
+                    <a href="{{ route('colleges.index') }}" class="btn btn-secondary me-2" target="_blank">Cancel</a>
                     <button type="submit" class="btn btn-success"><i class="fas fa-save me-1"></i> Register College</button>
                 </div>
             </form>
