@@ -138,7 +138,6 @@
             </div>
         </div>
 </div>
-
 <style>
     /* for image */
     .university-hero-img {
